@@ -10,79 +10,79 @@
 /* ===== CORE SYSTEM ===== */
 body {
   margin: 0;
-  background: #0b0c0f;
+  background:
+    radial-gradient(circle at top right, rgba(199,161,74,.16), transparent 420px),
+    linear-gradient(180deg, #08090b, #0d0f14);
   color: #f5f2ea;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  line-height: 1.5;
 }
 
-/* ===== LAYOUT ===== */
 .shell {
-  width: min(1100px, 92%);
+  width: min(1180px, 92%);
   margin: 0 auto;
 }
 
-/* ===== NAV ===== */
+/* NAV */
 .nav {
   position: sticky;
   top: 0;
-  background: rgba(11,12,15,0.85);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(8,9,11,.86);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.09);
 }
 
 .nav-inner {
+  height: 76px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
 }
 
 .brand {
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 900;
+  letter-spacing: -.04em;
 }
 
 .nav a {
-  color: #aaa;
-  margin-left: 20px;
-  text-decoration: none;
+  color: #aaa497;
+  margin-left: 22px;
   font-size: 14px;
 }
 
 .cta {
   background: #c7a14a;
   color: #000;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 900;
 }
 
-/* ===== HERO ===== */
+/* HERO */
 .hero {
-  padding: 80px 0;
+  padding: 96px 0 84px;
 }
 
 .hero h1 {
-  font-size: clamp(34px, 6vw, 64px);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  font-size: clamp(42px, 7vw, 82px);
+  line-height: .95;
 }
 
 .hero p {
-  color: #aaa;
-  max-width: 600px;
+  max-width: 720px;
+  color: #aaa497;
+  margin-top: 20px;
 }
 
 .actions {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .btn {
   display: inline-block;
   padding: 12px 18px;
   border-radius: 25px;
-  margin-right: 10px;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .btn-primary {
@@ -91,73 +91,58 @@ body {
 }
 
 .btn-secondary {
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,.2);
 }
 
-/* ===== BOARD MOCK ===== */
+/* BOARD */
 .frame {
-  background: #12141a;
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 40px;
+  margin-top: 20px;
+  background: #12151c;
+  border-radius: 28px;
+  overflow: hidden;
 }
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.row:last-child {
-  border-bottom: none;
+  grid-template-columns: 1.4fr .7fr .7fr .8fr;
+  padding: 14px;
 }
 
 .band {
   padding: 4px 8px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 700;
 }
 
-.stable { background: #2e5d3b; }
-.watch { background: #6d5b2f; }
-.volatile { background: #6a2f2f; }
+.stable { background:#2e5d3b; }
+.watch { background:#6d5b2f; }
+.volatile { background:#6a2f2f; }
 
-/* ===== SECTIONS ===== */
+/* SECTION */
 .section {
-  padding: 70px 0;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.section h2 {
-  font-size: 36px;
+  padding: 80px 0;
 }
 
 .grid {
   display: grid;
   gap: 20px;
-}
-
-.grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
 }
 
 .card {
-  background: #14161c;
+  background: #141820;
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 18px;
 }
 
-/* ===== RESULT ===== */
 .result {
   margin-top: 20px;
   padding: 20px;
   border-left: 4px solid #c7a14a;
-  background: #1b1d24;
+  background: #1b2029;
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 .footer {
   text-align: center;
   padding: 50px 0;
@@ -193,24 +178,61 @@ body {
     <span class="btn btn-secondary">View the Suite</span>
   </div>
 
+  <p style="margin-top:14px; color:#aaa; font-size:14px;">
+  Free shows disagreement. Paid lets you act before the board closes.
+  </p>
+
+  <p style="margin-top:32px; font-size:12px; letter-spacing:.12em; color:#777; text-transform:uppercase;">
+  LIVE BOARD SNAPSHOT
+  </p>
+
   <div class="frame">
     <div class="row"><strong>Player</strong><strong>ADP</strong><strong>Apex</strong><strong>Band</strong></div>
     <div class="row"><span>RB Profile A</span><span>18</span><span>31</span><span class="band watch">Watch</span></div>
     <div class="row"><span>WR Profile B</span><span>42</span><span>27</span><span class="band stable">Stable</span></div>
     <div class="row"><span>TE Profile C</span><span>64</span><span>39</span><span class="band volatile">Volatile</span></div>
   </div>
+
+  <p style="color:#888; margin-top:12px;">
+  Full board + Signal Cards inside Combine.
+  </p>
 </div>
 
 <!-- SUITE -->
 <div class="section shell" id="suite">
   <h2>Five assets. One decision path.</h2>
 
-  <div class="grid grid-3">
-    <div class="card"><h3>Apex Position Board</h3><p>Consensus vs. Apex Position with confidence bands.</p></div>
-    <div class="card"><h3>Signal Cards</h3><p>Floor, ceiling, infrastructure, snap-share, verdict.</p></div>
-    <div class="card"><h3>Market Mistakes</h3><p>Top 10 consensus errors.</p></div>
-    <div class="card"><h3>War Room Sheets</h3><p>Draft board + signal queue + pivot scenarios.</p></div>
-    <div class="card"><h3>DraftPulse</h3><p>Timing layer for runs, cliffs, pivots.</p></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Apex Position Board</h3>
+      <p>Consensus vs. Apex Position with confidence bands.</p>
+      <p style="font-size:13px;color:#777;">Used pre-draft + during draft.</p>
+    </div>
+
+    <div class="card">
+      <h3>Signal Cards</h3>
+      <p>Floor, ceiling, infrastructure, snap-share, verdict.</p>
+      <p style="font-size:13px;color:#777;">Pre-draft validation layer.</p>
+    </div>
+
+    <div class="card">
+      <h3>Market Mistakes</h3>
+      <p>Top 10 consensus errors.</p>
+      <p style="font-size:13px;color:#777;">Used to identify traps before drafting.</p>
+    </div>
+
+    <div class="card">
+      <h3>War Room Sheets</h3>
+      <p>Draft board + signal queue + pivot scenarios.</p>
+      <p style="font-size:13px;color:#777;">Live draft execution layer.</p>
+      <p style="color:#aaa;">This is the layer used when the clock is running.</p>
+    </div>
+
+    <div class="card">
+      <h3>DraftPulse</h3>
+      <p>Timing layer for runs, cliffs, pivots.</p>
+      <p style="font-size:13px;color:#777;">Used when the board shifts mid-draft.</p>
+    </div>
   </div>
 </div>
 
@@ -218,7 +240,7 @@ body {
 <div class="section shell">
   <h2>Following consensus can still build a broken roster.</h2>
 
-  <div class="grid grid-3">
+  <div class="grid">
     <div class="card">
       <h3>Roster failure</h3>
       <p>Snap share does not match depth chart.</p>
@@ -240,9 +262,14 @@ body {
   </div>
 </div>
 
-<!-- CTA -->
+<!-- WHY NOW -->
 <div class="section shell">
+  <p style="color:#aaa;">
+  Consensus errors don’t matter until you’re on the clock. Then they decide your draft.
+  </p>
+
   <h2>This is not rankings. This is a decision system.</h2>
+
   <div class="actions">
     <span class="btn btn-primary">Enter the Combine</span>
   </div>
