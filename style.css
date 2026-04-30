@@ -1,4 +1,74 @@
-body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
+/* ADS SYSTEM STYLING - AUTHORITY V1.0 */
+:root {
+  --bg-dark: #0D1117;
+  --panel-bg: #161B22;
+  --accent-green: #238636;
+  --signal-red: #DA3633;
+  --text-main: #C9D1D9;
+  --text-bright: #F0F6FC;
 }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  line-height: 1.6;
+}
+
+h1, h2, h3 { 
+  color: var(--text-bright); 
+  border-bottom: 1px solid #30363d; 
+  padding-bottom: 10px; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.oif-box {
+  background: var(--panel-bg);
+  border: 1px solid #30363d;
+  padding: 25px;
+  border-radius: 8px;
+  margin: 25px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.failure-frame {
+  border-left: 4px solid var(--signal-red);
+  background: rgba(218, 54, 51, 0.1);
+  padding: 15px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+}
+
+.signal-green { 
+  color: #39FF14; 
+  font-weight: bold; 
+  text-shadow: 0 0 5px rgba(57, 255, 20, 0.2);
+}
+
+.button {
+  background-color: var(--accent-green);
+  color: white !important;
+  padding: 18px 35px;
+  text-decoration: none;
+  border-radius: 6px;
+  display: inline-block;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 25px;
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  background-color: #2ea043;
+}
+
+hr { border: 0; height: 1px; background: #30363d; margin: 40px 0; }
+
+ul { padding-left: 20px; }
+li { margin-bottom: 10px; }
+
