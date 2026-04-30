@@ -3,44 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Draft Suite</title>
-    <link rel="stylesheet" href="style.css">
+    <title>APEX DRAFT SUITE | COMMAND ROOM</title>
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --panel-bg: #0d1117;
+            --accent-green: #00ff41;
+            --signal-red: #ff3131;
+            --grid-line: #1b1f23;
+        }
+        body {
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), 
+                              linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #d1d5db;
+            font-family: 'Courier New', Courier, monospace;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .oif-box { 
+            background: var(--panel-bg); 
+            border: 1px solid #30363d; 
+            padding: 25px; 
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.05);
+        }
+        h1 { color: #fff; text-shadow: 0 0 10px var(--accent-green); letter-spacing: 4px; border-bottom: 2px solid var(--accent-green); display: inline-block; }
+        h2 { color: #fff; text-transform: uppercase; border-left: 3px solid var(--accent-green); padding-left: 15px; margin-top: 40px; }
+        .signal-green { color: var(--accent-green); font-weight: bold; }
+        .failure-frame { border: 1px solid var(--signal-red); background: rgba(255, 49, 49, 0.05); padding: 20px; margin: 20px 0; }
+        .button { 
+            background-color: transparent;
+            color: var(--accent-green) !important;
+            border: 2px solid var(--accent-green);
+            padding: 15px 40px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            display: inline-block;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .button:hover { background: var(--accent-green); color: #000 !important; box-shadow: 0 0 20px var(--accent-green); }
+        .blur-text { filter: blur(5px); opacity: 0.5; user-select: none; }
+    </style>
 </head>
 <body>
 
-<div class="oif-box">
-    <h1>APEX DRAFT SUITE</h1>
-    <p class="signal-green">Causal player evaluation. Validated decisions. No narrative. No guesswork.</p>
-</div>
+    <div class="oif-box">
+        <h1>APEX DRAFT SUITE</h1>
+        <p class="signal-green">> STATUS: SYSTEM_ACTIVE_v1.3</p>
+        <p>Causal player evaluation. Validated decisions. No narrative. No guesswork.</p>
+    </div>
 
-<hr>
+    <h2>THE PROBLEM</h2>
+    <div class="failure-frame">
+        <p>Most draft decisions are built on Rankings, Hype, and Last year’s stats. They don’t explain <strong>why</strong> production happens.</p>
+        <p>When the environment breaks, your pick breaks with it.</p>
+    </div>
 
-<h2>THE PROBLEM</h2>
-<div class="failure-frame">
-    <p>Most draft decisions are built on Rankings, Hype, and Last year’s stats. All three fail the same way: <strong>They don’t explain why production happens.</strong></p>
-    <p>So when the environment breaks... your pick breaks with it.</p>
-</div>
+    <h2>THE TRUTH</h2>
+    <p>Output = Talent × Environment. OIF exposes where consensus breaks mechanically.</p>
 
-<h2>THE TRUTH</h2>
-<p>Output = Talent × Environment. If the environment fails, Volume disappears and Efficiency collapses. Consensus doesn’t catch this. <strong>OIF exposes where consensus breaks mechanically.</strong></p>
+    <div class="oif-box">
+        <h3>SYSTEM: OIF FILTER</h3>
+        <ul>
+            <li>ENVIRONMENT (Infrastructure Truth)</li>
+            <li>USAGE (Roster Scrutiny)</li>
+            <li>ROTATION (Personnel Reality)</li>
+            <li>ANTI-TROPE (Bias Removal)</li>
+        </ul>
+    </div>
 
-<div class="oif-box">
-    <h3>THE SYSTEM: OIF FILTER</h3>
-    <ul>
-        <li><strong>Environment</strong> (O-line, tempo, scheme)</li>
-        <li><strong>Usage</strong> (Snap share, role, deployment)</li>
-        <li><strong>Rotation</strong> (Who is actually on the field)</li>
-        <li><strong>Anti-Trope Filter</strong> (Removes narrative bias)</li>
-    </ul>
-</div>
+    <h2>POSITION BOARD (EXPANSION)</h2>
+    <p>Targeting Mechanical Gaps in the 51-150 Range:</p>
+    <div class="oif-box" style="font-size: 0.9em;">
+        <p>RANK 54 | <span class="blur-text">PLAYER_REDACTED</span> | GAP: +18 | VERDICT: STABLE</p>
+        <p>RANK 61 | <span class="blur-text">PLAYER_REDACTED</span> | GAP: +22 | VERDICT: VOLATILE</p>
+        <p>RANK 78 | <span class="blur-text">PLAYER_REDACTED</span> | GAP: +14 | VERDICT: STABLE</p>
+    </div>
 
-<h2>ENTRY POINT</h2>
-<p>Start with the Combine (Free). See where consensus breaks. Decide if you want to act on it.</p>
-
-<a href="https://apexdraftsuite.ck.page/combine" class="button">Enter the Combine</a>
-
-<p style="margin-top: 40px; font-size: 0.8em; opacity: 0.6;">This is not rankings. This is a decision system.</p>
+    <a href="https://apexdraftsuite.ck.page/combine" class="button">Access Full Board</a>
 
 </body>
 </html>
-
