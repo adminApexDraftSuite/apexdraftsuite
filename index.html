@@ -1,282 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apex Draft Suite</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Draft Suite</title>
 
-  <link rel="stylesheet" href="styles.css" />
+<style>
+
+/* ===== CORE SYSTEM ===== */
+body {
+  margin: 0;
+  background: #0b0c0f;
+  color: #f5f2ea;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+.shell {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+/* ===== NAV ===== */
+.nav {
+  position: sticky;
+  top: 0;
+  background: rgba(11,12,15,0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.nav a {
+  color: #aaa;
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.cta {
+  background: #c7a14a;
+  color: #000;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 80px 0;
+}
+
+.hero h1 {
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  color: #aaa;
+  max-width: 600px;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 25px;
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: #c7a14a;
+  color: #000;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ===== BOARD MOCK ===== */
+.frame {
+  background: #12141a;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.band {
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stable { background: #2e5d3b; }
+.watch { background: #6d5b2f; }
+.volatile { background: #6a2f2f; }
+
+/* ===== SECTIONS ===== */
+.section {
+  padding: 70px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.section h2 {
+  font-size: 36px;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+}
+
+.card {
+  background: #14161c;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+/* ===== RESULT ===== */
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  border-left: 4px solid #c7a14a;
+  background: #1b1d24;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 50px 0;
+  color: #777;
+}
+
+</style>
 </head>
 
-<div class="ads-site">
-  <header class="ads-nav">
-    <div class="ads-shell ads-nav-inner">
-      <a class="ads-brand" href="/">
-        <span class="ads-brand-mark">ADS</span>
-        <span>Apex Draft Suite</span>
-      </a>
+<body>
 
-      <nav class="ads-links" aria-label="Primary navigation">
-        <a href="#suite">Suite</a>
-        <a href="#board">Apex Position</a>
-        <a href="#blackbook">Blackbook</a>
-        <a href="#war-room">War Room</a>
-        <a href="#pricing">Pricing</a>
-      </nav>
-
-      <a class="ads-nav-cta" href="/combine">Enter Combine</a>
+<!-- NAV -->
+<div class="nav">
+  <div class="shell nav-inner">
+    <div class="brand">Apex Draft Suite</div>
+    <div>
+      <a href="#suite">Suite</a>
+      <a href="#board">Board</a>
+      <a href="#war">War Room</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="cta">Enter Combine</a>
     </div>
-  </header>
-
-  <main>
-    <section class="ads-hero">
-      <div class="ads-shell ads-hero-grid">
-        <div class="ads-hero-copy">
-          <p class="ads-kicker">Causal draft infrastructure</p>
-          <h1>A decision suite for draft rooms under pressure.</h1>
-          <p class="ads-lede">
-            Apex Draft Suite exposes where consensus breaks mechanically, then turns that signal into board position, draft-room action, and validated decisions.
-          </p>
-
-          <div class="ads-actions">
-            <a class="ads-btn ads-btn-primary" href="/combine">Enter the Combine</a>
-            <a class="ads-btn ads-btn-secondary" href="#suite">View the Suite</a>
-          </div>
-
-          <div class="ads-trust-row">
-            <span>Consensus ADP vs. Apex Position</span>
-            <span>Stable / Watch / Volatile bands</span>
-            <span>Event-driven updates only</span>
-          </div>
-        </div>
-
-        <div class="ads-product-frame" aria-label="Apex Position Board preview">
-          <div class="ads-frame-top">
-            <span>Apex Position Board</span>
-            <span>Top 50 Free</span>
-          </div>
-
-          <div class="ads-board">
-            <div class="ads-board-row ads-board-head">
-              <span>Player</span>
-              <span>Consensus ADP</span>
-              <span>Apex Position</span>
-              <span>Band</span>
-            </div>
-            <div class="ads-board-row">
-              <span>RB Profile A</span>
-              <span>18</span>
-              <span>31</span>
-              <span class="ads-band ads-watch">Watch</span>
-            </div>
-            <div class="ads-board-row">
-              <span>WR Profile B</span>
-              <span>42</span>
-              <span>27</span>
-              <span class="ads-band ads-stable">Stable</span>
-            </div>
-            <div class="ads-board-row">
-              <span>TE Profile C</span>
-              <span>64</span>
-              <span>39</span>
-              <span class="ads-band ads-volatile">Volatile</span>
-            </div>
-          </div>
-
-          <div class="ads-frame-note">
-            OIF exposes the disagreement. The War Room operationalizes the pick.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section" id="suite">
-      <div class="ads-shell">
-        <div class="ads-section-head">
-          <p class="ads-kicker">The Suite</p>
-          <h2>Five assets. One decision path.</h2>
-          <p>
-            The front end is not a content page. It is the product wrapper for the engine: evaluate, validate, decide.
-          </p>
-        </div>
-
-        <div class="ads-suite-grid">
-          <article class="ads-suite-card">
-            <span class="ads-card-number">01</span>
-            <h3>Apex Position Board</h3>
-            <p>Consensus ADP side-by-side with Apex Position, confidence bands, and visible mechanical disagreement.</p>
-          </article>
-
-          <article class="ads-suite-card">
-            <span class="ads-card-number">02</span>
-            <h3>Signal Cards</h3>
-            <p>Single-player TrueVolume outputs: floor, ceiling, infrastructure grade, snap-share reality, and verdict.</p>
-          </article>
-
-          <article class="ads-suite-card">
-            <span class="ads-card-number">03</span>
-            <h3>Market Mistakes</h3>
-            <p>Top 10 consensus errors: three exposed free, seven locked behind Combine pressure.</p>
-          </article>
-
-          <article class="ads-suite-card">
-            <span class="ads-card-number">04</span>
-            <h3>War Room Sheets</h3>
-            <p>Pre-structured Draft Board, Signal Queue, and Pivot Scenarios for live draft execution.</p>
-          </article>
-
-          <article class="ads-suite-card ads-suite-card-feature">
-            <span class="ads-card-number">05</span>
-            <h3>DraftPulse</h3>
-            <p>Timing layer for positional runs, tier drops, value cliffs, roster holes, and pivot decisions.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section ads-section-muted" id="board">
-      <div class="ads-shell ads-two-col">
-        <div>
-          <p class="ads-kicker">Apex Position</p>
-          <h2>Market price is context. It is not the verdict.</h2>
-          <p>
-            Consensus ADP shows where the room is clustered. Apex Position shows where OIF says the player belongs after mechanical review.
-          </p>
-        </div>
-
-        <div class="ads-proof-panel">
-          <h3>What the board makes visible</h3>
-          <ul>
-            <li>Where consensus overpays unstable roles</li>
-            <li>Where environment failure is not priced in</li>
-            <li>Where confidence bands require patience or action</li>
-            <li>Where paid War Room context becomes necessary</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section" id="blackbook">
-      <div class="ads-shell ads-two-col">
-        <div class="ads-proof-panel ads-proof-dark">
-          <p class="ads-kicker">Blackbook logic</p>
-          <h3>Consensus claim</h3>
-          <p>“The role is safe because the depth chart says RB1.”</p>
-
-          <h3>OIF replacement</h3>
-          <p>Snap share, passing-down deployment, red-zone package usage, and offensive environment.</p>
-
-          <h3>Decision consequence</h3>
-          <p>The label can be right while the draft pick is wrong.</p>
-        </div>
-
-        <div>
-          <p class="ads-kicker">Authority Strike</p>
-          <h2>The Blackbook proves the engine publicly.</h2>
-          <p>
-            Blackbook entries expose Narrative Traps: specific market claims built on trope reasoning and replaced by mechanical evidence.
-          </p>
-          <a class="ads-inline-link" href="/blackbook">View Blackbook preview</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section ads-section-muted" id="war-room">
-      <div class="ads-shell">
-        <div class="ads-section-head">
-          <p class="ads-kicker">War Room</p>
-          <h2>Free proves disagreement. Paid operationalizes action.</h2>
-          <p>
-            The Combine shows where consensus breaks. The War Room gives the draft-room structure to act before the clock forces a bad decision.
-          </p>
-        </div>
-
-        <div class="ads-workflow">
-          <div class="ads-workflow-step">
-            <span>01</span>
-            <h3>Draft Board</h3>
-            <p>Position, tier, confidence band, Apex Position, and action note.</p>
-          </div>
-
-          <div class="ads-workflow-step">
-            <span>02</span>
-            <h3>Signal Queue</h3>
-            <p>Players to re-check, watch, fade, or escalate before draft day.</p>
-          </div>
-
-          <div class="ads-workflow-step">
-            <span>03</span>
-            <h3>Pivot Scenarios</h3>
-            <p>If/then decisions for predictable runs, tier drops, and roster holes.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section">
-      <div class="ads-shell ads-consequence">
-        <p class="ads-kicker">The consequence</p>
-        <h2>Following consensus can still build a broken roster.</h2>
-
-        <div class="ads-consequence-grid">
-          <div>
-            <h3>Roster Scrutiny failure</h3>
-            <p>You draft roles that do not exist because snap share does not match the depth chart.</p>
-          </div>
-
-          <div>
-            <h3>Snap Preservation failure</h3>
-            <p>You chase volume in systems without enough offensive snaps to support the projection.</p>
-          </div>
-
-          <div>
-            <h3>Infrastructure Truth failure</h3>
-            <p>You pay for last year’s environment after the O-line, OC, or scheme has already changed.</p>
-          </div>
-        </div>
-
-        <div class="ads-result">
-          By Round 6, the roster can look balanced by position and still be broken by context.
-        </div>
-      </div>
-    </section>
-
-    <section class="ads-section ads-section-muted" id="pricing">
-      <div class="ads-shell ads-pricing-grid">
-        <article class="ads-price-card">
-          <p class="ads-kicker">Free</p>
-          <h3>Combine</h3>
-          <p>Top 50 Apex Position Board, three Market Mistakes, and first Blackbook entry.</p>
-          <a class="ads-btn ads-btn-primary" href="/combine">Enter Combine</a>
-        </article>
-
-        <article class="ads-price-card ads-price-feature">
-          <p class="ads-kicker">Paid</p>
-          <h3>War Room</h3>
-          <p>Full board, War Room Sheets, Signal Queue, Pivot Scenarios, and draft-room action layer.</p>
-          <a class="ads-btn ads-btn-secondary" href="/war-room">View War Room</a>
-        </article>
-
-        <article class="ads-price-card">
-          <p class="ads-kicker">Advanced</p>
-          <h3>Front Office</h3>
-          <p>Deeper Signal work, scenario planning, and higher-touch draft preparation.</p>
-          <a class="ads-btn ads-btn-secondary" href="/front-office">View Front Office</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="ads-final">
-      <div class="ads-shell">
-        <p class="ads-kicker">Start here</p>
-        <h2>See where consensus breaks before your draft room prices it in.</h2>
-        <a class="ads-btn ads-btn-primary" href="/combine">Enter the Combine</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="ads-footer">
-    <div class="ads-shell ads-footer-inner">
-      <span>Apex Draft Suite</span>
-      <span>Decision system. Not rankings.</span>
-    </div>
-  </footer>
+  </div>
 </div>
+
+<!-- HERO -->
+<div class="hero shell">
+  <h1>A decision suite for draft rooms under pressure.</h1>
+  <p>Apex Draft Suite exposes where consensus breaks mechanically, then turns that signal into board position, draft-room action, and validated decisions.</p>
+
+  <div class="actions">
+    <span class="btn btn-primary">Enter the Combine</span>
+    <span class="btn btn-secondary">View the Suite</span>
+  </div>
+
+  <div class="frame">
+    <div class="row"><strong>Player</strong><strong>ADP</strong><strong>Apex</strong><strong>Band</strong></div>
+    <div class="row"><span>RB Profile A</span><span>18</span><span>31</span><span class="band watch">Watch</span></div>
+    <div class="row"><span>WR Profile B</span><span>42</span><span>27</span><span class="band stable">Stable</span></div>
+    <div class="row"><span>TE Profile C</span><span>64</span><span>39</span><span class="band volatile">Volatile</span></div>
+  </div>
+</div>
+
+<!-- SUITE -->
+<div class="section shell" id="suite">
+  <h2>Five assets. One decision path.</h2>
+
+  <div class="grid grid-3">
+    <div class="card"><h3>Apex Position Board</h3><p>Consensus vs. Apex Position with confidence bands.</p></div>
+    <div class="card"><h3>Signal Cards</h3><p>Floor, ceiling, infrastructure, snap-share, verdict.</p></div>
+    <div class="card"><h3>Market Mistakes</h3><p>Top 10 consensus errors.</p></div>
+    <div class="card"><h3>War Room Sheets</h3><p>Draft board + signal queue + pivot scenarios.</p></div>
+    <div class="card"><h3>DraftPulse</h3><p>Timing layer for runs, cliffs, pivots.</p></div>
+  </div>
+</div>
+
+<!-- CONSEQUENCE -->
+<div class="section shell">
+  <h2>Following consensus can still build a broken roster.</h2>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>Roster failure</h3>
+      <p>Snap share does not match depth chart.</p>
+    </div>
+
+    <div class="card">
+      <h3>Volume failure</h3>
+      <p>Defense suppresses total offensive snaps.</p>
+    </div>
+
+    <div class="card">
+      <h3>Environment failure</h3>
+      <p>O-line, OC, or scheme already changed.</p>
+    </div>
+  </div>
+
+  <div class="result">
+    By Round 6, the roster can look balanced by position and still be broken by context.
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="section shell">
+  <h2>This is not rankings. This is a decision system.</h2>
+  <div class="actions">
+    <span class="btn btn-primary">Enter the Combine</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Apex Draft Suite — Decision system. Not rankings.
+</div>
+
+</body>
+</html>
