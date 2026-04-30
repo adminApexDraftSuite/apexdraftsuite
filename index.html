@@ -24,14 +24,13 @@ body {
 .nav {
   position: sticky;
   top: 0;
-  z-index: 50;
   background: rgba(8,9,11,.86);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255,255,255,.09);
 }
 
 .nav-inner {
-  height: 76px;
+  min-height: 76px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,6 +56,7 @@ body {
   font-weight: 900;
 }
 
+/* HERO */
 .hero {
   padding: 96px 0 84px;
 }
@@ -65,7 +65,6 @@ body {
   max-width: 860px;
   font-size: clamp(42px, 7vw, 82px);
   line-height: .95;
-  letter-spacing: -.055em;
   margin: 0;
 }
 
@@ -85,6 +84,7 @@ body {
   border-radius: 25px;
   font-weight: 900;
   margin-right: 10px;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -97,65 +97,33 @@ body {
   color: #f5f2ea;
 }
 
+/* BOARD PREVIEW */
 .frame {
   margin-top: 20px;
   background: #12151c;
-  border: 1px solid rgba(255,255,255,.12);
   border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 32px 90px rgba(0,0,0,.45);
 }
 
 .row {
   display: grid;
   grid-template-columns: 1.4fr .7fr .7fr .8fr;
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-
-.row:first-child {
-  color: #f5f2ea;
-  background: rgba(255,255,255,.045);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-size: 12px;
-}
-
-.row:last-child {
-  border-bottom: 0;
+  padding: 14px;
 }
 
 .band {
   padding: 4px 8px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 900;
 }
 
-.stable { background: rgba(115,183,123,.18); color: #73b77b; }
-.watch { background: rgba(213,180,95,.18); color: #d5b45f; }
-.volatile { background: rgba(199,111,95,.18); color: #c76f5f; }
+.stable { background:#2e5d3b; }
+.watch { background:#6d5b2f; }
+.volatile { background:#6a2f2f; }
 
+/* SECTION */
 .section {
   padding: 80px 0;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-
-.section h2 {
-  max-width: 820px;
-  font-size: clamp(34px, 5vw, 58px);
-  line-height: 1;
-  letter-spacing: -.055em;
-  margin: 0 0 30px;
-}
-
-.group-label {
-  margin: 34px 0 14px;
-  color: #c7a14a;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: .12em;
-  text-transform: uppercase;
 }
 
 .grid {
@@ -166,24 +134,8 @@ body {
 
 .card {
   background: #141820;
-  border: 1px solid rgba(255,255,255,.1);
-  padding: 22px;
+  padding: 20px;
   border-radius: 18px;
-}
-
-.card h3 {
-  margin: 0 0 10px;
-}
-
-.card p {
-  color: #aaa497;
-  margin: 0;
-}
-
-.card .use {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #777;
 }
 
 .result {
@@ -191,68 +143,40 @@ body {
   padding: 20px;
   border-left: 4px solid #c7a14a;
   background: #1b2029;
-  border-radius: 0 18px 18px 0;
-  font-weight: 800;
 }
 
+/* FOOTER */
 .footer {
   text-align: center;
   padding: 50px 0;
   color: #777;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-
-@media (max-width: 820px) {
-  .nav-inner {
-    height: auto;
-    padding: 18px 0;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .nav-inner > div:last-child {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav a {
-    margin-left: 0;
-  }
-
-  .row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .row:first-child {
-    display: none;
-  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
   <div class="shell nav-inner">
     <div class="brand">Apex Draft Suite</div>
     <div>
+      <a href="index.html">Home</a>
+      <a href="board.html">Board</a>
       <a href="#suite">Suite</a>
-      <a href="#board">Board</a>
-      <a href="#war">War Room</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#" class="cta">Enter Combine</a>
+      <a href="board.html" class="cta">Enter Combine</a>
     </div>
   </div>
 </div>
 
+<!-- HERO -->
 <div class="hero shell">
   <h1>A decision suite for draft rooms under pressure.</h1>
   <p>Apex Draft Suite exposes where consensus breaks mechanically, then turns that signal into board position, draft-room action, and validated decisions.</p>
 
   <div class="actions">
     <a href="board.html" class="btn btn-primary">Enter the Combine</a>
-    <span class="btn btn-secondary">View the Suite</span>
+    <a href="board.html" class="btn btn-secondary">View the Board</a>
   </div>
 
   <p style="margin-top:14px; color:#aaa; font-size:14px;">
@@ -260,105 +184,63 @@ body {
   </p>
 
   <p style="margin-top:32px; font-size:12px; letter-spacing:.12em; color:#777; text-transform:uppercase;">
-    BOARD SNAPSHOT — EXAMPLE LAYOUT — AS OF APRIL 29, 2026
+    BOARD SNAPSHOT — EXAMPLE LAYOUT
   </p>
 
-  <div class="frame" id="board">
-    <div class="row"><strong>Player</strong><strong>Consensus ADP</strong><strong>Apex Position</strong><strong>Band</strong></div>
+  <div class="frame">
+    <div class="row"><strong>Player</strong><strong>ADP</strong><strong>Apex</strong><strong>Band</strong></div>
     <div class="row"><span>RB Profile A</span><span>18</span><span>31</span><span class="band watch">Watch</span></div>
     <div class="row"><span>WR Profile B</span><span>42</span><span>27</span><span class="band stable">Stable</span></div>
     <div class="row"><span>TE Profile C</span><span>64</span><span>39</span><span class="band volatile">Volatile</span></div>
   </div>
 
-  <p style="color:#888; margin-top:12px; font-size:11px;">
-    Stable = role/volume locked | Watch = 1 material change could shift | Volatile = multiple inputs uncertain
-    <br>
-    Updated on material change. Full board + Signal Cards inside Combine.
+  <p style="color:#888; margin-top:12px;">
+    Full board + Signal Cards inside Combine.
   </p>
 </div>
 
+<!-- SUITE -->
 <div class="section shell" id="suite">
   <h2>Five assets. One decision path.</h2>
 
-  <p class="group-label">Pre-Draft Validation</p>
   <div class="grid">
     <div class="card">
       <h3>Apex Position Board</h3>
-      <p>Consensus ADP vs. Apex Position with confidence bands.</p>
-      <p class="use">Used pre-draft + during draft.</p>
+      <p>Consensus vs Apex Position.</p>
     </div>
 
     <div class="card">
       <h3>Signal Cards</h3>
-      <p>Floor, ceiling, infrastructure, snap-share, verdict.</p>
-      <p class="use">Pre-draft validation layer.</p>
+      <p>Player-level validation layer.</p>
     </div>
 
     <div class="card">
       <h3>Market Mistakes</h3>
-      <p>Top 10 consensus errors.</p>
-      <p class="use">Used to identify traps before drafting.</p>
+      <p>Consensus errors exposed.</p>
     </div>
-  </div>
 
-  <p class="group-label" id="war">Live Draft Execution</p>
-  <div class="grid">
     <div class="card">
-      <h3>War Room Sheets</h3>
-      <p>Draft Board + Signal Queue + Pivot Scenarios.</p>
-      <p class="use">Live draft execution layer.</p>
-      <p style="margin-top:10px;color:#aaa;">This is the layer used when the clock is running.</p>
+      <h3>War Room</h3>
+      <p>Live draft execution layer.</p>
     </div>
 
     <div class="card">
       <h3>DraftPulse</h3>
-      <p>Timing layer for positional runs, tier cliffs, value gaps, and pivot decisions.</p>
-      <p class="use">Used when the board shifts mid-draft.</p>
+      <p>Timing + pivot system.</p>
     </div>
   </div>
 </div>
 
+<!-- CTA -->
 <div class="section shell">
-  <p style="color:#aaa; margin-top:0; margin-bottom:20px;">
-    In 2026 draft season, consensus is built on last-year snap distributions and O-line metrics that are now outdated. Here’s where it breaks:
-  </p>
-
-  <h2>Following consensus can still build a broken roster.</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Roster failure</h3>
-      <p>Snap share does not match depth chart.</p>
-    </div>
-
-    <div class="card">
-      <h3>Volume failure</h3>
-      <p>Defense suppresses total offensive snaps.</p>
-    </div>
-
-    <div class="card">
-      <h3>Environment failure</h3>
-      <p>O-line, OC, or scheme already changed.</p>
-    </div>
-  </div>
-
-  <div class="result">
-    By Round 6, the roster can look balanced by position and still be broken by context.
-  </div>
-</div>
-
-<div class="section shell" id="pricing">
-  <p style="color:#aaa;">
-    Consensus errors don’t matter until you’re on the clock. Then they decide your draft.
-  </p>
-
   <h2>This is not rankings. This is a decision system.</h2>
 
   <div class="actions">
-    <span class="btn btn-primary">Enter the Combine</span>
+    <a href="board.html" class="btn btn-primary">Enter the Combine</a>
   </div>
 </div>
 
+<!-- FOOTER -->
 <div class="footer">
   Apex Draft Suite — Decision system. Not rankings.
 </div>
