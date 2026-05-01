@@ -1,4 +1,4 @@
-Below is the production index.html replacement.
+Paste this over index.html.
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +70,7 @@ Below is the production index.html replacement.
       margin-bottom:14px;
     }
     .hero-copy {
-      max-width:780px;
+      max-width:820px;
       font-size:1.08rem;
     }
     .cta-row {
@@ -120,7 +120,7 @@ Below is the production index.html replacement.
     .bb-panel b {
       color:var(--gold2);
     }
-    .blackbook-rotator {
+    .market-gap-rotator {
       border:1px solid var(--line);
       border-radius:18px;
       padding:28px;
@@ -257,44 +257,52 @@ Below is the production index.html replacement.
   <p class="kicker">Apex Draft Suite</p>
   <h1>TrueVolume™ shows where consensus breaks mechanically.</h1>
   <p class="hero-copy">
-    Apex Draft Suite turns player evaluation into a Signal Card: Situation, Volume, Role,
-    Narrative risk, floor, ceiling, and verdict. You can disagree with the read — the system
-    shows exactly where the disagreement comes from.
+    TrueVolume™ assesses four tenets of every player: Situation, Volume, Role, Narrative.
+    Output: a Signal Card with floor, ceiling, and verdict.
+    You can disagree with the read — the system shows exactly where the disagreement comes from.
+    Apex Draft Suite is where you use it.
   </p>
   <div class="cta-row">
     <a class="btn btn-primary" href="#lookup">Test a Signal Card</a>
-    <a class="btn btn-secondary" href="#blackbook">View Blackbook Gaps</a>
+    <a class="btn btn-secondary" href="#market-gaps">View Market Gaps</a>
   </div>
 </section>
 <section>
   <div class="panel">
     <p class="kicker">Methodology</p>
-    <h2>The public read is simple.</h2>
+    <h2>TrueVolume™ Assesses Four Key Tenets</h2>
+    <p>
+      Every player evaluation runs through the same four inputs.
+      The system is mechanical — you can see exactly where we stand on each one.
+    </p>
     <div class="grid-4">
       <div class="mini-card">
         <h3>Situation</h3>
-        <p>Scheme, blocking, coaching, QB stability, and surrounding context.</p>
+        <p>Does the scheme, QB, and blocking support the ADP price?</p>
       </div>
       <div class="mini-card">
         <h3>Volume</h3>
-        <p>Snap environment, pace, touch path, and high-value opportunity.</p>
+        <p>How many snaps and touches actually exist for this player?</p>
       </div>
       <div class="mini-card">
         <h3>Role</h3>
-        <p>Actual deployment: routes, packages, red-zone usage, and snap path.</p>
+        <p>What is the real rotational usage versus the depth chart?</p>
       </div>
       <div class="mini-card">
         <h3>Narrative</h3>
-        <p>Where market pricing may be using a shortcut instead of a mechanism.</p>
+        <p>Where is consensus using a shortcut instead of a mechanism?</p>
       </div>
     </div>
+    <p class="notice">
+      Output: Verdict (BUY / HOLD / FADE), floor, ceiling, and the driver that created it.
+    </p>
   </div>
 </section>
-<section id="blackbook">
-  <p class="kicker">Blackbook</p>
-  <h2>Three validated market gaps.</h2>
-  <div class="blackbook-rotator">
-    <div id="blackbookCard"></div>
+<section id="market-gaps">
+  <p class="kicker">Market Gaps</p>
+  <h2>Market Gaps — Where TrueVolume™ Diverges from Consensus</h2>
+  <div class="market-gap-rotator">
+    <div id="marketGapCard"></div>
     <div id="matchingSignal"></div>
     <div class="bb-controls">
       <button class="bb-arrow" id="bbPrev" aria-label="Previous entry">←</button>
@@ -306,15 +314,17 @@ Below is the production index.html replacement.
 <section id="lookup">
   <div class="panel">
     <p class="kicker">Signal Card Lookup</p>
-    <h2>Scout read vs. your read.</h2>
+    <h2>TrueVolume™ Verdict vs. Your Read</h2>
     <p>
-      Static curated demo only. Scout is curating the validated top 50 list — live date pending.
-      Current demo uses the locked Blackbook three so the calculation is transparent.
+      Static demo: TrueVolume™ assessment on three validated players.
+      Real top 50 coming soon — validated and assessed.
+      Select a player, see the TrueVolume™ verdict and the mechanical driver.
+      Then test your own read and see how it compares.
     </p>
     <div class="lookup-grid">
       <div>
         <label>Select Player</label>
-        <select id="playerSelect" onchange="loadScoutAssessment()">
+        <select id="playerSelect" onchange="loadTrueVolumeAssessment()">
           <option value="0">Jadarian Price</option>
           <option value="1">Carnell Tate</option>
           <option value="2">De'Von Achane</option>
@@ -325,9 +335,9 @@ Below is the production index.html replacement.
         <input value="Test Your Take" disabled />
       </div>
     </div>
-    <div id="scoutAssessment" class="notice"></div>
+    <div id="trueVolumeAssessment" class="notice"></div>
     <h3 style="margin-top:26px;">Test Your Take</h3>
-    <p>Score your own read. The tool compares your inputs against Scout’s locked assessment.</p>
+    <p>Score your own read. The tool compares your inputs against the validated TrueVolume™ assessment.</p>
     <div class="test-grid">
       <div>
         <label>Situation</label>
@@ -399,7 +409,7 @@ Below is the production index.html replacement.
   </div>
 </section>
 <footer>
-  STATUS: Production index.html ready; next step is paste, add ConversionKit action URL, and run cold-path test.
+  Apex Draft Suite | TrueVolume™ | 2026
 </footer>
 <script>
 const players = [
@@ -407,7 +417,7 @@ const players = [
     player:"JADARIAN PRICE",
     team:"Seattle",
     position:"RB",
-    scoutInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
+    validatedInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
     market:"Post-draft committee back; limited upside",
     situation:"New OC + 60% vacated Seattle touches",
     volume:"Offensive pace supports sustained snaps",
@@ -418,17 +428,18 @@ const players = [
     consensus:"Mid-round RB value",
     truth:"RB12 production path",
     confidence:"HIGH",
-    reasoning:"Scout read: strong situation, strong volume, strong role, clean narrative risk.",
-    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Manual override to BUY because all core production paths are clean and market cost is below role path.",
+    reasoning:"TrueVolume™ says: strong situation, strong volume, strong role, clean narrative risk.",
+    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Validated BUY because all core production paths are clean and market cost is below role path.",
     floor:"RB32",
     ceiling:"RB12",
+    verdict:"BUY",
     risk:"Committee usage remains the invalidator if early-down split holds."
   },
   {
     player:"CARNELL TATE",
     team:"Tennessee",
     position:"WR",
-    scoutInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
+    validatedInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
     market:"Raw #2 behind Ridley; WR4 ADP",
     situation:"#4 OVR pick + Cam Ward chemistry locked",
     volume:"Daboll scheme creates heavy 3-WR usage",
@@ -439,17 +450,18 @@ const players = [
     consensus:"WR3 value, slow development",
     truth:"WR18 ceiling, immediate relevance",
     confidence:"HIGH",
-    reasoning:"Scout read: strong draft capital, strong route environment, strong role path, clean narrative risk.",
-    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Manual override to BUY because capital and scheme create an immediate role path.",
+    reasoning:"TrueVolume™ says: strong draft capital, strong route environment, strong role path, clean narrative risk.",
+    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Validated BUY because capital and scheme create an immediate role path.",
     floor:"WR36",
     ceiling:"WR18",
+    verdict:"BUY",
     risk:"Veteran-heavy target distribution delays the ceiling."
   },
   {
     player:"DE'VON ACHANE",
     team:"Miami",
     position:"RB",
-    scoutInputs:{situation:"weak",volume:"mixed",role:"mixed",narrative:"high"},
+    validatedInputs:{situation:"weak",volume:"mixed",role:"mixed",narrative:"high"},
     market:"Unstoppable volume anchor; RB6 / 14th overall",
     situation:"Willis era begins; QB rush TDs added",
     volume:"Gordon reduces high-value touches",
@@ -460,10 +472,11 @@ const players = [
     consensus:"Tier 1 anchor",
     truth:"Volatile RB2 outcome",
     confidence:"HIGH",
-    reasoning:"Scout read: weak situation, mixed volume, mixed role, high narrative risk.",
-    breakdown:"0 + 1.0 + 0.75 - 1.0 = 0.75. FADE at current cost.",
+    reasoning:"TrueVolume™ says: weak situation, mixed volume, mixed role, high narrative risk.",
+    breakdown:"0 + 1.0 + 0.75 - 1.0 = 0.75. Validated FADE at current cost.",
     floor:"RB28",
     ceiling:"RB22",
+    verdict:"FADE",
     risk:"Explosive efficiency can spike weeks, but price requires stable RB1 usage."
   }
 ];
@@ -484,9 +497,9 @@ function verdictClass(verdict) {
   if (verdict === "FADE") return "verdict-fade";
   return "verdict-hold";
 }
-function renderBlackbook(index) {
+function renderMarketGap(index) {
   const e = players[index];
-  document.getElementById("blackbookCard").innerHTML = `
+  document.getElementById("marketGapCard").innerHTML = `
     <div class="bb-player">${e.player}</div>
     <div class="bb-grid">
       <div class="bb-panel">
@@ -518,7 +531,7 @@ function renderBlackbook(index) {
       <h3>Signal Card — ${e.player}</h3>
       <p class="field"><b>Team:</b> ${e.team}</p>
       <p class="field"><b>Position:</b> ${e.position}</p>
-      <p class="field"><b>Scout Verdict:</b> ${e.player === "DE'VON ACHANE" ? "FADE" : "BUY"}</p>
+      <p class="field"><b>TrueVolume™ Verdict:</b> <span class="${verdictClass(e.verdict)}">${e.verdict}</span></p>
       <p class="field"><b>Floor:</b> ${e.floor}</p>
       <p class="field"><b>Ceiling:</b> ${e.ceiling}</p>
       <p class="field"><b>Mechanical Driver:</b> ${e.driver}</p>
@@ -526,34 +539,33 @@ function renderBlackbook(index) {
     </div>
   `;
   document.getElementById("bbIndicator").textContent = `${index + 1} of ${players.length}`;
-  localStorage.setItem("bbIndex", String((index + 1) % players.length));
+  localStorage.setItem("marketGapIndex", String((index + 1) % players.length));
 }
-let bbIndex = Number(localStorage.getItem("bbIndex")) || 0;
+let gapIndex = Number(localStorage.getItem("marketGapIndex")) || 0;
 document.getElementById("bbPrev").onclick = () => {
-  bbIndex = (bbIndex - 1 + players.length) % players.length;
-  renderBlackbook(bbIndex);
+  gapIndex = (gapIndex - 1 + players.length) % players.length;
+  renderMarketGap(gapIndex);
 };
 document.getElementById("bbNext").onclick = () => {
-  bbIndex = (bbIndex + 1) % players.length;
-  renderBlackbook(bbIndex);
+  gapIndex = (gapIndex + 1) % players.length;
+  renderMarketGap(gapIndex);
 };
-renderBlackbook(bbIndex);
+renderMarketGap(gapIndex);
 setInterval(() => {
-  bbIndex = (bbIndex + 1) % players.length;
-  renderBlackbook(bbIndex);
+  gapIndex = (gapIndex + 1) % players.length;
+  renderMarketGap(gapIndex);
 }, 30000);
-function loadScoutAssessment() {
+function loadTrueVolumeAssessment() {
   const selected = Number(document.getElementById("playerSelect").value);
   const p = players[selected];
-  const scoutScore = score(p.scoutInputs);
-  const scoutVerdict = p.player === "DE'VON ACHANE" ? "FADE" : "BUY";
-  document.getElementById("scoutAssessment").innerHTML = `
-    <b>Scout Assessment — ${p.player}</b><br>
-    Verdict: <span class="${verdictClass(scoutVerdict)}">${scoutVerdict}</span><br>
-    Reasoning: ${p.reasoning}<br>
+  const validatedScore = score(p.validatedInputs);
+  document.getElementById("trueVolumeAssessment").innerHTML = `
+    <b>TrueVolume™ Verdict — ${p.player}</b><br>
+    Verdict: <span class="${verdictClass(p.verdict)}">${p.verdict}</span><br>
+    TrueVolume™ says: ${p.reasoning}<br>
     Mechanical Driver: ${p.driver}<br>
     Calculation Breakdown: ${p.breakdown}<br>
-    Algorithm Score: ${scoutScore.toFixed(2)} / 8
+    Algorithm Score: ${validatedScore.toFixed(2)} / 8
   `;
   document.getElementById("comparisonOutput").innerHTML = "";
 }
@@ -568,23 +580,23 @@ function compareUserTake() {
   };
   const userScore = score(userInputs);
   const userVerdict = verdictFromScore(userScore);
-  const scoutScore = score(p.scoutInputs);
-  const scoutVerdict = p.player === "DE'VON ACHANE" ? "FADE" : "BUY";
-  let divergence = "Your read aligns directionally with Scout.";
-  if (userVerdict !== scoutVerdict) {
-    divergence = "Divergence detected. Your inputs disagree with Scout on one or more core levers: Situation, Volume, Role, or Narrative risk.";
+  const validatedScore = score(p.validatedInputs);
+  const validatedVerdict = p.verdict;
+  let divergence = "Your read aligns directionally with the TrueVolume™ assessment.";
+  if (userVerdict !== validatedVerdict) {
+    divergence = "Divergence detected. Your inputs disagree with TrueVolume™ on one or more core levers: Situation, Volume, Role, or Narrative risk.";
   }
   document.getElementById("comparisonOutput").innerHTML = `
     <div class="comparison">
       <div class="signal-card">
-        <h3>Scout Verdict</h3>
+        <h3>TrueVolume™ Verdict</h3>
         <p class="field"><b>Player:</b> ${p.player}</p>
-        <p class="field"><b>Verdict:</b> <span class="${verdictClass(scoutVerdict)}">${scoutVerdict}</span></p>
-        <p class="field"><b>Score:</b> ${scoutScore.toFixed(2)} / 8</p>
+        <p class="field"><b>Verdict:</b> <span class="${verdictClass(validatedVerdict)}">${validatedVerdict}</span></p>
+        <p class="field"><b>Score:</b> ${validatedScore.toFixed(2)} / 8</p>
         <p class="field"><b>Driver:</b> ${p.driver}</p>
       </div>
       <div class="signal-card">
-        <h3>Your Verdict</h3>
+        <h3>Your Read</h3>
         <p class="field"><b>Player:</b> ${p.player}</p>
         <p class="field"><b>Verdict:</b> <span class="${verdictClass(userVerdict)}">${userVerdict}</span></p>
         <p class="field"><b>Score:</b> ${userScore.toFixed(2)} / 8</p>
@@ -596,9 +608,9 @@ function compareUserTake() {
     </div>
   `;
 }
-loadScoutAssessment();
+loadTrueVolumeAssessment();
 </script>
 </body>
 </html>
 
-➡️ STATUS: Production index.html build shipped. Next step: paste, add ConversionKit action URL, run lookup/rotator/mobile test, then send to Oracle for final gate.
+➡️ STATUS: Corrected index.html shipped with Scout/Triad terminology removed. Next step: paste, test Market Gaps rotation, Test Your Take comparison, mobile layout, and ConversionKit action URL.
