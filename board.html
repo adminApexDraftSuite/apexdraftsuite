@@ -9,15 +9,12 @@
 :root {
   --bg: #08090b;
   --panel: #12151c;
-  --panel-soft: #141820;
   --text: #f5f2ea;
   --muted: #aaa497;
-  --dim: #777;
-  --line: rgba(255,255,255,.1);
   --gold: #c7a14a;
   --green: #73b77b;
   --yellow: #d5b45f;
-  --red: #c76f5f;
+  --red: #ff3131;
 }
 
 body {
@@ -30,10 +27,7 @@ body {
   line-height: 1.5;
 }
 
-.shell {
-  width: min(1180px, 92%);
-  margin: 0 auto;
-}
+.shell { width: min(1180px, 92%); margin: 0 auto; }
 
 .nav {
   position: sticky;
@@ -51,10 +45,7 @@ body {
   align-items: center;
 }
 
-.brand {
-  font-weight: 900;
-  letter-spacing: -.04em;
-}
+.brand { font-weight: 900; letter-spacing: -.04em; }
 
 .nav a {
   color: var(--muted);
@@ -71,9 +62,7 @@ body {
   font-weight: 900;
 }
 
-.hero {
-  padding: 90px 0 42px;
-}
+.hero { padding: 90px 0 42px; }
 
 .hero h1 {
   max-width: 900px;
@@ -110,12 +99,6 @@ h2 {
   margin-bottom: 12px;
 }
 
-.notice {
-  color: var(--muted);
-  max-width: 850px;
-  font-size: 14px;
-}
-
 .legend {
   color: var(--muted);
   margin: 18px 0 12px;
@@ -134,7 +117,7 @@ h2 {
 
 .row {
   display: grid;
-  grid-template-columns: 1.35fr .7fr .75fr .9fr .9fr .75fr .85fr;
+  grid-template-columns: 1.35fr .9fr .75fr .9fr .75fr .75fr .85fr;
   gap: 12px;
   padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,.06);
@@ -150,9 +133,9 @@ h2 {
   font-size: 11px;
 }
 
-.row:last-child {
-  border-bottom: 0;
-}
+.row:last-child { border-bottom: 0; }
+
+.signal-green { color: var(--green); font-weight: 900; }
 
 .band,
 .action {
@@ -166,16 +149,13 @@ h2 {
 
 .stable { background: rgba(115,183,123,.18); color: var(--green); }
 .watch { background: rgba(213,180,95,.18); color: var(--yellow); }
-.volatile { background: rgba(199,111,95,.18); color: var(--red); }
+.volatile { background: rgba(255,49,49,.16); color: var(--red); }
 
 .buy { background: rgba(115,183,123,.18); color: var(--green); }
-.sell, .trap { background: rgba(199,111,95,.18); color: var(--red); }
+.sell, .trap { background: rgba(255,49,49,.16); color: var(--red); }
 .hold, .lock { background: rgba(213,180,95,.18); color: var(--yellow); }
 
-.locked {
-  opacity: .48;
-  filter: blur(.2px);
-}
+.locked { opacity: .48; filter: blur(.2px); }
 
 .restricted {
   margin-top: 20px;
@@ -197,9 +177,7 @@ h2 {
   font-weight: 800;
 }
 
-.actions {
-  margin-top: 24px;
-}
+.actions { margin-top: 24px; }
 
 .btn {
   display: inline-block;
@@ -210,20 +188,13 @@ h2 {
   margin-right: 10px;
 }
 
-.btn-primary {
-  background: var(--gold);
-  color: #000;
-}
-
-.btn-secondary {
-  border: 1px solid rgba(255,255,255,.2);
-  color: var(--text);
-}
+.btn-primary { background: var(--gold); color: #000; }
+.btn-secondary { border: 1px solid rgba(255,255,255,.2); color: var(--text); }
 
 .footer {
   text-align: center;
   padding: 44px 0;
-  color: var(--dim);
+  color: #777;
   border-top: 1px solid rgba(255,255,255,.08);
 }
 
@@ -250,13 +221,9 @@ h2 {
     font-size: 13px;
   }
 
-  .row:first-child {
-    display: none;
-  }
+  .row:first-child { display: none; }
 
-  .hero {
-    padding: 70px 0 36px;
-  }
+  .hero { padding: 70px 0 36px; }
 }
 </style>
 </head>
@@ -298,24 +265,24 @@ h2 {
   <div class="frame">
     <div class="row">
       <strong>Player</strong>
-      <strong>Team</strong>
-      <strong>Pos</strong>
-      <strong>Consensus</strong>
+      <strong>Team / Pos</strong>
+      <strong>Consensus ADP</strong>
       <strong>TrueVolume</strong>
+      <strong>Delta</strong>
       <strong>Band</strong>
       <strong>Action</strong>
     </div>
 
-    <div class="row"><span>Jadarian Price</span><span>MIN</span><span>RB</span><span>Post-draft discount</span><span>High-delta profile</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
-    <div class="row"><span>Rookie Profile A</span><span>RKC</span><span>WR</span><span>Hype inflated</span><span>Role unresolved</span><span class="band volatile">Volatile</span><span class="action trap">TRAP</span></div>
-    <div class="row"><span>Veteran Profile B</span><span>ATL</span><span>RB</span><span>Stable price</span><span>Usage intact</span><span class="band stable">Stable</span><span class="action lock">LOCK</span></div>
-    <div class="row"><span>Rookie Profile C</span><span>LV</span><span>TE</span><span>Underpriced</span><span>Path visible</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
-    <div class="row"><span>Veteran Profile D</span><span>CHI</span><span>WR</span><span>Fair value</span><span>Context aligned</span><span class="band stable">Stable</span><span class="action hold">HOLD</span></div>
-    <div class="row"><span>Rookie Profile E</span><span>CAR</span><span>RB</span><span>Overheated</span><span>Snap path unclear</span><span class="band volatile">Volatile</span><span class="action sell">SELL</span></div>
-    <div class="row"><span>Veteran Profile F</span><span>ARI</span><span>QB</span><span>Discounted</span><span>Infrastructure improved</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
-    <div class="row"><span>Rookie Profile G</span><span>NYG</span><span>WR</span><span>Consensus push</span><span>Target path unproven</span><span class="band volatile">Volatile</span><span class="action trap">TRAP</span></div>
-    <div class="row"><span>Veteran Profile H</span><span>DAL</span><span>TE</span><span>Stable</span><span>Role preserved</span><span class="band stable">Stable</span><span class="action hold">HOLD</span></div>
-    <div class="row"><span>Rookie Profile I</span><span>NE</span><span>RB</span><span>Underpriced</span><span>Efficiency path</span><span class="band watch">Watch</span><span class="action watch">WATCH</span></div>
+    <div class="row"><span>Jeremiyah Love</span><span>ARI / RB</span><span>1.03</span><span class="signal-green">RB1</span><span>+2</span><span class="band stable">Stable</span><span class="action buy">BUY</span></div>
+    <div class="row"><span>Jaxon Smith-Njigba</span><span>SEA / WR</span><span>5.02</span><span class="signal-green">WR4</span><span>+12</span><span class="band stable">Stable</span><span class="action buy">CORE</span></div>
+    <div class="row"><span>Jadarian Price</span><span>SEA / RB</span><span>2.03</span><span class="signal-green">RB12</span><span>+15</span><span class="band watch">Watch</span><span class="action buy">AGGR</span></div>
+    <div class="row"><span>AJ Brown</span><span>NE / WR</span><span>1.09</span><span class="signal-green">WR2</span><span>+7</span><span class="band stable">Stable</span><span class="action buy">AUTH</span></div>
+    <div class="row"><span>Garrett Wilson</span><span>NYJ / WR</span><span>1.11</span><span class="signal-green">WR1</span><span>+10</span><span class="band stable">Stable</span><span class="action buy">LOCK</span></div>
+    <div class="row"><span>De'Von Achane</span><span>MIA / RB</span><span>1.08</span><span style="color:#ff3131;font-weight:900;">RB18</span><span style="color:#ff3131;font-weight:900;">-10</span><span class="band volatile">Volatile</span><span class="action sell">SELL</span></div>
+    <div class="row"><span>Josh Jacobs</span><span>GB / RB</span><span>4.05</span><span class="signal-green">RB6</span><span>+18</span><span class="band stable">Stable</span><span class="action buy">GAP</span></div>
+    <div class="row"><span>Tony Pollard</span><span>TEN / RB</span><span>8.09</span><span class="signal-green">RB22</span><span>+18</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
+    <div class="row"><span>Kyle Pitts</span><span>ATL / TE</span><span>6.02</span><span class="signal-green">TE1</span><span>+15</span><span class="band watch">Watch</span><span class="action buy">STRIKE</span></div>
+    <div class="row"><span>Ty Simpson</span><span>LAR / QB</span><span>1.05</span><span style="color:#ff3131;font-weight:900;">QB18</span><span style="color:#ff3131;font-weight:900;">-13</span><span class="band watch">Watch</span><span class="action sell">TRAP</span></div>
   </div>
 
   <p style="color:#888; margin-top:12px; font-size:11px;">
@@ -334,18 +301,18 @@ h2 {
   <div class="frame locked" aria-label="Locked board rows">
     <div class="row">
       <strong>Player</strong>
-      <strong>Team</strong>
-      <strong>Pos</strong>
-      <strong>Consensus</strong>
+      <strong>Team / Pos</strong>
+      <strong>Consensus ADP</strong>
       <strong>TrueVolume</strong>
+      <strong>Delta</strong>
       <strong>Band</strong>
       <strong>Action</strong>
     </div>
-    <div class="row"><span>Locked Profile 11</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
-    <div class="row"><span>Locked Profile 12</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
-    <div class="row"><span>Locked Profile 13</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
-    <div class="row"><span>Locked Profile 14</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
-    <div class="row"><span>Locked Profile 15</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 11</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 12</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 13</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 14</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 15</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>---</span><span>War Room</span></div>
   </div>
 
   <div class="result">
