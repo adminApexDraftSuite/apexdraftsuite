@@ -12,7 +12,194 @@
     <p>Validated gaps where consensus breaks against mechanical reality.</p>
   </section>
 
-<section class="blackbook-hero">
-  <h1>Blackbook: Market Errors Exposed</h1>
-  <p>Validated gaps where consensus breaks against mechanical reality.</p>
+<section class="blackbook-rotator" aria-label="Blackbook Market Error Display">
+  <div class="bb-card" id="blackbookCard"></div>
+
+  <div class="bb-controls">
+    <button class="bb-arrow" id="bbPrev" aria-label="Previous entry">←</button>
+    <span class="bb-indicator" id="bbIndicator">1 of 3</span>
+    <button class="bb-arrow" id="bbNext" aria-label="Next entry">→</button>
+  </div>
 </section>
+
+<style>
+.blackbook-rotator {
+  width: 100%;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 28px;
+  border: 1px solid rgba(0,255,160,.3);
+  border-radius: 16px;
+  background: #020706;
+  color: #e8fff6;
+  font-family: ui-monospace, monospace;
+}
+
+.bb-card { padding-top: 16px; }
+
+.bb-player {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.bb-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.bb-panel {
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.bb-panel h3 {
+  color: #00ffa0;
+  font-size: .8rem;
+  margin-bottom: 8px;
+}
+
+.bb-panel p {
+  margin: 6px 0;
+  font-size: .9rem;
+}
+
+.bb-confidence {
+  margin-top: 16px;
+  padding: 10px;
+  border-left: 3px solid #00ffa0;
+  background: rgba(0,255,160,.08);
+}
+
+.bb-cta {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: #00ffa0;
+  color: #00110b;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.bb-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.bb-arrow {
+  background: transparent;
+  border: 1px solid #00ffa0;
+  color: #00ffa0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.bb-indicator { font-size: .85rem; }
+
+@media (max-width: 700px) {
+  .bb-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+const entries = [
+{
+player:"JADARIAN PRICE",
+market:"Post-draft committee back; limited upside",
+situation:"New OC + 60% vacated Seattle touches",
+volume:"Offensive pace supports sustained snaps",
+role:"Designated volume anchor in new scheme",
+marketSees:"RB3 in committee",
+trueSees:"Volume anchor in new scheme",
+driver:"Market has not updated on OC change + vacancy created",
+consensus:"Mid-round RB value",
+truth:"RB12 production path",
+confidence:"HIGH"
+},
+{
+player:"CARNELL TATE",
+market:"Raw #2 behind Ridley; WR4 ADP",
+situation:"#4 OVR pick + Cam Ward chemistry locked",
+volume:"Daboll scheme creates heavy 3-WR usage",
+role:"Designated WR1 alpha deployment path",
+marketSees:"Prospect depth chart",
+trueSees:"WR1 floor from capital + scheme fit",
+driver:"Scheme + capital create WR1 path",
+consensus:"WR3 value, slow development",
+truth:"WR18 ceiling, immediate relevance",
+confidence:"HIGH"
+},
+{
+player:"DE'VON ACHANE",
+market:"Unstoppable volume anchor; RB6 / 14th overall",
+situation:"Willis era begins; QB rush TDs added",
+volume:"Gordon reduces high-value touches",
+role:"Snap share throttled; TD ceiling capped",
+marketSees:"2025 role repeats",
+trueSees:"Reduced ceiling from role + scoring loss",
+driver:"Touchdown vultures + role cap",
+consensus:"Tier 1 anchor",
+truth:"Volatile RB2 outcome",
+confidence:"HIGH"
+}
+];
+
+let i = Number(localStorage.getItem("bbIndex")) || 0;
+
+function render(n){
+const e = entries[n];
+document.getElementById("blackbookCard").innerHTML = `
+<div class="bb-player">${e.player}</div>
+
+<div class="bb-grid">
+<div class="bb-panel">
+<h3>MARKET NARRATIVE</h3>
+<p>${e.market}</p>
+</div>
+
+<div class="bb-panel">
+<h3>MECHANICAL TRUTH</h3>
+<p><b>Situation:</b> ${e.situation}</p>
+<p><b>Volume:</b> ${e.volume}</p>
+<p><b>Role:</b> ${e.role}</p>
+</div>
+
+<div class="bb-panel">
+<h3>THE GAP</h3>
+<p><b>Market sees:</b> ${e.marketSees}</p>
+<p><b>TrueVolume™ sees:</b> ${e.trueSees}</p>
+<p><b>Driver:</b> ${e.driver}</p>
+</div>
+
+<div class="bb-panel">
+<h3>CONSEQUENCE</h3>
+<p><b>If consensus right:</b> ${e.consensus}</p>
+<p><b>If TrueVolume™ right:</b> ${e.truth}</p>
+</div>
+</div>
+
+<div class="bb-confidence">
+CONFIDENCE LEVEL: ${e.confidence}
+</div>
+
+<a href="/war-room" class="bb-cta">Unlock War Room</a>
+`;
+
+document.getElementById("bbIndicator").textContent = (n+1)+" of 3";
+localStorage.setItem("bbIndex",(n+1)%3);
+}
+
+document.getElementById("bbPrev").onclick=()=>{i=(i+2)%3;render(i);}
+document.getElementById("bbNext").onclick=()=>{i=(i+1)%3;render(i);}
+
+render(i);
+
+setInterval(()=>{i=(i+1)%3;render(i);},30000);
+</script>
