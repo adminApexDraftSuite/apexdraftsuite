@@ -1,187 +1,150 @@
+Below is the production index.html replacement.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrueVolume™ | Causal Player Evaluation</title>
-
+  <title>Apex Draft Suite | TrueVolume™</title>
   <style>
     :root {
-      --bg:#020706;
-      --panel:#06110e;
-      --panel2:#081a15;
-      --green:#00ffa0;
-      --text:#e8fff6;
-      --muted:#a8cfc0;
-      --line:rgba(0,255,160,.28);
-      --soft:rgba(0,255,160,.08);
+      --bg:#050403;
+      --panel:#11100d;
+      --panel2:#17130d;
+      --gold:#d6a84f;
+      --gold2:#f2d38a;
+      --text:#f5efe2;
+      --muted:#b9ad95;
+      --line:rgba(214,168,79,.34);
+      --soft:rgba(214,168,79,.09);
+      --danger:#e27a62;
+      --green:#87d79b;
     }
-
     * { box-sizing:border-box; }
-
     body {
       margin:0;
-      background:radial-gradient(circle at top, #0b211a 0%, #020706 42%, #000 100%);
+      background:
+        radial-gradient(circle at top left, rgba(214,168,79,.14), transparent 32%),
+        linear-gradient(180deg, #090705 0%, #030302 100%);
       color:var(--text);
       font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-
     section {
-      width:min(1100px, 92%);
+      width:min(1120px, 92%);
       margin:0 auto;
       padding:56px 0;
     }
-
-    h1, h2, h3, p { margin-top:0; }
-
+    h1,h2,h3,p { margin-top:0; }
     h1 {
-      font-size:clamp(2.2rem, 6vw, 4.8rem);
-      line-height:.98;
-      letter-spacing:-.05em;
+      font-size:clamp(2.35rem, 6vw, 5.2rem);
+      line-height:.96;
+      letter-spacing:-.055em;
       margin-bottom:18px;
     }
-
     h2 {
-      font-size:clamp(1.6rem, 3vw, 2.4rem);
+      font-size:clamp(1.55rem, 3vw, 2.5rem);
       margin-bottom:14px;
     }
-
     h3 {
-      font-size:1rem;
-      color:var(--green);
-      letter-spacing:.08em;
+      color:var(--gold2);
+      font-size:.88rem;
+      letter-spacing:.1em;
       text-transform:uppercase;
+      margin-bottom:10px;
     }
-
-    p { color:var(--muted); line-height:1.55; }
-
+    p {
+      color:var(--muted);
+      line-height:1.55;
+    }
     .hero {
       min-height:86vh;
       display:flex;
       flex-direction:column;
       justify-content:center;
     }
-
     .kicker {
-      color:var(--green);
-      letter-spacing:.14em;
-      font-size:.78rem;
+      color:var(--gold);
+      letter-spacing:.16em;
+      font-size:.76rem;
+      text-transform:uppercase;
       margin-bottom:14px;
     }
-
     .hero-copy {
-      max-width:760px;
+      max-width:780px;
       font-size:1.08rem;
     }
-
     .cta-row {
       display:flex;
       gap:14px;
       flex-wrap:wrap;
       margin-top:24px;
     }
-
     .btn {
       display:inline-block;
       padding:14px 20px;
       border-radius:999px;
       text-decoration:none;
-      font-weight:800;
-    }
-
-    .btn-primary {
-      background:var(--green);
-      color:#00110b;
-    }
-
-    .btn-secondary {
+      font-weight:900;
       border:1px solid var(--line);
-      color:var(--green);
     }
-
+    .btn-primary {
+      background:var(--gold);
+      color:#090705;
+    }
+    .btn-secondary {
+      color:var(--gold2);
+      background:rgba(0,0,0,.22);
+    }
     .panel {
       border:1px solid var(--line);
       border-radius:18px;
-      background:linear-gradient(180deg, rgba(8,26,21,.92), rgba(0,0,0,.74));
+      background:linear-gradient(180deg, rgba(23,19,13,.95), rgba(5,4,3,.82));
       padding:28px;
-      box-shadow:0 0 36px rgba(0,255,160,.07);
+      box-shadow:0 0 38px rgba(214,168,79,.08);
     }
-
-    .grid-4, .grid-3, .grid-2 {
+    .grid-4,.grid-3,.grid-2 {
       display:grid;
       gap:16px;
     }
-
-    .grid-4 { grid-template-columns:repeat(4, 1fr); }
-    .grid-3 { grid-template-columns:repeat(3, 1fr); }
-    .grid-2 { grid-template-columns:repeat(2, 1fr); }
-
-    .mini-card {
-      border:1px solid rgba(255,255,255,.12);
+    .grid-4 { grid-template-columns:repeat(4,1fr); }
+    .grid-3 { grid-template-columns:repeat(3,1fr); }
+    .grid-2 { grid-template-columns:repeat(2,1fr); }
+    .mini-card,.bb-panel,.signal-card {
+      border:1px solid rgba(255,255,255,.11);
       border-radius:14px;
-      padding:18px;
       background:rgba(255,255,255,.035);
+      padding:18px;
     }
-
-    .mini-card strong { color:#fff; }
-
-    .signal-card {
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:22px;
-      background:rgba(0,0,0,.52);
+    .mini-card strong,
+    .field b,
+    .bb-panel b {
+      color:var(--gold2);
     }
-
-    .signal-card h3 {
-      color:#fff;
-      font-size:1.2rem;
-      text-transform:none;
-      letter-spacing:0;
-      margin-bottom:12px;
-    }
-
-    .field {
-      margin:8px 0;
-      color:var(--muted);
-    }
-
-    .field b { color:var(--green); }
-
     .blackbook-rotator {
       border:1px solid var(--line);
       border-radius:18px;
       padding:28px;
-      background:linear-gradient(180deg, rgba(5,15,12,.98), rgba(0,0,0,.96));
+      background:linear-gradient(180deg, rgba(17,16,13,.98), rgba(0,0,0,.88));
     }
-
     .bb-player {
-      font-size:1.55rem;
       color:#fff;
+      font-size:1.55rem;
       margin-bottom:18px;
     }
-
     .bb-grid {
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:16px;
     }
-
-    .bb-panel {
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:14px;
-      padding:18px;
-      background:rgba(255,255,255,.035);
+    .bb-panel p {
+      margin:7px 0;
     }
-
-    .bb-panel p { margin:7px 0; }
-
     .bb-confidence {
       margin-top:18px;
       padding:14px;
-      border-left:4px solid var(--green);
+      border-left:4px solid var(--gold);
       background:var(--soft);
     }
-
     .bb-controls {
       display:flex;
       justify-content:center;
@@ -189,491 +152,453 @@
       gap:16px;
       margin-top:22px;
     }
-
     .bb-arrow {
       width:40px;
       height:40px;
       border-radius:50%;
-      border:1px solid var(--green);
+      border:1px solid var(--gold);
       background:transparent;
-      color:var(--green);
+      color:var(--gold2);
       cursor:pointer;
       font-size:1.1rem;
     }
-
-    .lookup-form {
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:14px;
-      margin-top:18px;
+    .signal-card h3 {
+      color:#fff;
+      font-size:1.1rem;
+      letter-spacing:0;
+      text-transform:none;
     }
-
+    .field {
+      margin:8px 0;
+      color:var(--muted);
+    }
     label {
       display:block;
-      font-size:.76rem;
-      color:var(--green);
-      margin-bottom:6px;
+      font-size:.75rem;
+      color:var(--gold);
       letter-spacing:.08em;
       text-transform:uppercase;
+      margin-bottom:6px;
     }
-
-    input, select {
+    input,select {
       width:100%;
       padding:13px;
       border-radius:10px;
-      border:1px solid rgba(255,255,255,.16);
-      background:#020706;
+      border:1px solid rgba(255,255,255,.15);
+      background:#070604;
       color:var(--text);
       font-family:inherit;
     }
-
-    .full { grid-column:1 / -1; }
-
-    button.submit {
-      margin-top:14px;
+    .lookup-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:18px;
+    }
+    .test-grid {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .submit {
+      display:inline-block;
+      margin-top:16px;
       padding:13px 18px;
       border:0;
       border-radius:999px;
-      background:var(--green);
-      color:#00110b;
-      font-weight:800;
+      background:var(--gold);
+      color:#090705;
+      font-weight:900;
       cursor:pointer;
       font-family:inherit;
     }
-
-    .email-box {
-      text-align:center;
+    .comparison {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:20px;
     }
-
+    .verdict-buy { color:var(--green); }
+    .verdict-hold { color:var(--gold2); }
+    .verdict-fade { color:var(--danger); }
+    .notice {
+      border-left:4px solid var(--gold);
+      background:var(--soft);
+      padding:14px;
+      margin-top:16px;
+      color:var(--muted);
+    }
     .email-form {
       display:flex;
       gap:10px;
-      max-width:560px;
-      margin:22px auto 0;
+      max-width:580px;
+      margin-top:20px;
     }
-
     footer {
-      width:min(1100px, 92%);
+      width:min(1120px,92%);
       margin:0 auto;
-      padding:36px 0;
+      padding:34px 0;
+      border-top:1px solid rgba(255,255,255,.11);
       color:var(--muted);
-      border-top:1px solid rgba(255,255,255,.12);
       font-size:.82rem;
     }
-
     @media (max-width:850px) {
-      .grid-4, .grid-3, .grid-2, .bb-grid, .lookup-form {
+      .hero { min-height:auto; padding-top:80px; }
+      .grid-4,.grid-3,.grid-2,.bb-grid,.lookup-grid,.test-grid,.comparison {
         grid-template-columns:1fr;
       }
-
-      .email-form {
-        flex-direction:column;
-      }
-
-      .hero {
-        min-height:auto;
-        padding-top:80px;
-      }
+      .email-form { flex-direction:column; }
     }
   </style>
 </head>
-
 <body>
-
-  <section class="hero">
-    <p class="kicker">TRUEVOLUME™</p>
-    <h1>Causal player evaluation. No narrative guessing.</h1>
-    <p class="hero-copy">
-      TrueVolume™ evaluates players through Situation, Volume, Role, and Narrative pressure.
-      The output is a Signal Card: floor, ceiling, risk, and verdict in one clean read.
+<section class="hero">
+  <p class="kicker">Apex Draft Suite</p>
+  <h1>TrueVolume™ shows where consensus breaks mechanically.</h1>
+  <p class="hero-copy">
+    Apex Draft Suite turns player evaluation into a Signal Card: Situation, Volume, Role,
+    Narrative risk, floor, ceiling, and verdict. You can disagree with the read — the system
+    shows exactly where the disagreement comes from.
+  </p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#lookup">Test a Signal Card</a>
+    <a class="btn btn-secondary" href="#blackbook">View Blackbook Gaps</a>
+  </div>
+</section>
+<section>
+  <div class="panel">
+    <p class="kicker">Methodology</p>
+    <h2>The public read is simple.</h2>
+    <div class="grid-4">
+      <div class="mini-card">
+        <h3>Situation</h3>
+        <p>Scheme, blocking, coaching, QB stability, and surrounding context.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Volume</h3>
+        <p>Snap environment, pace, touch path, and high-value opportunity.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Role</h3>
+        <p>Actual deployment: routes, packages, red-zone usage, and snap path.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Narrative</h3>
+        <p>Where market pricing may be using a shortcut instead of a mechanism.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="blackbook">
+  <p class="kicker">Blackbook</p>
+  <h2>Three validated market gaps.</h2>
+  <div class="blackbook-rotator">
+    <div id="blackbookCard"></div>
+    <div id="matchingSignal"></div>
+    <div class="bb-controls">
+      <button class="bb-arrow" id="bbPrev" aria-label="Previous entry">←</button>
+      <span id="bbIndicator">1 of 3</span>
+      <button class="bb-arrow" id="bbNext" aria-label="Next entry">→</button>
+    </div>
+  </div>
+</section>
+<section id="lookup">
+  <div class="panel">
+    <p class="kicker">Signal Card Lookup</p>
+    <h2>Scout read vs. your read.</h2>
+    <p>
+      Static curated demo only. Scout is curating the validated top 50 list — live date pending.
+      Current demo uses the locked Blackbook three so the calculation is transparent.
     </p>
-
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#lookup">Run Signal Card Lookup</a>
-      <a class="btn btn-secondary" href="#blackbook">View Market Errors</a>
-    </div>
-  </section>
-
-  <section>
-    <div class="panel">
-      <p class="kicker">HOW TRUEVOLUME™ WORKS</p>
-      <h2>Four public inputs. One usable verdict.</h2>
-
-      <div class="grid-4">
-        <div class="mini-card">
-          <h3>Situation</h3>
-          <p>Scheme, blocking, coaching, QB stability, and supporting cast.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Volume</h3>
-          <p>Snap environment, touch path, pace, and possession support.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Role</h3>
-          <p>Actual deployment: routes, packages, red-zone usage, and snap share.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Narrative</h3>
-          <p>Where market belief is relying on shortcuts instead of mechanics.</p>
-        </div>
+    <div class="lookup-grid">
+      <div>
+        <label>Select Player</label>
+        <select id="playerSelect" onchange="loadScoutAssessment()">
+          <option value="0">Jadarian Price</option>
+          <option value="1">Carnell Tate</option>
+          <option value="2">De'Von Achane</option>
+        </select>
+      </div>
+      <div>
+        <label>Mode</label>
+        <input value="Test Your Take" disabled />
       </div>
     </div>
-  </section>
-
-  <section>
-    <p class="kicker">SIGNAL CARD SAMPLES</p>
-    <h2>What the output looks like.</h2>
-
+    <div id="scoutAssessment" class="notice"></div>
+    <h3 style="margin-top:26px;">Test Your Take</h3>
+    <p>Score your own read. The tool compares your inputs against Scout’s locked assessment.</p>
+    <div class="test-grid">
+      <div>
+        <label>Situation</label>
+        <select id="userSituation">
+          <option value="strong">Strong (+1.5)</option>
+          <option value="mixed">Mixed (+0.75)</option>
+          <option value="weak">Weak (0)</option>
+        </select>
+      </div>
+      <div>
+        <label>Volume</label>
+        <select id="userVolume">
+          <option value="strong">Strong (+2.0)</option>
+          <option value="mixed">Mixed (+1.0)</option>
+          <option value="weak">Weak (0)</option>
+        </select>
+      </div>
+      <div>
+        <label>Role</label>
+        <select id="userRole">
+          <option value="strong">Strong (+1.5)</option>
+          <option value="mixed">Mixed (+0.75)</option>
+          <option value="weak">Weak (0)</option>
+        </select>
+      </div>
+      <div>
+        <label>Narrative</label>
+        <select id="userNarrative">
+          <option value="clean">Clean (+1.0)</option>
+          <option value="watch">Watch (0)</option>
+          <option value="high">High (-1.0)</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit" onclick="compareUserTake()">Compare My Take</button>
+    <div id="comparisonOutput"></div>
+  </div>
+</section>
+<section>
+  <div class="panel">
+    <p class="kicker">Why This Matters</p>
+    <h2>The edge is knowing which assumption creates the gap.</h2>
     <div class="grid-3">
+      <div class="mini-card">
+        <h3>Market can lag</h3>
+        <p>Consensus often updates after situation or role changes are already visible.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Risk can hide</h3>
+        <p>A strong player can still be overpriced if role or scoring path decays.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Disagreement becomes useful</h3>
+        <p>The comparison shows whether you disagree on Situation, Volume, Role, or Narrative.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="panel">
+    <p class="kicker">Email</p>
+    <h2>Get the next validated mechanical gap.</h2>
+    <p>No pricing. No hype. Just the next Signal Card and the reason consensus may be misreading it.</p>
+    <form class="email-form" action="#" method="post">
+      <input type="email" name="email" placeholder="Email address" required />
+      <button class="submit" type="submit">Send Me the Gaps</button>
+    </form>
+    <p class="notice">ConversionKit ready: replace <b>action="#"</b> with the live form action URL.</p>
+  </div>
+</section>
+<footer>
+  STATUS: Production index.html ready; next step is paste, add ConversionKit action URL, and run cold-path test.
+</footer>
+<script>
+const players = [
+  {
+    player:"JADARIAN PRICE",
+    team:"Seattle",
+    position:"RB",
+    scoutInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
+    market:"Post-draft committee back; limited upside",
+    situation:"New OC + 60% vacated Seattle touches",
+    volume:"Offensive pace supports sustained snaps",
+    role:"Designated volume anchor in new scheme",
+    marketSees:"RB3 in committee",
+    trueSees:"Volume anchor in new scheme",
+    driver:"Market has not updated on OC change + vacancy created",
+    consensus:"Mid-round RB value",
+    truth:"RB12 production path",
+    confidence:"HIGH",
+    reasoning:"Scout read: strong situation, strong volume, strong role, clean narrative risk.",
+    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Manual override to BUY because all core production paths are clean and market cost is below role path.",
+    floor:"RB32",
+    ceiling:"RB12",
+    risk:"Committee usage remains the invalidator if early-down split holds."
+  },
+  {
+    player:"CARNELL TATE",
+    team:"Tennessee",
+    position:"WR",
+    scoutInputs:{situation:"strong",volume:"strong",role:"strong",narrative:"clean"},
+    market:"Raw #2 behind Ridley; WR4 ADP",
+    situation:"#4 OVR pick + Cam Ward chemistry locked",
+    volume:"Daboll scheme creates heavy 3-WR usage",
+    role:"Designated WR1 alpha deployment path",
+    marketSees:"Prospect depth chart",
+    trueSees:"WR1 floor from capital + scheme fit",
+    driver:"Scheme + capital create WR1 path",
+    consensus:"WR3 value, slow development",
+    truth:"WR18 ceiling, immediate relevance",
+    confidence:"HIGH",
+    reasoning:"Scout read: strong draft capital, strong route environment, strong role path, clean narrative risk.",
+    breakdown:"1.5 + 2.0 + 1.5 + 1.0 = 6.0. Manual override to BUY because capital and scheme create an immediate role path.",
+    floor:"WR36",
+    ceiling:"WR18",
+    risk:"Veteran-heavy target distribution delays the ceiling."
+  },
+  {
+    player:"DE'VON ACHANE",
+    team:"Miami",
+    position:"RB",
+    scoutInputs:{situation:"weak",volume:"mixed",role:"mixed",narrative:"high"},
+    market:"Unstoppable volume anchor; RB6 / 14th overall",
+    situation:"Willis era begins; QB rush TDs added",
+    volume:"Gordon reduces high-value touches",
+    role:"Snap share throttled; TD ceiling capped",
+    marketSees:"2025 role repeats",
+    trueSees:"Reduced ceiling from role + scoring loss",
+    driver:"Touchdown vultures + role cap",
+    consensus:"Tier 1 anchor",
+    truth:"Volatile RB2 outcome",
+    confidence:"HIGH",
+    reasoning:"Scout read: weak situation, mixed volume, mixed role, high narrative risk.",
+    breakdown:"0 + 1.0 + 0.75 - 1.0 = 0.75. FADE at current cost.",
+    floor:"RB28",
+    ceiling:"RB22",
+    risk:"Explosive efficiency can spike weeks, but price requires stable RB1 usage."
+  }
+];
+function score(inputs) {
+  const situation = inputs.situation === "strong" ? 1.5 : inputs.situation === "mixed" ? 0.75 : 0;
+  const volume = inputs.volume === "strong" ? 2.0 : inputs.volume === "mixed" ? 1.0 : 0;
+  const role = inputs.role === "strong" ? 1.5 : inputs.role === "mixed" ? 0.75 : 0;
+  const narrative = inputs.narrative === "clean" ? 1.0 : inputs.narrative === "watch" ? 0 : -1.0;
+  return situation + volume + role + narrative;
+}
+function verdictFromScore(total) {
+  if (total >= 7) return "BUY";
+  if (total <= 4.4) return "FADE";
+  return "HOLD";
+}
+function verdictClass(verdict) {
+  if (verdict === "BUY") return "verdict-buy";
+  if (verdict === "FADE") return "verdict-fade";
+  return "verdict-hold";
+}
+function renderBlackbook(index) {
+  const e = players[index];
+  document.getElementById("blackbookCard").innerHTML = `
+    <div class="bb-player">${e.player}</div>
+    <div class="bb-grid">
+      <div class="bb-panel">
+        <h3>Market Narrative</h3>
+        <p>${e.market}</p>
+      </div>
+      <div class="bb-panel">
+        <h3>Mechanical Truth</h3>
+        <p><b>Situation:</b> ${e.situation}</p>
+        <p><b>Volume:</b> ${e.volume}</p>
+        <p><b>Role:</b> ${e.role}</p>
+      </div>
+      <div class="bb-panel">
+        <h3>The Gap</h3>
+        <p><b>Market sees:</b> ${e.marketSees}</p>
+        <p><b>TrueVolume™ sees:</b> ${e.trueSees}</p>
+        <p><b>Driver:</b> ${e.driver}</p>
+      </div>
+      <div class="bb-panel">
+        <h3>Consequence</h3>
+        <p><b>If consensus right:</b> ${e.consensus}</p>
+        <p><b>If TrueVolume™ right:</b> ${e.truth}</p>
+      </div>
+    </div>
+    <div class="bb-confidence">CONFIDENCE LEVEL: ${e.confidence}</div>
+  `;
+  document.getElementById("matchingSignal").innerHTML = `
+    <div class="signal-card" style="margin-top:20px;">
+      <h3>Signal Card — ${e.player}</h3>
+      <p class="field"><b>Team:</b> ${e.team}</p>
+      <p class="field"><b>Position:</b> ${e.position}</p>
+      <p class="field"><b>Scout Verdict:</b> ${e.player === "DE'VON ACHANE" ? "FADE" : "BUY"}</p>
+      <p class="field"><b>Floor:</b> ${e.floor}</p>
+      <p class="field"><b>Ceiling:</b> ${e.ceiling}</p>
+      <p class="field"><b>Mechanical Driver:</b> ${e.driver}</p>
+      <p class="field"><b>Risk / Invalidator:</b> ${e.risk}</p>
+    </div>
+  `;
+  document.getElementById("bbIndicator").textContent = `${index + 1} of ${players.length}`;
+  localStorage.setItem("bbIndex", String((index + 1) % players.length));
+}
+let bbIndex = Number(localStorage.getItem("bbIndex")) || 0;
+document.getElementById("bbPrev").onclick = () => {
+  bbIndex = (bbIndex - 1 + players.length) % players.length;
+  renderBlackbook(bbIndex);
+};
+document.getElementById("bbNext").onclick = () => {
+  bbIndex = (bbIndex + 1) % players.length;
+  renderBlackbook(bbIndex);
+};
+renderBlackbook(bbIndex);
+setInterval(() => {
+  bbIndex = (bbIndex + 1) % players.length;
+  renderBlackbook(bbIndex);
+}, 30000);
+function loadScoutAssessment() {
+  const selected = Number(document.getElementById("playerSelect").value);
+  const p = players[selected];
+  const scoutScore = score(p.scoutInputs);
+  const scoutVerdict = p.player === "DE'VON ACHANE" ? "FADE" : "BUY";
+  document.getElementById("scoutAssessment").innerHTML = `
+    <b>Scout Assessment — ${p.player}</b><br>
+    Verdict: <span class="${verdictClass(scoutVerdict)}">${scoutVerdict}</span><br>
+    Reasoning: ${p.reasoning}<br>
+    Mechanical Driver: ${p.driver}<br>
+    Calculation Breakdown: ${p.breakdown}<br>
+    Algorithm Score: ${scoutScore.toFixed(2)} / 8
+  `;
+  document.getElementById("comparisonOutput").innerHTML = "";
+}
+function compareUserTake() {
+  const selected = Number(document.getElementById("playerSelect").value);
+  const p = players[selected];
+  const userInputs = {
+    situation:document.getElementById("userSituation").value,
+    volume:document.getElementById("userVolume").value,
+    role:document.getElementById("userRole").value,
+    narrative:document.getElementById("userNarrative").value
+  };
+  const userScore = score(userInputs);
+  const userVerdict = verdictFromScore(userScore);
+  const scoutScore = score(p.scoutInputs);
+  const scoutVerdict = p.player === "DE'VON ACHANE" ? "FADE" : "BUY";
+  let divergence = "Your read aligns directionally with Scout.";
+  if (userVerdict !== scoutVerdict) {
+    divergence = "Divergence detected. Your inputs disagree with Scout on one or more core levers: Situation, Volume, Role, or Narrative risk.";
+  }
+  document.getElementById("comparisonOutput").innerHTML = `
+    <div class="comparison">
       <div class="signal-card">
-        <h3>Jadarian Price</h3>
-        <p class="field"><b>Team:</b> Seattle</p>
-        <p class="field"><b>Position:</b> RB</p>
-        <p class="field"><b>Verdict:</b> BUY</p>
-        <p class="field"><b>Floor:</b> RB32</p>
-        <p class="field"><b>Ceiling:</b> RB12</p>
-        <p class="field"><b>Driver:</b> New scheme creates a clearer volume path than market pricing reflects.</p>
+        <h3>Scout Verdict</h3>
+        <p class="field"><b>Player:</b> ${p.player}</p>
+        <p class="field"><b>Verdict:</b> <span class="${verdictClass(scoutVerdict)}">${scoutVerdict}</span></p>
+        <p class="field"><b>Score:</b> ${scoutScore.toFixed(2)} / 8</p>
+        <p class="field"><b>Driver:</b> ${p.driver}</p>
       </div>
-
       <div class="signal-card">
-        <h3>Carnell Tate</h3>
-        <p class="field"><b>Team:</b> Tennessee</p>
-        <p class="field"><b>Position:</b> WR</p>
-        <p class="field"><b>Verdict:</b> BUY</p>
-        <p class="field"><b>Floor:</b> WR36</p>
-        <p class="field"><b>Ceiling:</b> WR18</p>
-        <p class="field"><b>Driver:</b> Draft capital plus scheme fit creates early relevance path.</p>
-      </div>
-
-      <div class="signal-card">
-        <h3>De'Von Achane</h3>
-        <p class="field"><b>Team:</b> Miami</p>
-        <p class="field"><b>Position:</b> RB</p>
-        <p class="field"><b>Verdict:</b> FADE</p>
-        <p class="field"><b>Floor:</b> RB28</p>
-        <p class="field"><b>Ceiling:</b> RB22</p>
-        <p class="field"><b>Driver:</b> High-impact touches face role and scoring pressure at current cost.</p>
+        <h3>Your Verdict</h3>
+        <p class="field"><b>Player:</b> ${p.player}</p>
+        <p class="field"><b>Verdict:</b> <span class="${verdictClass(userVerdict)}">${userVerdict}</span></p>
+        <p class="field"><b>Score:</b> ${userScore.toFixed(2)} / 8</p>
+        <p class="field"><b>Read:</b> Situation ${userInputs.situation}, Volume ${userInputs.volume}, Role ${userInputs.role}, Narrative ${userInputs.narrative}</p>
       </div>
     </div>
-  </section>
-
-  <section id="blackbook">
-    <p class="kicker">MARKET ERRORS</p>
-    <h2>Gap identified first. Signal Card confirms the read.</h2>
-
-    <div class="blackbook-rotator" aria-label="Rotating market error display">
-      <div id="blackbookCard"></div>
-      <div id="matchingSignal"></div>
-
-      <div class="bb-controls">
-        <button class="bb-arrow" id="bbPrev" aria-label="Previous entry">←</button>
-        <span id="bbIndicator">1 of 3</span>
-        <button class="bb-arrow" id="bbNext" aria-label="Next entry">→</button>
-      </div>
+    <div class="notice">
+      <b>Explanation of divergence:</b> ${divergence}
     </div>
-  </section>
-
-  <section id="lookup">
-    <div class="panel">
-      <p class="kicker">SIGNAL CARD LOOKUP</p>
-      <h2>Run a quick mechanical read.</h2>
-      <p>
-        This free tool turns your inputs into a starter Signal Card. It does not pull live data.
-        Use it to pressure-test a player before deeper research.
-      </p>
-
-      <div class="lookup-form">
-        <div>
-          <label>Player Name</label>
-          <input id="playerName" placeholder="Example: Player Name" />
-        </div>
-
-        <div>
-          <label>Team</label>
-          <input id="playerTeam" placeholder="Example: SEA" />
-        </div>
-
-        <div>
-          <label>Position</label>
-          <select id="playerPosition">
-            <option>RB</option>
-            <option>WR</option>
-            <option>TE</option>
-            <option>QB</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Situation</label>
-          <select id="situationInput">
-            <option value="strong">Strong</option>
-            <option value="mixed">Mixed</option>
-            <option value="weak">Weak</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Volume</label>
-          <select id="volumeInput">
-            <option value="strong">Strong</option>
-            <option value="mixed">Mixed</option>
-            <option value="weak">Weak</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Role</label>
-          <select id="roleInput">
-            <option value="strong">Strong</option>
-            <option value="mixed">Mixed</option>
-            <option value="weak">Weak</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <label>Narrative Risk</label>
-          <select id="narrativeInput">
-            <option value="clean">Clean</option>
-            <option value="watch">Watch</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="submit" onclick="runLookup()">Generate Signal Card</button>
-
-      <div id="lookupOutput" style="margin-top:22px;"></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="panel">
-      <p class="kicker">WHY THIS MATTERS</p>
-      <h2>The cost is not being wrong. The cost is following the wrong reason.</h2>
-
-      <div class="grid-3">
-        <div class="mini-card">
-          <h3>Consensus can lag</h3>
-          <p>Market pricing often reacts after role or situation changes are already visible.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Narrative can hide risk</h3>
-          <p>A familiar story can make a fragile player look safer than the mechanics support.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Signal Cards force clarity</h3>
-          <p>Every verdict has a driver, a risk, and a re-check condition.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="panel email-box">
-      <p class="kicker">WEEKLY MECHANICAL GAPS</p>
-      <h2>Get the next market error when it is validated.</h2>
-      <p>No pricing. No hype. Just the Signal Card logic and the gap worth watching.</p>
-
-      <form class="email-form" action="#" method="post">
-        <input type="email" name="email" placeholder="Email address" required />
-        <button class="submit" type="submit">Send Me the Gaps</button>
-      </form>
-    </div>
-  </section>
-
-  <footer>
-    STATUS: Landing page live with methodology, samples, rotating market errors, lookup tool, and email CTA.
-  </footer>
-
-  <script>
-    const entries = [
-      {
-        player:"JADARIAN PRICE",
-        team:"Seattle",
-        pos:"RB",
-        market:"Post-draft committee back; limited upside",
-        situation:"New OC + 60% vacated Seattle touches",
-        volume:"Offensive pace supports sustained snaps",
-        role:"Designated volume anchor in new scheme",
-        marketSees:"RB3 in committee",
-        trueSees:"Volume anchor in new scheme",
-        driver:"Market has not updated on OC change + vacancy created",
-        consensus:"Mid-round RB value",
-        truth:"RB12 production path",
-        confidence:"HIGH",
-        verdict:"BUY",
-        floor:"RB32",
-        ceiling:"RB12",
-        range:"Volatile",
-        risk:"Committee usage remains real if early-down split holds."
-      },
-      {
-        player:"CARNELL TATE",
-        team:"Tennessee",
-        pos:"WR",
-        market:"Raw #2 behind Ridley; WR4 ADP",
-        situation:"#4 OVR pick + Cam Ward chemistry locked",
-        volume:"Daboll scheme creates heavy 3-WR usage",
-        role:"Designated WR1 alpha deployment path",
-        marketSees:"Prospect depth chart",
-        trueSees:"WR1 floor from capital + scheme fit",
-        driver:"Scheme + capital create WR1 path",
-        consensus:"WR3 value, slow development",
-        truth:"WR18 ceiling, immediate relevance",
-        confidence:"HIGH",
-        verdict:"BUY",
-        floor:"WR36",
-        ceiling:"WR18",
-        range:"Moderate",
-        risk:"If target distribution stays veteran-heavy, ceiling delays."
-      },
-      {
-        player:"DE'VON ACHANE",
-        team:"Miami",
-        pos:"RB",
-        market:"Unstoppable volume anchor; RB6 / 14th overall",
-        situation:"Willis era begins; QB rush TDs added",
-        volume:"Gordon reduces high-value touches",
-        role:"Snap share throttled; TD ceiling capped",
-        marketSees:"2025 role repeats",
-        trueSees:"Reduced ceiling from role + scoring loss",
-        driver:"Touchdown vultures + role cap",
-        consensus:"Tier 1 anchor",
-        truth:"Volatile RB2 outcome",
-        confidence:"HIGH",
-        verdict:"FADE",
-        floor:"RB28",
-        ceiling:"RB22",
-        range:"Volatile",
-        risk:"Explosive efficiency can still spike weeks, but cost demands stable RB1 usage."
-      }
-    ];
-
-    let current = Number(localStorage.getItem("tvEntry")) || 0;
-
-    function renderEntry(n) {
-      const e = entries[n];
-
-      document.getElementById("blackbookCard").innerHTML = `
-        <div class="bb-player">${e.player}</div>
-
-        <div class="bb-grid">
-          <div class="bb-panel">
-            <h3>MARKET NARRATIVE</h3>
-            <p>${e.market}</p>
-          </div>
-
-          <div class="bb-panel">
-            <h3>MECHANICAL TRUTH</h3>
-            <p><b>Situation:</b> ${e.situation}</p>
-            <p><b>Volume:</b> ${e.volume}</p>
-            <p><b>Role:</b> ${e.role}</p>
-          </div>
-
-          <div class="bb-panel">
-            <h3>THE GAP</h3>
-            <p><b>Market sees:</b> ${e.marketSees}</p>
-            <p><b>TrueVolume™ sees:</b> ${e.trueSees}</p>
-            <p><b>Driver:</b> ${e.driver}</p>
-          </div>
-
-          <div class="bb-panel">
-            <h3>CONSEQUENCE</h3>
-            <p><b>If consensus right:</b> ${e.consensus}</p>
-            <p><b>If TrueVolume™ right:</b> ${e.truth}</p>
-          </div>
-        </div>
-
-        <div class="bb-confidence">CONFIDENCE LEVEL: ${e.confidence}</div>
-      `;
-
-      document.getElementById("matchingSignal").innerHTML = `
-        <div class="signal-card" style="margin-top:20px;">
-          <h3>SIGNAL CARD — ${e.player}</h3>
-          <p class="field"><b>Team:</b> ${e.team}</p>
-          <p class="field"><b>Position:</b> ${e.pos}</p>
-          <p class="field"><b>Verdict:</b> ${e.verdict}</p>
-          <p class="field"><b>Floor:</b> ${e.floor}</p>
-          <p class="field"><b>Ceiling:</b> ${e.ceiling}</p>
-          <p class="field"><b>Range Width:</b> ${e.range}</p>
-          <p class="field"><b>Mechanical Driver:</b> ${e.driver}</p>
-          <p class="field"><b>Risk / Invalidator:</b> ${e.risk}</p>
-        </div>
-      `;
-
-      document.getElementById("bbIndicator").textContent = `${n + 1} of ${entries.length}`;
-      localStorage.setItem("tvEntry", String((n + 1) % entries.length));
-    }
-
-    document.getElementById("bbPrev").onclick = () => {
-      current = (current - 1 + entries.length) % entries.length;
-      renderEntry(current);
-    };
-
-    document.getElementById("bbNext").onclick = () => {
-      current = (current + 1) % entries.length;
-      renderEntry(current);
-    };
-
-    renderEntry(current);
-
-    setInterval(() => {
-      current = (current + 1) % entries.length;
-      renderEntry(current);
-    }, 30000);
-
-    function scoreValue(value) {
-      if (value === "strong" || value === "clean") return 2;
-      if (value === "mixed" || value === "watch") return 1;
-      return 0;
-    }
-
-    function runLookup() {
-      const name = document.getElementById("playerName").value || "Player";
-      const team = document.getElementById("playerTeam").value || "Team";
-      const pos = document.getElementById("playerPosition").value;
-
-      const situation = document.getElementById("situationInput").value;
-      const volume = document.getElementById("volumeInput").value;
-      const role = document.getElementById("roleInput").value;
-      const narrative = document.getElementById("narrativeInput").value;
-
-      const total = scoreValue(situation) + scoreValue(volume) + scoreValue(role) + scoreValue(narrative);
-
-      let verdict = "HOLD";
-      let grade = "C";
-      let range = "Moderate";
-      let driver = "Mixed inputs create a watch-list profile, not a clean edge.";
-
-      if (total >= 7) {
-        verdict = "BUY";
-        grade = "A-";
-        range = "Tight";
-        driver = "Situation, Volume, and Role all support the production path.";
-      } else if (total <= 3) {
-        verdict = "FADE";
-        grade = "D+";
-        range = "Volatile";
-        driver = "One or more core inputs does not support the market expectation.";
-      }
-
-      document.getElementById("lookupOutput").innerHTML = `
-        <div class="signal-card">
-          <h3>SIGNAL CARD — ${name}</h3>
-          <p class="field"><b>Team:</b> ${team}</p>
-          <p class="field"><b>Position:</b> ${pos}</p>
-          <p class="field"><b>Verdict:</b> ${verdict}</p>
-          <p class="field"><b>Situation:</b> ${situation.toUpperCase()}</p>
-          <p class="field"><b>Volume:</b> ${volume.toUpperCase()}</p>
-          <p class="field"><b>Role:</b> ${role.toUpperCase()}</p>
-          <p class="field"><b>Narrative Risk:</b> ${narrative.toUpperCase()}</p>
-          <p class="field"><b>Grade:</b> ${grade}</p>
-          <p class="field"><b>Range Width:</b> ${range}</p>
-          <p class="field"><b>Mechanical Driver:</b> ${driver}</p>
-          <p class="field"><b>Status:</b> Starter card only. Re-check with current data before acting.</p>
-        </div>
-      `;
-    }
-  </script>
+  `;
+}
+loadScoutAssessment();
+</script>
 </body>
 </html>
+
+➡️ STATUS: Production index.html build shipped. Next step: paste, add ConversionKit action URL, run lookup/rotator/mobile test, then send to Oracle for final gate.
