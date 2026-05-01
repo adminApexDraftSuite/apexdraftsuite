@@ -3,23 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apex Position Board | Apex Draft Suite</title>
+<title>TrueVolume Pilot Board | Apex Draft Suite</title>
 
 <style>
+:root {
+  --bg: #08090b;
+  --panel: #12151c;
+  --panel-soft: #141820;
+  --text: #f5f2ea;
+  --muted: #aaa497;
+  --dim: #777;
+  --line: rgba(255,255,255,.1);
+  --gold: #c7a14a;
+  --green: #73b77b;
+  --yellow: #d5b45f;
+  --red: #c76f5f;
+}
+
 body {
   margin: 0;
   background:
     radial-gradient(circle at top right, rgba(199,161,74,.16), transparent 420px),
     linear-gradient(180deg, #08090b, #0d0f14);
-  color: #f5f2ea;
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  line-height: 1.5;
 }
 
-.shell { width: min(1180px, 92%); margin: 0 auto; }
+.shell {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+}
 
 .nav {
   position: sticky;
   top: 0;
+  z-index: 50;
   background: rgba(8,9,11,.86);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255,255,255,.09);
@@ -32,85 +51,212 @@ body {
   align-items: center;
 }
 
-.brand { font-weight: 900; }
+.brand {
+  font-weight: 900;
+  letter-spacing: -.04em;
+}
 
 .nav a {
-  color: #aaa497;
+  color: var(--muted);
   margin-left: 22px;
+  font-size: 14px;
   text-decoration: none;
 }
 
 .cta {
-  background: #c7a14a;
+  background: var(--gold);
   color: #000 !important;
   padding: 10px 16px;
   border-radius: 999px;
   font-weight: 900;
 }
 
-.hero { padding: 90px 0 40px; }
+.hero {
+  padding: 90px 0 42px;
+}
 
 .hero h1 {
+  max-width: 900px;
   font-size: clamp(42px, 7vw, 82px);
+  line-height: .95;
+  letter-spacing: -.055em;
   margin: 0;
 }
 
 .hero p {
-  color: #aaa497;
-  max-width: 760px;
+  color: var(--muted);
+  max-width: 820px;
+  margin-top: 18px;
+}
+
+.section {
+  padding: 58px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 5vw, 52px);
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+.kicker {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.notice {
+  color: var(--muted);
+  max-width: 850px;
+  font-size: 14px;
+}
+
+.legend {
+  color: var(--muted);
+  margin: 18px 0 12px;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .frame {
-  margin-top: 20px;
-  background: #12151c;
+  margin-top: 18px;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 28px;
   overflow: hidden;
+  box-shadow: 0 32px 90px rgba(0,0,0,.45);
 }
 
 .row {
   display: grid;
-  grid-template-columns: 1.3fr .9fr .9fr .9fr .6fr .8fr .8fr;
-  padding: 14px;
+  grid-template-columns: 1.35fr .7fr .75fr .9fr .9fr .75fr .85fr;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: var(--muted);
+  align-items: center;
 }
 
 .row:first-child {
-  background: rgba(255,255,255,.05);
+  color: var(--text);
+  background: rgba(255,255,255,.045);
   text-transform: uppercase;
-  font-size: 12px;
+  letter-spacing: .08em;
+  font-size: 11px;
 }
 
-.band { padding: 4px 8px; border-radius: 20px; font-size: 12px; }
+.row:last-child {
+  border-bottom: 0;
+}
 
-.stable { background: #2e5d3b; }
-.watch { background: #6d5b2f; }
-.volatile { background: #6a2f2f; }
+.band,
+.action {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+}
 
-.section { padding: 60px 0; }
+.stable { background: rgba(115,183,123,.18); color: var(--green); }
+.watch { background: rgba(213,180,95,.18); color: var(--yellow); }
+.volatile { background: rgba(199,111,95,.18); color: var(--red); }
+
+.buy { background: rgba(115,183,123,.18); color: var(--green); }
+.sell, .trap { background: rgba(199,111,95,.18); color: var(--red); }
+.hold, .lock { background: rgba(213,180,95,.18); color: var(--yellow); }
+
+.locked {
+  opacity: .48;
+  filter: blur(.2px);
+}
+
+.restricted {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid rgba(199,161,74,.35);
+  background: rgba(199,161,74,.08);
+  border-radius: 18px;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 900;
+}
 
 .result {
-  margin-top: 20px;
-  padding: 20px;
-  border-left: 4px solid #c7a14a;
+  margin-top: 24px;
+  padding: 22px;
+  border-left: 4px solid var(--gold);
   background: #1b2029;
+  border-radius: 0 18px 18px 0;
+  font-weight: 800;
+}
+
+.actions {
+  margin-top: 24px;
 }
 
 .btn {
   display: inline-block;
   padding: 12px 18px;
-  border-radius: 25px;
+  border-radius: 999px;
   font-weight: 900;
   text-decoration: none;
+  margin-right: 10px;
 }
 
 .btn-primary {
-  background: #c7a14a;
+  background: var(--gold);
   color: #000;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255,255,255,.2);
+  color: var(--text);
 }
 
 .footer {
   text-align: center;
-  padding: 40px 0;
-  color: #777;
+  padding: 44px 0;
+  color: var(--dim);
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+@media (max-width: 860px) {
+  .nav-inner {
+    padding: 18px 0;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .nav-inner,
+  .nav-inner > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .nav a {
+    margin-left: 0;
+    margin-right: 14px;
+  }
+
+  .row {
+    grid-template-columns: 1fr 1fr;
+    font-size: 13px;
+  }
+
+  .row:first-child {
+    display: none;
+  }
+
+  .hero {
+    padding: 70px 0 36px;
+  }
 }
 </style>
 </head>
@@ -124,56 +270,96 @@ body {
       <a href="index.html">Home</a>
       <a href="board.html">Board</a>
       <a href="index.html#suite">Suite</a>
+      <a href="index.html#pricing">Pricing</a>
       <a href="board.html" class="cta">Enter Combine</a>
     </div>
   </div>
 </div>
 
 <div class="hero shell">
-  <h1>Apex Position Board</h1>
+  <p class="kicker">Combine Preview</p>
+  <h1>TrueVolume™ Pilot Board</h1>
   <p>
-    Consensus ADP vs Apex Position. This shows where the market price and TrueVolume-based evaluation separate before your draft room reacts.
+    PILOT BOARD — Methodology validation. Full Top 50 with live ADP snapshot available in War Room. Updated on material change.
   </p>
 </div>
 
 <div class="section shell">
-  <h2>Top 50 Free Board</h2>
+  <p class="kicker">Snapshot</p>
+  <h2 style="color: var(--green); border: none;">TRUEVOLUME™ PILOT BOARD</h2>
+  <p style="font-size: 0.8em; opacity: 0.7;">
+    SNAPSHOT: APRIL 30, 2026 | POST-DRAFT CONSENSUS RESET
+  </p>
 
-  <p style="color:#aaa;">
-    PREVIEW MODE — Structure shown. Apex Positions generated through TrueVolume evaluation.
+  <p class="legend">
+    BUY = Clear edge over consensus | SELL = Market overvalued | HOLD = Fair value | TRAP = Narrative error | LOCK = Tier anchor | WATCH = Monitor through camp
   </p>
 
   <div class="frame">
     <div class="row">
       <strong>Player</strong>
-      <strong>Team / Pos</strong>
-      <strong>Consensus ADP</strong>
-      <strong>Apex Position</strong>
-      <strong>Delta</strong>
+      <strong>Team</strong>
+      <strong>Pos</strong>
+      <strong>Consensus</strong>
+      <strong>TrueVolume</strong>
       <strong>Band</strong>
       <strong>Action</strong>
     </div>
 
-    <div class="row"><span>Profile 01</span><span>Team</span><span>--</span><span>--</span><span>--</span><span class="band watch">Watch</span><span>Pending</span></div>
-    <div class="row"><span>Profile 02</span><span>Team</span><span>--</span><span>--</span><span>--</span><span class="band stable">Stable</span><span>Pending</span></div>
-    <div class="row"><span>Profile 03</span><span>Team</span><span>--</span><span>--</span><span>--</span><span class="band volatile">Volatile</span><span>Pending</span></div>
+    <div class="row"><span>Jadarian Price</span><span>MIN</span><span>RB</span><span>Post-draft discount</span><span>High-delta profile</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
+    <div class="row"><span>Rookie Profile A</span><span>RKC</span><span>WR</span><span>Hype inflated</span><span>Role unresolved</span><span class="band volatile">Volatile</span><span class="action trap">TRAP</span></div>
+    <div class="row"><span>Veteran Profile B</span><span>ATL</span><span>RB</span><span>Stable price</span><span>Usage intact</span><span class="band stable">Stable</span><span class="action lock">LOCK</span></div>
+    <div class="row"><span>Rookie Profile C</span><span>LV</span><span>TE</span><span>Underpriced</span><span>Path visible</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
+    <div class="row"><span>Veteran Profile D</span><span>CHI</span><span>WR</span><span>Fair value</span><span>Context aligned</span><span class="band stable">Stable</span><span class="action hold">HOLD</span></div>
+    <div class="row"><span>Rookie Profile E</span><span>CAR</span><span>RB</span><span>Overheated</span><span>Snap path unclear</span><span class="band volatile">Volatile</span><span class="action sell">SELL</span></div>
+    <div class="row"><span>Veteran Profile F</span><span>ARI</span><span>QB</span><span>Discounted</span><span>Infrastructure improved</span><span class="band watch">Watch</span><span class="action buy">BUY</span></div>
+    <div class="row"><span>Rookie Profile G</span><span>NYG</span><span>WR</span><span>Consensus push</span><span>Target path unproven</span><span class="band volatile">Volatile</span><span class="action trap">TRAP</span></div>
+    <div class="row"><span>Veteran Profile H</span><span>DAL</span><span>TE</span><span>Stable</span><span>Role preserved</span><span class="band stable">Stable</span><span class="action hold">HOLD</span></div>
+    <div class="row"><span>Rookie Profile I</span><span>NE</span><span>RB</span><span>Underpriced</span><span>Efficiency path</span><span class="band watch">Watch</span><span class="action watch">WATCH</span></div>
   </div>
 
-  <p style="color:#888; font-size:11px;">
-    Stable = role/volume locked | Watch = 1 change could shift | Volatile = multiple uncertainties
+  <p style="color:#888; margin-top:12px; font-size:11px;">
+    Stable = All Pillars aligned, projection locked |
+    Watch = 1 Pillar input could shift projection |
+    Volatile = Multiple Pillar conflicts, high uncertainty
+    <br>
+    Post-Draft Consensus sourced from FantasyPros average (April 29).
+    TrueVolume ranks validated through Four Pillars audit.
   </p>
 
-  <div class="result">
-    The free board shows where consensus breaks. TrueVolume tells you why. The War Room tells you what to do.
+  <div class="restricted">
+    &gt;&gt; [RESTRICTED]: 40 MORE HIGH-DELTA STRIKES — UNLOCK IN WAR ROOM
   </div>
 
-  <div style="margin-top:20px;">
-    <a href="#" class="btn btn-primary">Unlock Full Board</a>
+  <div class="frame locked" aria-label="Locked board rows">
+    <div class="row">
+      <strong>Player</strong>
+      <strong>Team</strong>
+      <strong>Pos</strong>
+      <strong>Consensus</strong>
+      <strong>TrueVolume</strong>
+      <strong>Band</strong>
+      <strong>Action</strong>
+    </div>
+    <div class="row"><span>Locked Profile 11</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 12</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 13</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 14</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+    <div class="row"><span>Locked Profile 15</span><span>---</span><span>---</span><span>Restricted</span><span>Restricted</span><span>---</span><span>War Room</span></div>
+  </div>
+
+  <div class="result">
+    The pilot board proves the method. The War Room unlocks the full Top 50, live ADP snapshot, and player-level Signal Cards.
+  </div>
+
+  <div class="actions">
+    <a href="#" class="btn btn-primary">Unlock War Room</a>
+    <a href="index.html" class="btn btn-secondary">Return to Suite</a>
   </div>
 </div>
 
 <div class="footer">
-  Apex Draft Suite — Apex Position Board
+  Apex Draft Suite — TrueVolume™ Pilot Board
 </div>
 
 </body>
