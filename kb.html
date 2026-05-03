@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apex Draft Suite — Knowledge Base</title>
+
+  <style>
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at top right, rgba(199,161,74,.16), transparent 420px),
+      linear-gradient(180deg, #08090b, #0d0f14);
+    color: #f5f2ea;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    line-height: 1.5;
+  }
+
+  a { text-decoration: none; }
+
+  .shell { width: min(1180px, 92%); margin: 0 auto; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8,9,11,.86);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,.09);
+  }
+
+  .nav-inner {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand { font-weight: 900; letter-spacing: -.04em; font-size: 18px; }
+
+  .nav a { color: #aaa497; margin-left: 22px; font-size: 14px; font-weight: 650; }
+  .nav a:hover { color: #f5f2ea; }
+
+  .nav .cta {
+    background: #c7a14a;
+    color: #08090b;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 900;
+  }
+
+  .hero { padding: 96px 0 84px; }
+
+  .hero h1 {
+    max-width: 860px;
+    margin: 0;
+    font-size: clamp(42px, 7vw, 82px);
+    line-height: .95;
+    letter-spacing: -.065em;
+  }
+
+  .hero p {
+    max-width: 720px;
+    margin: 28px 0 0;
+    color: #aaa497;
+    font-size: clamp(18px, 2vw, 22px);
+  }
+
+  .section {
+    padding: 86px 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+
+  .section h2 {
+    max-width: 760px;
+    margin: 0 0 34px;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1;
+    letter-spacing: -.055em;
+  }
+
+  .footer {
+    padding: 46px 0;
+    text-align: center;
+    color: #77736b;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+
+  @media (max-width: 820px) {
+    .nav-inner {
+      height: auto;
+      padding: 18px 0;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .nav-inner > div:last-child {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav a { margin-left: 0; }
+    .hero { padding: 72px 0 64px; }
+    .section { padding: 64px 0; }
+  }
+
+  /* KB rendering styles */
+  .kb-wrap {
+    margin-top: 24px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
+      #12151c;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 32px 90px rgba(0,0,0,.45);
+  }
+
+  .kb {
+    padding: 26px 26px 10px;
+    color: #f5f2ea;
+  }
+
+  .kb h1, .kb h2, .kb h3 {
+    letter-spacing: -.04em;
+    margin: 22px 0 12px;
+  }
+
+  .kb h1 { font-size: 34px; }
+  .kb h2 { font-size: 24px; }
+  .kb h3 { font-size: 18px; }
+
+  .kb p { color: #aaa497; margin: 0 0 14px; }
+  .kb ul, .kb ol { margin: 0 0 16px 20px; color: #aaa497; }
+  .kb li { margin: 6px 0; }
+
+  .kb strong { color: #f5f2ea; font-weight: 900; }
+
+  .kb hr {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+    margin: 22px 0;
+  }
+
+  .kb blockquote {
+    margin: 14px 0 16px;
+    padding: 14px 16px;
+    background: #1b2029;
+    border-left: 4px solid #c7a14a;
+    border-radius: 0 18px 18px 0;
+    color: #f5f2ea;
+  }
+
+  .kb code {
+    background: rgba(255,255,255,.06);
+    padding: 2px 6px;
+    border-radius: 8px;
+    color: #f5f2ea;
+  }
+
+  .kb a { color: #d5b45f; }
+  .kb a:hover { color: #f5f2ea; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+  <div class="nav">
+    <div class="shell nav-inner">
+      <div class="brand">Apex Draft Suite</div>
+      <div>
+        <a href="/index.html">Home</a>
+        <a href="/kb.html">Knowledge Base</a>
+        <a class="cta" href="#join">Send Me the Gaps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell hero">
+    <h1>Knowledge Base</h1>
+    <p>Public docs explaining how ADS works (product-safe). Draft faster. Draft cleaner.</p>
+  </div>
+
+  <div class="section">
+    <div class="shell">
+      <h2>Docs</h2>
+      <div class="kb-wrap">
+        <div id="kb" class="kb"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="join" class="footer">
+    <div class="shell">
+      Add your ConvertKit embed form here (or link to it).<br/>
+      © Apex Draft Suite
+    </div>
+  </div>
+
+  <script id="kb-md" type="text/plain">
+---
+# PRODUCT_OVERVIEW_ADS
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+**Apex Draft Suite (ADS)** is a fantasy football draft companion built to reduce guesswork and help you navigate draft chaos.
+
+**What you get (at a glance)**
+- **Signal Cards**: quick player evaluation cards with a clear action verdict.
+- **Market Gaps**: where ADS disagrees with consensus—and the single assumption causing the gap.
+- **DraftPulse (paid)**: live draft navigation support (pivots, tier-drop warnings, and draft checklist discipline).
+
+**Who it’s for**
+- **Free (The Combine):** casual players who want a real edge without extra homework.
+- **War Room:** serious home-league players who want live draft help.
+- **Front Office:** high-stakes / multi-league managers who want format presets and downloadable draft assets.
+
+**How to use ADS**
+1) Look up a player. Read the Signal Card verdict.
+2) If ADS flags a Market Gap, identify the assumption that’s wrong.
+3) During the draft, use DraftPulse to avoid getting trapped by runs, tiers, and “obvious” picks.
+
+**Important notes**
+- ADS does not pretend certainty. If something is unknown, we will say so.
+- ADS is designed to be scannable quickly. You should be able to act in under a minute.
+
+**STATUS footer standard**
+Every ADS output ends with: ` STATUS: [delivered] | [next move]`
+
+---
+# HOW_TRUEVOLUME_WORKS_PUBLIC
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+TrueVolume is the ADS method for estimating whether a player’s output is supported by the *real* environment they play in.
+
+**What TrueVolume tries to answer**
+- Is the player’s role supported by the offense around them?
+- Is there enough play volume for the role to matter?
+- Is the market pricing a story instead of a mechanism?
+- Does the rotation match the depth-chart narrative?
+
+**What TrueVolume is NOT**
+- Not a “hot take” engine.
+- Not a vibes-based projection.
+- Not a promise of outcomes.
+
+**What you should do with it**
+Use TrueVolume to identify:
+- players whose role is *mechanically supported* (less fragile than they look)
+- players whose role is *mechanically fragile* (more fragile than consensus admits)
+- situations where a single wrong assumption is driving ADP/value mistakes
+
+**Common user mistake**
+> Treating last year’s points as the explanation.
+
+TrueVolume focuses on *why* the points could happen again (or fail) in the current season context.
+
+---
+# FOUR_PILLARS_PUBLIC_EXPLAINER
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+ADS evaluates players through four checks. You don’t need to memorize them—just know what each one protects you from.
+
+## 1) Infrastructure Truth
+**Question:** Is the environment built to support this player’s output?
+
+Signals you’ll see:
+- offensive line stability
+- scheme fit / usage fit
+- coaching tendencies that are *observable* (not “coach-speak”)
+
+## 2) Snap & Volume Reality
+**Question:** How much offensive volume exists—and does the game environment create or suppress it?
+
+Signals you’ll see:
+- pace / plays per game tendencies
+- ability to sustain drives
+- whether the team repeatedly loses snaps (fewer total opportunities)
+
+## 3) Anti-Narrative Check
+**Question:** Is the argument repeatable because it’s true—or repeatable because it’s a generic story?
+
+If a take applies to 10 other players with names swapped, ADS treats it as a narrative risk.
+
+## 4) Rotation Reality (Depth Chart vs Usage)
+**Question:** What does the team actually do in real packages and situations?
+
+Signals you’ll see:
+- snap share by situation
+- route participation / usage
+- which player is on the field when it matters
+
+**Bottom line:** a player’s cost should reflect the *mechanical path* to points—not a headline.
+
+---
+# ANTI_NARRATIVE_POLICY_PUBLIC
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+ADS is built to avoid one specific failure mode: drafting a story.
+
+**What counts as a narrative-only take**
+- “He’s due.”
+- “Revenge game.”
+- “Vacated targets automatically transfer.”
+- “Bad defense guarantees shootouts.”
+
+**What ADS does instead**
+ADS replaces stories with *testable questions*:
+- What changed in usage/role?
+- What changed in environment?
+- What changed in volume?
+- What changed in rotation?
+
+**What you’ll see in outputs**
+- If a claim can’t be supported, ADS will mark it as an assumption and tell you what would validate it.
+
+This is not negativity. It’s protection against paying peak price for recycled logic.
+
+---
+# DATA_AND_ASSUMPTIONS_POLICY_PUBLIC
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+ADS follows a simple rule: **don’t pretend you have data you don’t have**.
+
+**If something is unknown**
+- We say **Unknown**.
+- We list the missing inputs.
+- We tell you what would change the verdict.
+
+**Season context**
+ADS outputs are season-aware. If you don’t specify a year/format, ADS defaults to the current season context you’re drafting for.
+
+**No hidden certainty**
+If you see a confident verdict, it should be backed by a clear mechanism.
+
+**Your best way to improve output quality**
+Provide:
+- league format (1QB/Superflex)
+- scoring (half-PPR/PPR)
+- roster requirements
+- draft date / “draft window”
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+
+---
+# SIGNAL_CARD_USER_GUIDE
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+A **Signal Card** is a scannable player evaluation designed for draft-speed decisions.
+
+**How to read it (in order)**
+1) **Verdict**: BUY / HOLD / FADE / TRAP
+2) **Key driver**: the single biggest mechanical reason
+3) **Role/usage reality**: what must be true for the upside
+4) **Risk / gaps**: what ADS does *not* know (yet)
+
+**Verdict meanings**
+- **BUY**: price is lower than the supported role.
+- **HOLD**: price roughly matches role; draft if it fits build.
+- **FADE**: price assumes a path that looks fragile.
+- **TRAP**: the market is paying for a story; the mechanism doesn’t match.
+
+**What to do if you disagree**
+Great—ADS is most valuable when it forces the exact question:
+- *Which assumption is different between us?*
+
+Use the Market Gaps view to isolate that assumption.
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+
+---
+# DRAFTPULSE_PIVOT_GUIDE
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+DraftPulse is the live-draft layer of ADS.
+
+**What it does**
+- detects when the board shape changes (runs, tier breaks, scarcity shifts)
+- recommends a **pivot** so you don’t autopilot into bad value
+
+**What a Pivot Brief contains**
+- what changed (board signal)
+- why it matters (value/roster construction impact)
+- your best alternatives *right now*
+
+**Launch note**
+DraftPulse is a paid feature (War Room / Weekend Pass). If you’re on the free tier, you’ll still see Market Gaps and Signal Card Lite.
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+
+---
+# NARRATIVE_TRAP_CARD_GUIDE
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+A **Narrative Trap** is a common fantasy argument that sounds correct but fails when you check the mechanism.
+
+**How to use it**
+- When you see a Narrative Trap card, treat it as a pricing warning.
+- The goal is not to “win the argument”—it’s to avoid paying for the wrong assumption.
+
+**Typical outcomes**
+- You pass at cost and take the same archetype later.
+- You draft the player only if they fall below the trap price.
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+
+---
+# LIVE_DRAFT_CHECKLIST_CUSTOMER
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+Use this checklist to stay disciplined when the room speeds up.
+
+## Pre-draft (15 minutes)
+- confirm league format + scoring
+- decide 2–3 early-round priorities (structure, not names)
+- identify 1–2 positions you will not “force” at cost
+
+## During the draft
+- after every pick: check if a tier just broke
+- if a run starts: decide whether it’s real scarcity or panic
+- keep your roster build coherent (don’t draft 6 players at one position because of noise)
+
+## Post-draft
+- review your 3 biggest decisions
+- log one lesson (what you assumed that turned out wrong)
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+
+---
+# FAQ
+*Version: v1.0 | Generated: 2026-05-03 11:46 UTC*
+
+## Is ADS rankings?
+No. ADS is a decision system that explains *why* a player’s price is supported (or fragile).
+
+## What formats do you support?
+Launch default: 1QB redraft with half-PPR and PPR presets. Premium tiers can include Superflex / TE-premium presets.
+
+## Do you guarantee results?
+No. ADS is built to reduce avoidable mistakes, not to claim certainty.
+
+## How often does content update?
+Market Gaps and player cards update on a release cadence (weekly in-season / pre-draft ramp).
+
+## What if something changes (injury, depth chart move)?
+ADS updates when the mechanism changes: role, rotation, volume, or infrastructure.
+
+## Do you use news?
+Yes, but news is only useful if it changes the mechanical path to usage.
+
+## What’s the difference between the free tier and paid?
+Free: Signal Card Lite + Market Gaps teaser. Paid: full cards + draft navigation tools.
+
+STATUS standard: ` STATUS: [delivered] | [next move]`
+  </script>
+
+  <script>
+    const md = document.getElementById('kb-md').textContent.trim();
+    document.getElementById('kb').innerHTML = marked.parse(md);
+  </script>
+</body>
+</html>
