@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>Apex Blackbook 2026 — Post-Draft Audit</title>
+ <style>
+ body {
+ margin: 0;
+ background:
+ radial-gradient(circle at top right, rgba(199,161,74,.16), transparent 420px),
+ linear-gradient(180deg, #08090b, #0d0f14);
+ color: #f5f2ea;
+ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+ line-height: 1.6;
+ }
+ a { text-decoration: none; color: #d5b45f; }
+ a:hover { color: #f5f2ea; }
+ .shell { width: min(1180px, 92%); margin: 0 auto; }
+ .nav {
+ position: sticky;
+ top: 0;
+ z-index: 50;
+ background: rgba(8,9,11,.86);
+ backdrop-filter: blur(14px);
+ border-bottom: 1px solid rgba(255,255,255,.09);
+ }
+ .nav-inner {
+ height: 76px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ }
+ .brand { font-weight: 900; letter-spacing: -.04em; font-size: 18px; }
+ .nav a { color: #aaa497; margin-left: 22px; font-size: 14px; font-weight: 650; }
+ .nav a:hover { color: #f5f2ea; }
+ .nav .cta {
+ background: #c7a14a;
+ color: #08090b;
+ padding: 10px 16px;
+ border-radius: 999px;
+ font-weight: 900;
+ }
+ .hero { padding: 96px 0 84px; }
+ .hero h1 {
+ max-width: 860px;
+ margin: 0;
+ font-size: clamp(42px, 7vw, 82px);
+ line-height: .95;
+ letter-spacing: -.065em;
+ }
+ .hero p {
+ max-width: 720px;
+ margin: 28px 0 0;
+ color: #aaa497;
+ font-size: clamp(18px, 2vw, 22px);
+ }
+ .section {
+ padding: 86px 0;
+ border-top: 1px solid rgba(255,255,255,.08);
+ }
+ .section h2 {
+ max-width: 760px;
+ margin: 0 0 34px;
+ font-size: clamp(34px, 5vw, 58px);
+ line-height: 1;
+ letter-spacing: -.055em;
+ }
+ .section h3 {
+ font-size: 20px;
+ margin: 32px 0 16px;
+ color: #f5f2ea;
+ }
+ .section p {
+ max-width: 820px;
+ color: #aaa497;
+ margin: 0 0 16px;
+ }
+ .footer {
+ padding: 46px 0;
+ text-align: center;
+ color: #77736b;
+ border-top: 1px solid rgba(255,255,255,.08);
+ }
+ .card {
+ background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+ border: 1px solid rgba(255,255,255,.15);
+ border-radius: 18px;
+ padding: 32px;
+ margin: 24px 0;
+ }
+ .card h4 {
+ color: #f5f2ea;
+ font-size: 18px;
+ margin: 0 0 12px;
+ }
+ .card p {
+ margin: 8px 0;
+ color: #aaa497;
+ }
+ .verdict {
+ display: inline-block;
+ padding: 4px 12px;
+ border-radius: 6px;
+ font-weight: 900;
+ font-size: 13px;
+ margin: 8px 0;
+ }
+ .verdict-buy { background: rgba(16,185,129,.2); color: #10b981; }
+ .verdict-hold { background: rgba(202,175,95,.2); color: #d5b45f; }
+ .verdict-pivot { background: rgba(59,130,246,.2); color: #3b82f6; }
+ .verdict-avoid { background: rgba(239,68,68,.2); color: #ef4444; }
+ .table-wrap {
+ overflow-x: auto;
+ margin: 24px 0;
+ }
+ table {
+ width: 100%;
+ border-collapse: collapse;
+ background: rgba(0,0,0,.2);
+ border: 1px solid rgba(255,255,255,.1);
+ border-radius: 12px;
+ overflow: hidden;
+ }
+ th {
+ background: #1a1a1a;
+ color: #f5f2ea;
+ padding: 14px;
+ text-align: left;
+ font-weight: 900;
+ border-bottom: 1px solid rgba(255,255,255,.1);
+ }
+ td {
+ padding: 14px;
+ border-bottom: 1px solid rgba(255,255,255,.08);
+ color: #aaa497;
+ }
+ tr:last-child td { border-bottom: none; }
+ .pillar {
+ background: rgba(199,161,74,.08);
+ border-left: 4px solid #c7a14a;
+ padding: 24px;
+ margin: 24px 0;
+ border-radius: 8px;
+ }
+ .pillar-title {
+ font-weight: 900;
+ color: #f5f2ea;
+ margin: 0 0 8px;
+ font-size: 16px;
+ }
+ .pillar-question {
+ color: #d5b45f;
+ margin: 8px 0;
+ }
+ .pillar-text {
+ color: #aaa497;
+ margin: 8px 0;
+ }
+ @media (max-width: 820px) {
+ .nav-inner {
+ height: auto;
+ padding: 18px 0;
+ align-items: flex-start;
+ gap: 12px;
+ }
+ .nav-inner > div:last-child {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 10px;
+ }
+ .nav a { margin-left: 0; }
+ .hero { padding: 72px 0 64px; }
+ .section { padding: 64px 0; }
+ .card { padding: 20px; }
+ }
+ </style>
+</head>
+<body>
+ <div class="nav">
+ <div class="shell nav-inner">
+ <div class="brand">Apex Draft Suite</div>
+ <div>
+ <a href="/index.html">Home</a>
+ <a href="/kb.html">Knowledge Base</a>
+ <a class="cta" href="#join">Send Me the Gaps</a>
+ </div>
+ </div>
+ </div>
+
+ <div class="shell hero">
+ <h1>The 2026 Post-Draft Blackbook</h1>
+ <p>Infrastructure vs. Illusion. A complete audit of the 2026 NFL Draft and what it means for your draft strategy.</p>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>The State of the 2026 Draft</h2>
+ <p>The fantasy football market is addicted to surface-level narratives. "Bad defense equals shootouts." "Vacated targets transfer to the next player." "Rookie WR with a strong offense means Year 1 production." None of these are analyses. They're shortcuts masquerading as strategy.</p>
+ <p>TrueVolume exists to replace narrative with mechanics. A player's ceiling isn't determined by his talent alone — it's determined by his talent multiplied by the environment he plays in. Can his O-line create passing lanes? Does his coordinator actually design routes he can run? Is his team's defense keeping the game flowing, or suppressing snaps?</p>
+ <p>This Blackbook audits the 2026 draft through one lens: infrastructure. It identifies which market narratives are real, and which are traps waiting to cost you draft capital.</p>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>The Four Pillars of TrueVolume</h2>
+ 
+ <div class="pillar">
+ <div class="pillar-title">PILLAR 1 — Infrastructure Truth</div>
+ <div class="pillar-question">Is the environment built to support this player's output?</div>
+ <div class="pillar-text"><strong>What matters:</strong> O-line pass-block efficiency, run-block efficiency, coaching philosophy, scheme fit, supporting cast.</div>
+ <div class="pillar-text"><strong>Replaces:</strong> "He's a bell-cow, he'll get his" → "His O-line ranks bottom-five in pass-blocking, collapsing the play-action his ceiling depends on."</div>
+ </div>
+
+ <div class="pillar">
+ <div class="pillar-title">PILLAR 2 — Systemic Snap Preservation</div>
+ <div class="pillar-question">How much offensive volume actually exists for this player to consume?</div>
+ <div class="pillar-text"><strong>What matters:</strong> Defensive 3rd-down stop rate, time of possession, plays per game, red-zone trip frequency.</div>
+ <div class="pillar-text"><strong>Replaces:</strong> "Bad defense means shootouts" → "A defense that fails on 3rd-and-short keeps opponents on the field, suppressing your team's total snaps."</div>
+ </div>
+
+ <div class="pillar">
+ <div class="pillar-title">PILLAR 3 — Anti-Narrative Check</div>
+ <div class="pillar-question">Is this reasoning mechanical, or is it recycled narrative?</div>
+ <div class="pillar-text"><strong>What matters:</strong> Route-tree overlap, alignment, coverage tendencies, context-specific evidence.</div>
+ <div class="pillar-text"><strong>Replaces:</strong> "WR1 left, targets vacate to WR2" → "Target redistribution depends on which routes WR2 actually runs. Audit the overlap, not the vacancy."</div>
+ </div>
+
+ <div class="pillar">
+ <div class="pillar-title">PILLAR 4 — Roster Scrutiny</div>
+ <div class="pillar-question">What does rotational reality look like, not the depth chart?</div>
+ <div class="pillar-text"><strong>What matters:</strong> Snap share by personnel package, route participation, down-and-distance deployment, injury history.</div>
+ <div class="pillar-text"><strong>Replaces:</strong> "He's the RB1 on the depth chart, he's the workhorse" → "His snap share shows near-even split on early downs, with another RB owning passing-down work — capping his ceiling."</div>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>The Three Biggest Traps of 2026</h2>
+
+ <div class="card">
+ <h4>Jayden Daniels — Washington Commanders</h4>
+ <p><strong>The Narrative:</strong> Dual-threat ceiling, ascending Year 3 QB, weapons incoming. Top-4 superflex QB1.</p>
+ <p><strong>The Edge:</strong> Two first-time coordinators + a snap-suppressing defensive scheme = compounding variance. Washington's new DC (Daronte Jones) is installing a 44%+ blitz scheme that either creates explosive plays or prolonged opponent drives — both compress Washington's own snap count. The new OC (David Blough) has never called plays in the NFL and will likely reduce designed QB runs to protect the franchise QB. That's the load-bearing column of Daniels' floor.</p>
+ <div class="verdict verdict-pivot">PIVOT AT QB7 OR LATER</div>
+ <p><strong>Re-audit:</strong> After 3 games of regular-season tape from the new OC.</p>
+ </div>
+
+ <div class="card">
+ <h4>Brock Bowers — Las Vegas Raiders</h4>
+ <p><strong>The Narrative:</strong> Elite TE talent, Year 1 ceiling is locked. Top-15 ADP redraft pick.</p>
+ <p><strong>The Edge:</strong> Bowers is talented, but the environment collapsed. Geno Smith is gone; rookie QB Fernando Mendoza is in. Rookie QBs default to checkdowns and short routes — not the seam stretches and flex deployments Bowers thrives on. New HC Klint Kubiak is installing a wide-zone, two-back scheme that historically suppresses TE target share in favor of WR1 + RB receiving. Bowers' 2024 production required 85%+ snap share; Kubiak schemes historically run 60-65% snap shares on their TE1.</p>
+ <div class="verdict verdict-avoid">AVOID AT 1ST-ROUND COST</div>
+ <p><strong>Buy Window:</strong> TE5 ADP or below only.</p>
+ <p><strong>Re-audit:</strong> After preseason snap-share deployment data.</p>
+ </div>
+
+ <div class="card">
+ <h4>Garrett Wilson — New York Jets</h4>
+ <p><strong>The Narrative:</strong> Established WR1 alpha, no target competition, will eat regardless of QB. Top-12 WR.</p>
+ <p><strong>The Edge:</strong> The Jets drafted WR Omar Cooper Jr. at #30 overall. Cooper runs the exact same route tree as Wilson on intermediate digs, slants, and post-corners — the routes Wilson depends on for air yards. Rookie WRs average 17%+ target share by NFL precedent. That target share has to come from somewhere mechanically — it comes from Wilson's baseline. Additionally, Wilson's career aDOT exceeds 11 yards, which requires QB stability. Jets QB instability caps his ceiling regardless of separation.</p>
+ <div class="verdict verdict-pivot">PIVOT TO LOCKED ALPHAS IN STABLE QB ROOMS</div>
+ <p><strong>Re-audit:</strong> After Week 4 to measure Cooper's integration pace.</p>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>The Biggest Upgrades & Downgrades</h2>
+
+ <div class="table-wrap">
+ <table>
+ <thead>
+ <tr>
+ <th>Player</th>
+ <th>Position</th>
+ <th>Direction</th>
+ <th>Why</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Carnell Tate</td>
+ <td>WR / Tennessee</td>
+ <td><span class="verdict verdict-buy">BUY</span></td>
+ <td>Daboll systems funnel 28%+ target share to their alpha. Tate is the engineered focal point. Route tree translates cleanly to NFL. Year 1 ceiling: WR2 overall finish.</td>
+ </tr>
+ <tr>
+ <td>Calvin Ridley</td>
+ <td>WR / Tennessee</td>
+ <td><span class="verdict verdict-avoid">FADE</span></td>
+ <td>Tate's arrival is the structural cannibalization. Ridley's route-tree overlap is 60%+ on intermediate routes — the exact concepts driving his value. Drop to WR45 ADP minimum.</td>
+ </tr>
+ <tr>
+ <td>Wan'Dale Robinson</td>
+ <td>WR / Tennessee</td>
+ <td><span class="verdict verdict-hold">UPGRADE</span></td>
+ <td>Signed as free agent by Titans. Daboll's scheme funnels short-area work to slot. Robinson absorbs what he vacated in New York and inherits Daboll's slot deployment in Tennessee. WR40 → WR28.</td>
+ </tr>
+ <tr>
+ <td>Tony Pollard</td>
+ <td>RB / Tennessee</td>
+ <td><span class="verdict verdict-avoid">FADE</span></td>
+ <td>Daboll Buffalo offenses ran timeshares more than committees. Pollard's receiving role contracts with Tate alpha designation. RB28 finish floor.</td>
+ </tr>
+ <tr>
+ <td>George Kittle</td>
+ <td>TE / San Francisco</td>
+ <td><span class="verdict verdict-hold">HOLD+</span></td>
+ <td>49ers passed on early TE investment. Kittle's target share holds at 22%+. Age-32 curve is the only drag. TE4 floor.</td>
+ </tr>
+ <tr>
+ <td>Pat Freiermuth</td>
+ <td>TE / Pittsburgh</td>
+ <td><span class="verdict verdict-buy">UPGRADE</span></td>
+ <td>Steelers passed on early TE investment despite opportunity. Signals Freiermuth role expansion. Late-round TE6 buy.</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>Coordinator Installs That Matter</h2>
+ <p>Coordinator identity is the most under-priced variable in the post-draft market. Here are the installs that reshape fantasy environments:</p>
+
+ <div class="card">
+ <h4>Washington Commanders — Daronte Jones (Defense)</h4>
+ <p>First-time NFL playcaller installing a 44%+ blitz scheme. Aggressive variance defenses produce explosive negatives (sacks, picks) and prolonged opponent possessions when blitzes fail. Both compress Washington's own snap count. Affects: All Washington skill positions — Daniels, McLaurin, Ekeler, Sinnott.</p>
+ </div>
+
+ <div class="card">
+ <h4>Las Vegas Raiders — Klint Kubiak (Offense)</h4>
+ <p>Kubiak-tree offenses (MIN, DEN, SF, NO) historically suppress TE target share in favor of WR1 + RB receiving. Two-back, fullback-inclusive personnel. Paired with rookie QB Mendoza install. Affects: Bowers (suppressed), Adams (mild compression).</p>
+ </div>
+
+ <div class="card">
+ <h4>Tennessee Titans — Brian Daboll (Offense)</h4>
+ <p>Daboll systems funnel 28%+ target share to designated alpha. Tate is the engineered focal point. Affects: Ridley (relegated), Pollard (touch share capped), Wan'Dale Robinson (slot volume restored).</p>
+ </div>
+
+ <div class="card">
+ <h4>New York Jets — Tanner Engstrand (Offense)</h4>
+ <p>Lions-tree offense projects mid-pack pace, two-TE personnel, balanced run-pass. Cooper Jr. integration is the variable. Wilson cannibalization is structural — see Garrett Wilson trap above.</p>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>2026 Trope Watch List — The Narratives to Avoid</h2>
+
+ <div class="table-wrap">
+ <table>
+ <thead>
+ <tr>
+ <th>Trope</th>
+ <th>The Fallacy</th>
+ <th>What to Do Instead</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Vacated Targets</strong></td>
+ <td>Assuming a departed player's targets transfer linearly to the next depth-chart player.</td>
+ <td>Audit route-tree overlap, alignment, and coverage usage. Targets follow routes that earned them, not jersey numbers.</td>
+ </tr>
+ <tr>
+ <td><strong>Bad Defense Boost</strong></td>
+ <td>Believing weak defense automatically inflates opponent fantasy output.</td>
+ <td>Apply Snap Preservation. Defenses that fail suppress their own offense's snap count.</td>
+ </tr>
+ <tr>
+ <td><strong>Bell-Cow by Title</strong></td>
+ <td>Treating a listed RB1 as a workhorse without verifying snap share by package.</td>
+ <td>Pull rotational data by package and down. Title is not usage.</td>
+ </tr>
+ <tr>
+ <td><strong>Volume Will Come</strong></td>
+ <td>Projecting future opportunity with no mechanical trigger in the current environment.</td>
+ <td>Specify the trigger — injury, scheme change, package shift. Volume doesn't arrive on its own.</td>
+ </tr>
+ <tr>
+ <td><strong>Talent Will Win Out</strong></td>
+ <td>Assuming individual talent overrides poor environment over the long run.</td>
+ <td>Infrastructure Truth applies. Talent without infrastructure produces volatile, capped output.</td>
+ </tr>
+ <tr>
+ <td><strong>Last Year Stats Forecast</strong></td>
+ <td>Using prior-season fantasy points as a Year 2 projection input.</td>
+ <td>2026 mechanical inputs only. Use YPRR, target share, snap share. Not raw points.</td>
+ </tr>
+ <tr>
+ <td><strong>Revenge Game</strong></td>
+ <td>Projecting elevated performance against a former team.</td>
+ <td>No replacement. Pure narrative. Strike from analysis entirely.</td>
+ </tr>
+ <tr>
+ <td><strong>"He's Due" Regression</strong></td>
+ <td>Regression-to-the-mean used in the wrong direction (positive variance assumed).</td>
+ <td>Regression applies to underlying inputs (YPRR, target share), not raw fantasy points.</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>Positional Tier Drops</h2>
+ <p>Tier drops are the moments where value collapses. Know these cliffs before you draft.</p>
+
+ <div class="card">
+ <h4>QB</h4>
+ <p><strong>Tier 1:</strong> Josh Allen, Lamar Jackson<br>
+ <strong>Tier 2:</strong> Joe Burrow, Patrick Mahomes, Jalen Hurts, Baker Mayfield<br>
+ <strong style="color: #ef4444;">TIER DROP →</strong> Jayden Daniels, Bo Nix, Brock Purdy (Variance QB1s)<br>
+ <strong>Tier 4:</strong> Caleb Williams, Justin Herbert, Trevor Lawrence, Drake Maye (Streamers)</p>
+ </div>
+
+ <div class="card">
+ <h4>RB</h4>
+ <p><strong>Tier 1:</strong> Bijan Robinson, Saquon Barkley, Jahmyr Gibbs<br>
+ <strong>Tier 2:</strong> Derrick Henry, De'Von Achane, Christian McCaffrey<br>
+ <strong style="color: #ef4444;">TIER DROP →</strong> Josh Jacobs, Kyren Williams, James Cook, Jeremiyah Love<br>
+ <strong>Tier 4:</strong> Tyrone Tracy, Tyjae Spears, Aaron Jones</p>
+ </div>
+
+ <div class="card">
+ <h4>WR</h4>
+ <p><strong>Tier 1:</strong> Ja'Marr Chase, Justin Jefferson, CeeDee Lamb, Amon-Ra St. Brown<br>
+ <strong>Tier 2:</strong> Puka Nacua, A.J. Brown, Malik Nabers, Brian Thomas Jr.<br>
+ <strong style="color: #ef4444;">TIER DROP →</strong> Drake London, DK Metcalf, Davante Adams, Tee Higgins<br>
+ <strong>Tier 4 (Pricing Traps):</strong> Garrett Wilson (PIVOT), Mike Evans (age), Calvin Ridley (FADE)</p>
+ </div>
+
+ <div class="card">
+ <h4>TE</h4>
+ <p><strong>Tier 1:</strong> Trey McBride<br>
+ <strong style="color: #ef4444;">TIER DROP →</strong> Sam LaPorta, George Kittle<br>
+ <strong>Tier 3 (Trap Zone):</strong> Brock Bowers (AVOID), Mark Andrews (age), T.J. Hockenson<br>
+ <strong>Tier 4:</strong> Pat Freiermuth, Tucker Kraft, Cole Kmet</p>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>Live-Draft Pivot Scenarios</h2>
+
+ <div class="card">
+ <h4>Scenario 1: RB Run in Round 2-3</h4>
+ <p><strong>Trigger:</strong> 3+ RBs taken in the last 5 picks; RB Tier-3 cliff is one pick away from depletion.</p>
+ <p><strong>Response:</strong> PIVOT to TE Tier-1 single-player anchor (Trey McBride) or WR Tier-2 alpha (A.J. Brown, Malik Nabers).</p>
+ <p><strong>Risk:</strong> RB2 slot fills from Tier-4 in Round 6+ — likely a High-Efficiency Backup, not a Guaranteed Volume RB.</p>
+ </div>
+
+ <div class="card">
+ <h4>Scenario 2: QB Run in Round 5-6 (Superflex)</h4>
+ <p><strong>Trigger:</strong> 4+ QBs off in 6 picks; QB Tier-3 "Variance" players being taken.</p>
+ <p><strong>Response:</strong> HOLD POSITION. Tier-3 includes Daniels (TRAP). Wait for Tier-4 streamers — you're not missing value.</p>
+ <p><strong>Top Targets:</strong> Drake Maye, Caleb Williams, Justin Herbert (Round 8-10).</p>
+ </div>
+
+ <div class="card">
+ <h4>Scenario 3: TE Run Triggered by Bowers Hype</h4>
+ <p><strong>Trigger:</strong> Bowers goes Round 2; LaPorta or Kittle off in Round 4-5.</p>
+ <p><strong>Response:</strong> PIVOT to elite WR or single-player TE strategy with McBride. Do NOT chase Bowers into the trap zone.</p>
+ <p><strong>Risk:</strong> If McBride is gone, you commit to late-round TE2 streaming (Freiermuth, Kraft).</p>
+ </div>
+
+ <div class="card">
+ <h4>Scenario 4: Washington Stack Trap</h4>
+ <p><strong>Trigger:</strong> Daniels drafted in Round 3; McLaurin available in Round 4-5.</p>
+ <p><strong>Response:</strong> AVOID THE STACK. Snap-suppression risk applies to both. Pivot to a different stable-coordinator stack (Buffalo, Philadelphia).</p>
+ </div>
+
+ <div class="card">
+ <h4>Scenario 5: Rookie WR Run in Rounds 6-8</h4>
+ <p><strong>Trigger:</strong> Tate, Tyson, Cooper Jr. drafted in close succession.</p>
+ <p><strong>Response:</strong> PIVOT to veteran WR Tier-3 — mechanical floor is higher than Year 1 rookie variance.</p>
+ <p><strong>Top Targets:</strong> Tee Higgins, DK Metcalf, Drake London at discount.</p>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="shell">
+ <h2>Re-Audit Schedule</h2>
+ <p>This Blackbook is a living document. Every verdict has a trigger that fires a re-audit. New information arrives constantly — here's when we refresh:</p>
+
+ <div class="card">
+ <h4>Post-OTA Refresh — June 15</h4>
+ <p>Coordinator scheme leaks, depth-chart signals, snap-share rumors. Conditional Scout Reports activated.</p>
+ </div>
+
+ <div class="card">
+ <h4>Post-Preseason Week 2 — August 24</h4>
+ <p>Snap-share reality check. Rookie integration measured. Coordinator tendencies validated against tape.</p>
+ </div>
+
+ <div class="card">
+ <h4>Pre-Draft Final Lock — Draft Week</h4>
+ <p>ADP final read, news scan, Pivot Scenarios refreshed. Tier sheets locked.</p>
+ </div>
+
+ <div class="card">
+ <h4>Post-Week 1 Reality Check — September 15</h4>
+ <p>First mechanical reads on every coordinator install. Trap Cards validated or revoked.</p>
+ </div>
+
+ <div class="card">
+ <h4>Post-Week 4 Final Audit — October 6</h4>
+ <p>Rookie Roster Scrutiny gap closes. Range Width tightens. Mid-season prep begins.</p>
+ </div>
+ </div>
+
+ <div class="footer">
+ <div class="shell">
+ <p><strong>Apex Blackbook 2026</strong></p>
+ <p>Infrastructure vs. Illusion. The 2026 NFL Draft, audited for fantasy football.</p>
+ <p style="margin-top: 32px; color: #77736b; font-size: 13px;">© Apex Draft Suite | Updated April 26, 2026</p>
+ </div>
+ </div>
+
+</body>
+</html>
