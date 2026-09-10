@@ -1,0 +1,3134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DraftPulse — Live Draft Radar | Apex Draft Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0B0E13;
+    --panel: #131924;
+    --panel-raised: #1B2230;
+    --gold: #FF8A3D;
+    --ink: #EDEFF4;
+    --dim: #8992A3;
+    --pulse: #34D399;
+    --coral: #FB6474;
+    --border: rgba(255,255,255,.09);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--void);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  h1, h2, .wordmark {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+
+  a { color: var(--gold); }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  button, input, select {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  /* ---------- Header ---------- */
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(180deg, #0D0F13 0%, var(--void) 100%);
+  }
+
+  .wordmark-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wordmark {
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .wordmark span { color: var(--gold); }
+
+  /* signature element: the pulse ring, only animates on a real poll cycle */
+  .pulse-ring {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--dim);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .pulse-ring.alive { background: var(--pulse); }
+
+  .pulse-ring.firing::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--pulse);
+    animation: pulse-out 0.9s ease-out;
+  }
+
+  @keyframes pulse-out {
+    from { transform: scale(0.4); opacity: 0.9; }
+    to   { transform: scale(2.2); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-ring.firing::after { animation: none; }
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .field-group label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+  }
+
+  input[type="text"], select {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 7px 9px;
+    border-radius: 4px;
+    min-width: 0;
+  }
+
+  input[type="text"]::placeholder { color: #3E434C; }
+
+  .draft-id-input { width: 150px; }
+  .roster-id-input { width: 90px; }
+
+  .req-inputs { display: flex; gap: 6px; align-items: flex-end; }
+  .req-inputs .field-group { width: 42px; }
+  .req-inputs input[type="number"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 7px 6px;
+    border-radius: 4px;
+    width: 100%;
+    font-family: inherit;
+  }
+
+  button {
+    background: var(--gold);
+    color: #14120A;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+
+  button:hover { filter: brightness(1.08); }
+  button:disabled { background: var(--panel-raised); color: var(--dim); cursor: not-allowed; }
+
+  button.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  button.secondary:hover { border-color: var(--gold); }
+
+  .file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .file-btn input[type="file"] { display: none; }
+
+  /* ---------- Layout ---------- */
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    min-height: calc(100vh - 200px);
+  }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  .panel { background: var(--void); padding: 16px 20px; overflow-y: auto; max-height: 72vh; }
+
+  .panel h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin: 0 0 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel h2 .count {
+    background: var(--panel-raised);
+    color: var(--ink);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  /* ---------- Pick feed ---------- */
+
+  .pick-row {
+    display: grid;
+    grid-template-columns: 34px 1fr auto auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #1A1D23;
+    animation: row-in 0.35s ease-out;
+  }
+
+  @keyframes row-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pick-row { animation: none; }
+  }
+
+  .pick-no { color: var(--dim); font-size: 12px; }
+  .pick-name { font-weight: 500; }
+  .pick-pos {
+    font-size: 10px;
+    color: var(--dim);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+
+  .verdict-chip {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+  }
+  .verdict-BUY { background: rgba(61,220,132,0.14); color: var(--pulse); }
+  .verdict-HOLD { background: rgba(98,103,111,0.18); color: #A6ABB3; }
+  .verdict-FADE, .verdict-TRAP { background: rgba(232,90,79,0.14); color: var(--coral); }
+  .verdict-unmatched { background: transparent; color: #3E434C; border: 1px dashed var(--border); }
+
+  .tier-chip {
+    font-size: 10px;
+    color: var(--dim);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  /* ---------- Alerts ---------- */
+
+  .alert-card {
+    background: var(--panel);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    animation: row-in 0.35s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) { .alert-card { animation: none; } }
+
+  .alert-card.DRAFT_RUN { border-left-color: #E8B84C; }
+  .alert-card.VALUE_CLIFF { border-left-color: var(--coral); }
+  .alert-card.VALUE_GAP { border-left-color: #E8B84C; }
+  .alert-card.DRAFT_PIVOT { border-left-color: var(--pulse); }
+  .alert-card.ROSTER_GAP { border-left-color: #7C8CE8; }
+  .alert-card.QB3_MARGINAL_VALUE { border-left-color: var(--gold); }
+
+  .alert-type {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--dim);
+    margin-bottom: 4px;
+  }
+  .alert-detail { font-size: 13px; }
+  .alert-pick { color: var(--dim); font-size: 11px; margin-top: 3px; }
+
+  /* ---------- Empty states ---------- */
+
+  .empty-state {
+    color: var(--dim);
+    font-size: 13px;
+    padding: 20px 0;
+    line-height: 1.7;
+  }
+  .empty-state strong { color: var(--ink); }
+
+  /* ---------- Footer status bar ---------- */
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--dim);
+    align-items: center;
+  }
+  footer strong { color: var(--ink); }
+  footer .error { color: var(--coral); }
+
+  /* ---------- PulseCheck ---------- */
+
+  .pc-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(6,7,9,0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 24px;
+  }
+  .pc-modal-backdrop[hidden] { display: none; }
+
+  .pc-modal {
+    background: var(--void);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: min(980px, 100%);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pc-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pc-modal-body {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1px;
+    background: var(--border);
+    overflow: hidden;
+    flex: 1;
+  }
+  @media (max-width: 720px) {
+    .pc-modal-body { grid-template-columns: 1fr; }
+  }
+
+  .pc-browse {
+    background: var(--void);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pc-browse-controls {
+    padding: 12px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #1A1D23;
+  }
+  .pc-browse-controls input[type="text"] { flex: 1; }
+
+  .pc-list { overflow-y: auto; padding: 6px 0; }
+
+  .pc-list-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+  }
+  .pc-list-row:hover, .pc-list-row.active {
+    background: var(--panel);
+    border-left-color: var(--gold);
+  }
+  .pc-list-row .pick-name { flex: 1; font-size: 13px; }
+
+  .pc-detail {
+    background: var(--void);
+    padding: 18px 22px;
+    overflow-y: auto;
+  }
+
+  .pc-detail h3 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pc-pos { font-size: 11px; color: var(--dim); font-weight: 400; }
+
+  .pc-justification {
+    color: var(--dim);
+    font-size: 13px;
+    margin: 8px 0 16px 0;
+  }
+
+  .pc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    margin-bottom: 18px;
+    font-size: 13px;
+  }
+
+  .pc-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    margin-bottom: 3px;
+  }
+
+  .pc-section { margin-bottom: 16px; }
+  .pc-section p { margin: 0; font-size: 13px; line-height: 1.6; }
+
+  .insulation-read {
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .insulation-read.insulated { background: rgba(61,220,132,0.10); border-left: 3px solid var(--pulse); }
+  .insulation-read.exposed { background: rgba(232,90,79,0.10); border-left: 3px solid var(--coral); }
+
+  /* ---------- Roster picker strip ---------- */
+
+  .roster-picker-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border);
+    background: #0D0F13;
+    flex-wrap: wrap;
+  }
+
+  .roster-picker-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    flex-shrink: 0;
+  }
+
+  .roster-picker-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .roster-chip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .roster-chip:hover { border-color: var(--gold); }
+  .roster-chip.selected {
+    background: rgba(201,162,39,0.16);
+    border-color: var(--gold);
+    color: var(--gold);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark-row">
+    <div class="pulse-ring" id="pulseRing"></div>
+    <div class="wordmark">DRAFT<span>PULSE</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="field-group">
+      <label for="draftIdInput">Sleeper Draft ID</label>
+      <input type="text" id="draftIdInput" class="draft-id-input" placeholder="e.g. 998877665544">
+    </div>
+    <div class="field-group">
+      <label for="rosterIdInput">Your Roster ID</label>
+      <input type="text" id="rosterIdInput" class="roster-id-input" placeholder="optional">
+    </div>
+    <div class="field-group">
+      <label for="formatSelect">Format</label>
+      <select id="formatSelect">
+        <option value="superflex" selected>Superflex / 2QB</option>
+        <option value="1qb">1QB</option>
+      </select>
+    </div>
+    <div class="req-inputs">
+      <div class="field-group"><label for="reqQB">QB</label><input type="number" id="reqQB" value="2" min="0" max="4"></div>
+      <div class="field-group"><label for="reqRB">RB</label><input type="number" id="reqRB" value="2" min="0" max="6"></div>
+      <div class="field-group"><label for="reqWR">WR</label><input type="number" id="reqWR" value="2" min="0" max="6"></div>
+      <div class="field-group"><label for="reqTE">TE</label><input type="number" id="reqTE" value="1" min="0" max="3"></div>
+    </div>
+    <label class="file-btn button secondary" style="display:inline-flex;">
+      <span id="fileLabel">Load Scout Reports</span>
+      <input type="file" id="fileInput" multiple accept=".json">
+    </label>
+    <button id="browseBtn" class="secondary" type="button">Browse Pool — PulseCheck</button>
+    <button id="startBtn">Start Watching</button>
+  </div>
+</header>
+
+<div id="rosterPickerStrip" class="roster-picker-strip">
+  <span class="roster-picker-label">Your Roster:</span>
+  <div id="rosterPickerChips" class="roster-picker-chips">
+    <span class="empty-state" style="padding:0;">No rosters seen yet — picks will populate this once the draft starts.</span>
+  </div>
+</div>
+
+<main>
+  <section class="panel">
+    <h2>Live Picks <span class="count" id="pickCount">0</span></h2>
+    <div id="pickFeed">
+      <div class="empty-state">
+        No draft loaded yet. Enter a <strong>Sleeper draft ID</strong> above and press <strong>Start Watching</strong> — picks will appear here as they happen, polled every 3 seconds.
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Alerts <span class="count" id="alertCount">0</span></h2>
+    <div id="alertFeed">
+      <div class="empty-state">
+        Alerts fire here once picks start coming in. <strong>Draft Run</strong> works immediately with no Scout Report data loaded — it only needs positions. <strong>Value Cliff</strong>, <strong>Value Gap</strong>, <strong>Draft Pivot</strong>, and <strong>Roster Gap Warning</strong> need Scout Reports loaded first (use <strong>Load Scout Reports</strong> above and select one or more <code>scout_reports/*.json</code> files).
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="pulseCheckModal" class="pc-modal-backdrop" hidden>
+  <div class="pc-modal" role="dialog" aria-modal="true" aria-labelledby="pcModalTitle">
+    <div class="pc-modal-header">
+      <span id="pcModalTitle" class="wordmark">PulseCheck</span>
+      <button id="pcCloseBtn" class="secondary" type="button">Close</button>
+    </div>
+    <div class="pc-modal-body">
+      <div class="pc-browse">
+        <div class="pc-browse-controls">
+          <input type="text" id="pcSearch" placeholder="Search available players…">
+          <select id="pcPosFilter">
+            <option value="">All positions</option>
+            <option value="QB">QB</option>
+            <option value="RB">RB</option>
+            <option value="WR">WR</option>
+            <option value="TE">TE</option>
+          </select>
+        </div>
+        <div id="pcList" class="pc-list"></div>
+      </div>
+      <div id="pulseCheckDetail" class="pc-detail">
+        <div class="empty-state">Pick a player from the list to see TrueVolume's reasoning and how insulated your roster is against their downside.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span id="statusLine">Not connected.</span>
+  <span>Coverage: <strong id="coverageLine">0 loaded</strong></span>
+  <span>Pool ranking: <strong>embedded snapshot, 240 players</strong> — <a href="#" id="poolInfoLink">what does this mean?</a></span>
+</footer>
+
+<script>
+// =====================================================================
+// Embedded Sleeper search_rank pool snapshot (240 players).
+// This is a point-in-time snapshot from this project's build session,
+// not a live fetch — Value Cliff / Value Gap rank comparisons are only
+// as fresh as this list. Swap in a real GET /v1/players/nfl fetch (with
+// daily caching) when moving past demo/prototype stage; see Build Log,
+// "NOT YET BUILT" section.
+// =====================================================================
+const RANKED_POOL = [
+  {
+    "player_id": "4984",
+    "name": "Josh Allen",
+    "position": "QB",
+    "team": "BUF",
+    "search_rank": 1
+  },
+  {
+    "player_id": "9509",
+    "name": "Bijan Robinson",
+    "position": "RB",
+    "team": "ATL",
+    "search_rank": 1
+  },
+  {
+    "player_id": "9221",
+    "name": "Jahmyr Gibbs",
+    "position": "RB",
+    "team": "DET",
+    "search_rank": 2
+  },
+  {
+    "player_id": "7564",
+    "name": "Ja'Marr Chase",
+    "position": "WR",
+    "team": "CIN",
+    "search_rank": 3
+  },
+  {
+    "player_id": "11564",
+    "name": "Drake Maye",
+    "position": "QB",
+    "team": "NE",
+    "search_rank": 3
+  },
+  {
+    "player_id": "6813",
+    "name": "Jonathan Taylor",
+    "position": "RB",
+    "team": "IND",
+    "search_rank": 4
+  },
+  {
+    "player_id": "4034",
+    "name": "Christian McCaffrey",
+    "position": "RB",
+    "team": "SF",
+    "search_rank": 5
+  },
+  {
+    "player_id": "8138",
+    "name": "James Cook",
+    "position": "RB",
+    "team": "BUF",
+    "search_rank": 5
+  },
+  {
+    "player_id": "9488",
+    "name": "Jaxon Smith-Njigba",
+    "position": "WR",
+    "team": "SEA",
+    "search_rank": 5
+  },
+  {
+    "player_id": "9493",
+    "name": "Puka Nacua",
+    "position": "WR",
+    "team": "LAR",
+    "search_rank": 5
+  },
+  {
+    "player_id": "3198",
+    "name": "Derrick Henry",
+    "position": "RB",
+    "team": "BAL",
+    "search_rank": 7
+  },
+  {
+    "player_id": "7547",
+    "name": "Amon-Ra St. Brown",
+    "position": "WR",
+    "team": "DET",
+    "search_rank": 8
+  },
+  {
+    "player_id": "9226",
+    "name": "De'Von Achane",
+    "position": "RB",
+    "team": "MIA",
+    "search_rank": 8
+  },
+  {
+    "player_id": "11566",
+    "name": "Jayden Daniels",
+    "position": "QB",
+    "team": "WAS",
+    "search_rank": 9
+  },
+  {
+    "player_id": "6786",
+    "name": "CeeDee Lamb",
+    "position": "WR",
+    "team": "DAL",
+    "search_rank": 10
+  },
+  {
+    "player_id": "6770",
+    "name": "Joe Burrow",
+    "position": "QB",
+    "team": "CIN",
+    "search_rank": 11
+  },
+  {
+    "player_id": "6794",
+    "name": "Justin Jefferson",
+    "position": "WR",
+    "team": "MIN",
+    "search_rank": 11
+  },
+  {
+    "player_id": "4881",
+    "name": "Lamar Jackson",
+    "position": "QB",
+    "team": "BAL",
+    "search_rank": 12
+  },
+  {
+    "player_id": "12507",
+    "name": "Omarion Hampton",
+    "position": "RB",
+    "team": "LAC",
+    "search_rank": 12
+  },
+  {
+    "player_id": "12527",
+    "name": "Ashton Jeanty",
+    "position": "RB",
+    "team": "LV",
+    "search_rank": 12
+  },
+  {
+    "player_id": "4866",
+    "name": "Saquon Barkley",
+    "position": "RB",
+    "team": "PHI",
+    "search_rank": 13
+  },
+  {
+    "player_id": "8150",
+    "name": "Kyren Williams",
+    "position": "RB",
+    "team": "LAR",
+    "search_rank": 13
+  },
+  {
+    "player_id": "8112",
+    "name": "Drake London",
+    "position": "WR",
+    "team": "ATL",
+    "search_rank": 14
+  },
+  {
+    "player_id": "11560",
+    "name": "Caleb Williams",
+    "position": "QB",
+    "team": "CHI",
+    "search_rank": 15
+  },
+  {
+    "player_id": "13287",
+    "name": "Jeremiyah Love",
+    "position": "RB",
+    "team": "ARI",
+    "search_rank": 15
+  },
+  {
+    "player_id": "9224",
+    "name": "Chase Brown",
+    "position": "RB",
+    "team": "CIN",
+    "search_rank": 16
+  },
+  {
+    "player_id": "8130",
+    "name": "Trey McBride",
+    "position": "TE",
+    "team": "ARI",
+    "search_rank": 17
+  },
+  {
+    "player_id": "5859",
+    "name": "A.J. Brown",
+    "position": "WR",
+    "team": "NE",
+    "search_rank": 18
+  },
+  {
+    "player_id": "11604",
+    "name": "Brock Bowers",
+    "position": "TE",
+    "team": "LV",
+    "search_rank": 18
+  },
+  {
+    "player_id": "7569",
+    "name": "Nico Collins",
+    "position": "WR",
+    "team": "HOU",
+    "search_rank": 19
+  },
+  {
+    "player_id": "8151",
+    "name": "Kenneth Walker",
+    "position": "RB",
+    "team": "KC",
+    "search_rank": 19
+  },
+  {
+    "player_id": "5850",
+    "name": "Josh Jacobs",
+    "position": "RB",
+    "team": "GB",
+    "search_rank": 20
+  },
+  {
+    "player_id": "8137",
+    "name": "George Pickens",
+    "position": "WR",
+    "team": "DAL",
+    "search_rank": 23
+  },
+  {
+    "player_id": "10229",
+    "name": "Rashee Rice",
+    "position": "WR",
+    "team": "KC",
+    "search_rank": 23
+  },
+  {
+    "player_id": "12508",
+    "name": "Jaxson Dart",
+    "position": "QB",
+    "team": "NYG",
+    "search_rank": 24
+  },
+  {
+    "player_id": "6797",
+    "name": "Justin Herbert",
+    "position": "QB",
+    "team": "LAC",
+    "search_rank": 25
+  },
+  {
+    "player_id": "11632",
+    "name": "Malik Nabers",
+    "position": "WR",
+    "team": "NYG",
+    "search_rank": 25
+  },
+  {
+    "player_id": "4046",
+    "name": "Patrick Mahomes",
+    "position": "QB",
+    "team": "KC",
+    "search_rank": 26
+  },
+  {
+    "player_id": "6904",
+    "name": "Jalen Hurts",
+    "position": "QB",
+    "team": "PHI",
+    "search_rank": 26
+  },
+  {
+    "player_id": "8144",
+    "name": "Chris Olave",
+    "position": "WR",
+    "team": "NO",
+    "search_rank": 26
+  },
+  {
+    "player_id": "2315",
+    "name": "Todd Gurley",
+    "position": "RB",
+    "team": null,
+    "search_rank": 27},
+  {
+    "player_id": "8155",
+    "name": "Breece Hall",
+    "position": "RB",
+    "team": "NYJ",
+    "search_rank": 27
+  },
+  {
+    "player_id": "7523",
+    "name": "Trevor Lawrence",
+    "position": "QB",
+    "team": "JAX",
+    "search_rank": 31
+  },
+  {
+    "player_id": "7588",
+    "name": "Javonte Williams",
+    "position": "RB",
+    "team": "DAL",
+    "search_rank": 32
+  },
+  {
+    "player_id": "11584",
+    "name": "Bucky Irving",
+    "position": "RB",
+    "team": "TB",
+    "search_rank": 32
+  },
+  {
+    "player_id": "7543",
+    "name": "Travis Etienne",
+    "position": "RB",
+    "team": "NO",
+    "search_rank": 34
+  },
+  {
+    "player_id": "11563",
+    "name": "Bo Nix",
+    "position": "QB",
+    "team": "DEN",
+    "search_rank": 34
+  },
+  {
+    "player_id": "6801",
+    "name": "Tee Higgins",
+    "position": "WR",
+    "team": "CIN",
+    "search_rank": 36
+  },
+  {
+    "player_id": "8183",
+    "name": "Brock Purdy",
+    "position": "QB",
+    "team": "SF",
+    "search_rank": 37
+  },
+  {
+    "player_id": "12526",
+    "name": "Tetairoa McMillan",
+    "position": "WR",
+    "team": "CAR",
+    "search_rank": 37
+  },
+  {
+    "player_id": "8146",
+    "name": "Garrett Wilson",
+    "position": "WR",
+    "team": "NYJ",
+    "search_rank": 38
+  },
+  {
+    "player_id": "12517",
+    "name": "Colston Loveland",
+    "position": "TE",
+    "team": "CHI",
+    "search_rank": 38
+  },
+  {
+    "player_id": "7525",
+    "name": "DeVonta Smith",
+    "position": "WR",
+    "team": "PHI",
+    "search_rank": 39
+  },
+  {
+    "player_id": "12481",
+    "name": "Cam Skattebo",
+    "position": "RB",
+    "team": "NYG",
+    "search_rank": 39
+  },
+  {
+    "player_id": "12529",
+    "name": "TreVeyon Henderson",
+    "position": "RB",
+    "team": "NE",
+    "search_rank": 39
+  },
+  {
+    "player_id": "13269",
+    "name": "Fernando Mendoza",
+    "position": "QB",
+    "team": "LV",
+    "search_rank": 39
+  },
+  {
+    "player_id": "12519",
+    "name": "Luther Burden",
+    "position": "WR",
+    "team": "CHI",
+    "search_rank": 40
+  },
+  {
+    "player_id": "11635",
+    "name": "Ladd McConkey",
+    "position": "WR",
+    "team": "LAC",
+    "search_rank": 41
+  },
+  {
+    "player_id": "7526",
+    "name": "Jaylen Waddle",
+    "position": "WR",
+    "team": "DEN",
+    "search_rank": 42
+  },
+  {
+    "player_id": "12514",
+    "name": "Emeka Egbuka",
+    "position": "WR",
+    "team": "TB",
+    "search_rank": 43
+  },
+  {
+    "player_id": "9499",
+    "name": "Bryce Ford-Wheaton",
+    "position": "WR",
+    "team": null,
+    "search_rank": 44
+  },
+  {
+    "player_id": "9997",
+    "name": "Zay Flowers",
+    "position": "WR",
+    "team": "BAL",
+    "search_rank": 44
+  },
+  {
+    "player_id": "12490",
+    "name": "Bhayshul Tuten",
+    "position": "RB",
+    "team": "JAX",
+    "search_rank": 44
+  },
+  {
+    "player_id": "3294",
+    "name": "Dak Prescott",
+    "position": "QB",
+    "team": "DAL",
+    "search_rank": 45
+  },
+  {
+    "player_id": "5927",
+    "name": "Terry McLaurin",
+    "position": "WR",
+    "team": "WAS",
+    "search_rank": 45
+  },
+  {
+    "player_id": "12512",
+    "name": "Quinshon Judkins",
+    "position": "RB",
+    "team": "CLE",
+    "search_rank": 45
+  },
+  {
+    "player_id": "2133",
+    "name": "Davante Adams",
+    "position": "WR",
+    "team": "LAR",
+    "search_rank": 46
+  },
+  {
+    "player_id": "6790",
+    "name": "D'Andre Swift",
+    "position": "RB",
+    "team": "CHI",
+    "search_rank": 47
+  },
+  {
+    "player_id": "5892",
+    "name": "David Montgomery",
+    "position": "RB",
+    "team": "HOU",
+    "search_rank": 48
+  },
+  {
+    "player_id": "6804",
+    "name": "Jordan Love",
+    "position": "QB",
+    "team": "GB",
+    "search_rank": 50
+  },
+  {
+    "player_id": "12518",
+    "name": "Tyler Warren",
+    "position": "TE",
+    "team": "IND",
+    "search_rank": 50
+  },
+  {
+    "player_id": "8148",
+    "name": "Jameson Williams",
+    "position": "WR",
+    "team": "DET",
+    "search_rank": 52
+  },
+  {
+    "player_id": "8228",
+    "name": "Jaylen Warren",
+    "position": "RB",
+    "team": "PIT",
+    "search_rank": 52
+  },
+  {
+    "player_id": "4983",
+    "name": "DJ Moore",
+    "position": "WR",
+    "team": "BUF",
+    "search_rank": 54
+  },
+  {
+    "player_id": "12489",
+    "name": "RJ Harvey",
+    "position": "RB",
+    "team": "DEN",
+    "search_rank": 56
+  },
+  {
+    "player_id": "2216",
+    "name": "Mike Evans",
+    "position": "WR",
+    "team": "SF",
+    "search_rank": 57
+  },
+  {
+    "player_id": "7611",
+    "name": "Rhamondre Stevenson",
+    "position": "RB",
+    "team": "NE",
+    "search_rank": 58
+  },
+  {
+    "player_id": "13286",
+    "name": "Jadarian Price",
+    "position": "RB",
+    "team": "SEA",
+    "search_rank": 58
+  },
+  {
+    "player_id": "12534",
+    "name": "Kyle Monangai",
+    "position": "RB",
+    "team": "CHI",
+    "search_rank": 61
+  },
+  {
+    "player_id": "13279",
+    "name": "Carnell Tate",
+    "position": "WR",
+    "team": "TEN",
+    "search_rank": 61
+  },
+  {
+    "player_id": "13281",
+    "name": "Jordyn Tyson",
+    "position": "WR",
+    "team": "NO",
+    "search_rank": 62
+  },
+  {
+    "player_id": "5967",
+    "name": "Tony Pollard",
+    "position": "RB",
+    "team": "TEN",
+    "search_rank": 63
+  },
+  {
+    "player_id": "8167",
+    "name": "Christian Watson",
+    "position": "WR",
+    "team": "GB",
+    "search_rank": 63
+  },
+  {
+    "player_id": "11620",
+    "name": "Rome Odunze",
+    "position": "WR",
+    "team": "CHI",
+    "search_rank": 63
+  },
+  {
+    "player_id": "12506",
+    "name": "Harold Fannin",
+    "position": "TE",
+    "team": "CLE",
+    "search_rank": 63
+  },
+  {
+    "player_id": "4892",
+    "name": "Baker Mayfield",
+    "position": "QB",
+    "team": "TB",
+    "search_rank": 64
+  },
+  {
+    "player_id": "9487",
+    "name": "Parker Washington",
+    "position": "WR",
+    "team": "JAX",
+    "search_rank": 64
+  },
+  {
+    "player_id": "7021",
+    "name": "Rico Dowdle",
+    "position": "RB",
+    "team": "PIT",
+    "search_rank": 65
+  },
+  {
+    "player_id": "3163",
+    "name": "Jared Goff",
+    "position": "QB",
+    "team": "DET",
+    "search_rank": 66
+  },
+  {
+    "player_id": "7594",
+    "name": "Chuba Hubbard",
+    "position": "RB",
+    "team": "CAR",
+    "search_rank": 66
+  },
+  {
+    "player_id": "11631",
+    "name": "Brian Thomas",
+    "position": "WR",
+    "team": "JAX",
+    "search_rank": 66
+  },
+  {
+    "player_id": "9484",
+    "name": "Tucker Kraft",
+    "position": "TE",
+    "team": "GB",
+    "search_rank": 67
+  },
+  {
+    "player_id": "6806",
+    "name": "J.K. Dobbins",
+    "position": "RB",
+    "team": "DEN",
+    "search_rank": 68
+  },
+  {
+    "player_id": "11586",
+    "name": "Blake Corum",
+    "position": "RB",
+    "team": "LAR",
+    "search_rank": 68
+  },
+  {
+    "player_id": "7553",
+    "name": "Kyle Pitts",
+    "position": "TE",
+    "team": "ATL",
+    "search_rank": 71
+  },
+  {
+    "player_id": "5045",
+    "name": "Courtland Sutton",
+    "position": "WR",
+    "team": "DEN",
+    "search_rank": 72
+  },
+  {
+    "player_id": "5846",
+    "name": "DK Metcalf",
+    "position": "WR",
+    "team": "PIT",
+    "search_rank": 73
+  },
+  {
+    "player_id": "167",
+    "name": "Tom Brady",
+    "position": "QB",
+    "team": null,
+    "search_rank": 74
+  },
+  {
+    "player_id": "10232",
+    "name": "Michael Wilson",
+    "position": "WR",
+    "team": "ARI",
+    "search_rank": 75
+  },
+  {
+    "player_id": "12522",
+    "name": "Cam Ward",
+    "position": "QB",
+    "team": "TEN",
+    "search_rank": 75
+  },
+  {
+    "player_id": "289",
+    "name": "Drew Brees",
+    "position": "QB",
+    "team": null,
+    "search_rank": 76
+  },
+  {
+    "player_id": "10859",
+    "name": "Sam LaPorta",
+    "position": "TE",
+    "team": "DET",
+    "search_rank": 76
+  },
+  {
+    "player_id": "11628",
+    "name": "Marvin Harrison",
+    "position": "WR",
+    "team": "ARI",
+    "search_rank": 76
+  },
+  {
+    "player_id": "5947",
+    "name": "Jakobi Meyers",
+    "position": "WR",
+    "team": "JAX",
+    "search_rank": 77
+  },
+  {
+    "player_id": "8154",
+    "name": "Brian Robinson",
+    "position": "RB",
+    "team": "ATL",
+    "search_rank": 80
+  },
+  {
+    "player_id": "9758",
+    "name": "C.J. Stroud",
+    "position": "QB",
+    "team": "HOU",
+    "search_rank": 80
+  },
+  {
+    "player_id": "10236",
+    "name": "Dalton Kincaid",
+    "position": "TE",
+    "team": "BUF",
+    "search_rank": 81
+  },
+  {
+    "player_id": "12545",
+    "name": "Tyler Shough",
+    "position": "QB",
+    "team": "NO",
+    "search_rank": 81
+  },
+  {
+    "player_id": "12493",
+    "name": "Oronde Gadsden",
+    "position": "TE",
+    "team": "LAC",
+    "search_rank": 83
+  },
+  {
+    "player_id": "4943",
+    "name": "Sam Darnold",
+    "position": "QB",
+    "team": "SEA",
+    "search_rank": 84
+  },
+  {
+    "player_id": "4199",
+    "name": "Aaron Jones",
+    "position": "RB",
+    "team": "MIN",
+    "search_rank": 85
+  },
+  {
+    "player_id": "7567",
+    "name": "Kenny Gainwell",
+    "position": "RB",
+    "team": "TB",
+    "search_rank": 86
+  },
+  {
+    "player_id": "4037",
+    "name": "Chris Godwin",
+    "position": "WR",
+    "team": "TB",
+    "search_rank": 88
+  },
+  {
+    "player_id": "536",
+    "name": "Antonio Brown",
+    "position": "WR",
+    "team": null,
+    "search_rank": 89
+  },
+  {
+    "player_id": "8132",
+    "name": "Tyler Allgeier",
+    "position": "RB",
+    "team": "ARI",
+    "search_rank": 89
+  },
+  {
+    "player_id": "13294",
+    "name": "Makai Lemon",
+    "position": "WR",
+    "team": "PHI",
+    "search_rank": 89
+  },
+  {
+    "player_id": "8142",
+    "name": "Alec Pierce",
+    "position": "WR",
+    "team": "IND",
+    "search_rank": 90
+  },
+  {
+    "player_id": "11583",
+    "name": "Jonathon Brooks",
+    "position": "RB",
+    "team": "CAR",
+    "search_rank": 91
+  },
+  {
+    "player_id": "344",
+    "name": "Julian Edelman",
+    "position": "WR",
+    "team": null,
+    "search_rank": 92
+  },
+  {
+    "player_id": "3214",
+    "name": "Hunter Henry",
+    "position": "TE",
+    "team": "NE",
+    "search_rank": 92
+  },
+  {
+    "player_id": "4137",
+    "name": "James Conner",
+    "position": "RB",
+    "team": "ARI",
+    "search_rank": 92
+  },
+  {
+    "player_id": "5849",
+    "name": "Kyler Murray",
+    "position": "QB",
+    "team": "MIN",
+    "search_rank": 92
+  },
+  {
+    "player_id": "5022",
+    "name": "Dallas Goedert",
+    "position": "TE",
+    "team": "PHI",
+    "search_rank": 94
+  },
+  {
+    "player_id": "12533",
+    "name": "Jacory Croskey-Merritt",
+    "position": "RB",
+    "team": "WAS",
+    "search_rank": 95
+  },
+  {
+    "player_id": "5012",
+    "name": "Mark Andrews",
+    "position": "TE",
+    "team": "BAL",
+    "search_rank": 96
+  },
+  {
+    "player_id": "4217",
+    "name": "George Kittle",
+    "position": "TE",
+    "team": "SF",
+    "search_rank": 97
+  },
+  {
+    "player_id": "8110",
+    "name": "Jake Ferguson",
+    "position": "TE",
+    "team": "DAL",
+    "search_rank": 97
+  },
+  {
+    "player_id": "5001",
+    "name": "Dalton Schultz",
+    "position": "TE",
+    "team": "HOU",
+    "search_rank": 98
+  },
+  {
+    "player_id": "6819",
+    "name": "Michael Pittman",
+    "position": "WR",
+    "team": "PIT",
+    "search_rank": 98
+  },
+  {
+    "player_id": "9228",
+    "name": "Bryce Young",
+    "position": "QB",
+    "team": "CAR",
+    "search_rank": 98
+  },
+  {
+    "player_id": "9756",
+    "name": "Jordan Addison",
+    "position": "WR",
+    "team": "MIN",
+    "search_rank": 98
+  },
+  {
+    "player_id": "8408",
+    "name": "Jordan Mason",
+    "position": "RB",
+    "team": "MIN",
+    "search_rank": 100
+  },
+  {
+    "player_id": "9753",
+    "name": "Zach Charbonnet",
+    "position": "RB",
+    "team": "SEA",
+    "search_rank": 101
+  },
+  {
+    "player_id": "8126",
+    "name": "Wan'Dale Robinson",
+    "position": "WR",
+    "team": "TEN",
+    "search_rank": 102
+  },
+  {
+    "player_id": "9500",
+    "name": "Josh Downs",
+    "position": "WR",
+    "team": "IND",
+    "search_rank": 102
+  },
+  {
+    "player_id": "421",
+    "name": "Matthew Stafford",
+    "position": "QB",
+    "team": "LAR",
+    "search_rank": 103
+  },
+  {
+    "player_id": "7002",
+    "name": "Juwan Johnson",
+    "position": "TE",
+    "team": "NO",
+    "search_rank": 103
+  },
+  {
+    "player_id": "9754",
+    "name": "Quentin Johnston",
+    "position": "WR",
+    "team": "LAC",
+    "search_rank": 103},
+  {
+    "player_id": "5248",
+    "name": "Gus Edwards",
+    "position": "RB",
+    "team": null,
+    "search_rank": 104
+  },
+  {
+    "player_id": "8924",
+    "name": "Thomas Odukoya",
+    "position": "TE",
+    "team": null,
+    "search_rank": 104
+  },
+  {
+    "player_id": "9480",
+    "name": "Brenton Strange",
+    "position": "TE",
+    "team": "JAX",
+    "search_rank": 104
+  },
+  {
+    "player_id": "12474",
+    "name": "Woody Marks",
+    "position": "RB",
+    "team": "HOU",
+    "search_rank": 105
+  },
+  {
+    "player_id": "1466",
+    "name": "Travis Kelce",
+    "position": "TE",
+    "team": "KC",
+    "search_rank": 106
+  },
+  {
+    "player_id": "5870",
+    "name": "Daniel Jones",
+    "position": "QB",
+    "team": "IND",
+    "search_rank": 109
+  },
+  {
+    "player_id": "8161",
+    "name": "Malik Willis",
+    "position": "QB",
+    "team": "MIA",
+    "search_rank": 109
+  },
+  {
+    "player_id": "13330",
+    "name": "Kenyon Sadiq",
+    "position": "TE",
+    "team": "NYJ",
+    "search_rank": 109
+  },
+  {
+    "player_id": "11655",
+    "name": "Tyrone Tracy",
+    "position": "RB",
+    "team": "NYG",
+    "search_rank": 110
+  },
+  {
+    "player_id": "3164",
+    "name": "Ezekiel Elliott",
+    "position": "RB",
+    "team": null,
+    "search_rank": 111
+  },
+  {
+    "player_id": "10222",
+    "name": "Jayden Reed",
+    "position": "WR",
+    "team": "GB",
+    "search_rank": 111
+  },
+  {
+    "player_id": "8121",
+    "name": "Romeo Doubs",
+    "position": "WR",
+    "team": "NE",
+    "search_rank": 113
+  },
+  {
+    "player_id": "8131",
+    "name": "Isaiah Likely",
+    "position": "TE",
+    "team": "NYG",
+    "search_rank": 113
+  },
+  {
+    "player_id": "13337",
+    "name": "Emmett Johnson",
+    "position": "RB",
+    "team": "KC",
+    "search_rank": 113
+  },
+  {
+    "player_id": "11589",
+    "name": "Trey Benson",
+    "position": "RB",
+    "team": "ARI",
+    "search_rank": 114
+  },
+  {
+    "player_id": "1479",
+    "name": "Keenan Allen",
+    "position": "WR",
+    "team": null,
+    "search_rank": 116
+  },
+  {
+    "player_id": "2449",
+    "name": "Stefon Diggs",
+    "position": "WR",
+    "team": "WAS",
+    "search_rank": 116
+  },
+  {
+    "player_id": "13298",
+    "name": "KC Concepcion",
+    "position": "WR",
+    "team": "CLE",
+    "search_rank": 116
+  },
+  {
+    "player_id": "515",
+    "name": "Rob Gronkowski",
+    "position": "TE",
+    "team": null,
+    "search_rank": 118
+  },
+  {
+    "player_id": "13345",
+    "name": "Jonah Coleman",
+    "position": "RB",
+    "team": "DEN",
+    "search_rank": 118
+  },
+  {
+    "player_id": "3157",
+    "name": "William Fuller",
+    "position": "WR",
+    "team": null,
+    "search_rank": 119
+  },
+  {
+    "player_id": "4035",
+    "name": "Alvin Kamara",
+    "position": "RB",
+    "team": "NO",
+    "search_rank": 119
+  },
+  {
+    "player_id": "8136",
+    "name": "Rachaad White",
+    "position": "RB",
+    "team": "WAS",
+    "search_rank": 119
+  },
+  {
+    "player_id": "8134",
+    "name": "Khalil Shakir",
+    "position": "WR",
+    "team": "BUF",
+    "search_rank": 120
+  },
+  {
+    "player_id": "11624",
+    "name": "Xavier Worthy",
+    "position": "WR",
+    "team": "KC",
+    "search_rank": 120
+  },
+  {
+    "player_id": "9508",
+    "name": "Tyjae Spears",
+    "position": "RB",
+    "team": "TEN",
+    "search_rank": 122
+  },
+  {
+    "player_id": "7049",
+    "name": "Jauan Jennings",
+    "position": "WR",
+    "team": "MIN",
+    "search_rank": 123
+  },
+  {
+    "player_id": "6789",
+    "name": "Henry Ruggs",
+    "position": "WR",
+    "team": null,
+    "search_rank": 124
+  },
+  {
+    "player_id": "5890",
+    "name": "Damien Harris",
+    "position": "RB",
+    "team": null,
+    "search_rank": 126
+  },
+  {
+    "player_id": "11603",
+    "name": "AJ Barner",
+    "position": "TE",
+    "team": "SEA",
+    "search_rank": 126
+  },
+  {
+    "player_id": "12484",
+    "name": "Jayden Higgins",
+    "position": "WR",
+    "team": "HOU",
+    "search_rank": 126
+  },
+  {
+    "player_id": "5889",
+    "name": "Bryce Love",
+    "position": "RB",
+    "team": null,
+    "search_rank": 127
+  },
+  {
+    "player_id": "5844",
+    "name": "T.J. Hockenson",
+    "position": "TE",
+    "team": "MIN",
+    "search_rank": 128
+  },
+  {
+    "player_id": "12469",
+    "name": "Dylan Sampson",
+    "position": "RB",
+    "team": "CLE",
+    "search_rank": 129
+  },
+  {
+    "player_id": "2374",
+    "name": "Tyler Lockett",
+    "position": "WR",
+    "team": null,
+    "search_rank": 131
+  },
+  {
+    "player_id": "4033",
+    "name": "David Njoku",
+    "position": "TE",
+    "team": "LAC",
+    "search_rank": 131
+  },
+  {
+    "player_id": "11646",
+    "name": "Jalen Coker",
+    "position": "WR",
+    "team": "CAR",
+    "search_rank": 132
+  },
+  {
+    "player_id": "12501",
+    "name": "Matthew Golden",
+    "position": "WR",
+    "team": "GB",
+    "search_rank": 132
+  },
+  {
+    "player_id": "5872",
+    "name": "Deebo Samuel",
+    "position": "WR",
+    "team": "SF",
+    "search_rank": 134
+  },
+  {
+    "player_id": "11576",
+    "name": "Braelon Allen",
+    "position": "RB",
+    "team": "NYJ",
+    "search_rank": 135
+  },
+  {
+    "player_id": "6865",
+    "name": "Colby Parkinson",
+    "position": "TE",
+    "team": "LAR",
+    "search_rank": 136
+  },
+  {
+    "player_id": "8210",
+    "name": "Chig Okonkwo",
+    "position": "TE",
+    "team": "WAS",
+    "search_rank": 137
+  },
+  {
+    "player_id": "12498",
+    "name": "Mason Taylor",
+    "position": "TE",
+    "team": "NYJ",
+    "search_rank": 138
+  },
+  {
+    "player_id": "13305",
+    "name": "Mike Washington",
+    "position": "RB",
+    "team": "LV",
+    "search_rank": 139
+  },
+  {
+    "player_id": "13349",
+    "name": "Eli Stowers",
+    "position": "TE",
+    "team": "PHI",
+    "search_rank": 140
+  },
+  {
+    "player_id": "10219",
+    "name": "Chris Rodriguez",
+    "position": "RB",
+    "team": "JAX",
+    "search_rank": 141
+  },
+  {
+    "player_id": "11647",
+    "name": "Kimani Vidal",
+    "position": "RB",
+    "team": "LAC",
+    "search_rank": 141
+  },
+  {
+    "player_id": "12487",
+    "name": "Terrance Ferguson",
+    "position": "TE",
+    "team": "LAR",
+    "search_rank": 141
+  },
+  {
+    "player_id": "13275",
+    "name": "Ty Simpson",
+    "position": "QB",
+    "team": "LAR",
+    "search_rank": 141
+  },
+  {
+    "player_id": "11597",
+    "name": "Theo Johnson",
+    "position": "TE",
+    "team": "NYG",
+    "search_rank": 144
+  },
+  {
+    "player_id": "13346",
+    "name": "Denzel Boston",
+    "position": "WR",
+    "team": "CLE",
+    "search_rank": 144
+  },
+  {
+    "player_id": "3321",
+    "name": "Tyreek Hill",
+    "position": "WR",
+    "team": null,
+    "search_rank": 145
+  },
+  {
+    "player_id": "12530",
+    "name": "Travis Hunter",
+    "position": "WR",
+    "team": "JAX",
+    "search_rank": 145
+  },
+  {
+    "player_id": "13276",
+    "name": "Omar Cooper",
+    "position": "WR",
+    "team": "NYJ",
+    "search_rank": 146
+  },
+  {
+    "player_id": "9225",
+    "name": "Tank Bigsby",
+    "position": "RB",
+    "team": "PHI",
+    "search_rank": 147
+  },
+  {
+    "player_id": "8111",
+    "name": "Cade Otton",
+    "position": "TE",
+    "team": "TB",
+    "search_rank": 148
+  },
+  {
+    "player_id": "9511",
+    "name": "Keaton Mitchell",
+    "position": "RB",
+    "team": "LAC",
+    "search_rank": 148
+  },
+  {
+    "player_id": "4234",
+    "name": "Noah Brown",
+    "position": "WR",
+    "team": null,
+    "search_rank": 150
+  },
+  {
+    "player_id": "8676",
+    "name": "Rashid Shaheed",
+    "position": "WR",
+    "team": "SEA",
+    "search_rank": 150
+  },
+  {
+    "player_id": "13417",
+    "name": "De'Zhaun Stribling",
+    "position": "WR",
+    "team": "SF",
+    "search_rank": 150
+  },
+  {
+    "player_id": "2197",
+    "name": "Brandin Cooks",
+    "position": "WR",
+    "team": null,
+    "search_rank": 151
+  },
+  {
+    "player_id": "8205",
+    "name": "Isiah Pacheco",
+    "position": "RB",
+    "team": "DET",
+    "search_rank": 151
+  },
+  {
+    "player_id": "13293",
+    "name": "Ja'Kobi Lane",
+    "position": "WR",
+    "team": "BAL",
+    "search_rank": 151
+  },
+  {
+    "player_id": "12502",
+    "name": "Gunnar Helm",
+    "position": "TE",
+    "team": "TEN",
+    "search_rank": 153
+  },
+  {
+    "player_id": "9506",
+    "name": "Sean Tucker",
+    "position": "RB",
+    "team": "TB",
+    "search_rank": 155
+  },
+  {
+    "player_id": "13301",
+    "name": "Antonio Williams",
+    "position": "WR",
+    "team": "WAS",
+    "search_rank": 156
+  },
+  {
+    "player_id": "13405",
+    "name": "Kaztron Allen",
+    "position": "RB",
+    "team": "WAS",
+    "search_rank": 157
+  },
+  {
+    "player_id": "6783",
+    "name": "Jerry Jeudy",
+    "position": "WR",
+    "team": "CLE",
+    "search_rank": 160
+  },
+  {
+    "player_id": "1149",
+    "name": "Alshon Jeffery",
+    "position": "WR",
+    "team": null,
+    "search_rank": 161
+  },
+  {
+    "player_id": "11435",
+    "name": "Emanuel Wilson",
+    "position": "RB",
+    "team": "SEA",
+    "search_rank": 161
+  },
+  {
+    "player_id": "11618",
+    "name": "Jalen McMillan",
+    "position": "WR",
+    "team": "TB",
+    "search_rank": 162
+  },
+  {
+    "player_id": "11625",
+    "name": "Adonai Mitchell",
+    "position": "WR",
+    "team": "NYJ",
+    "search_rank": 162
+  },
+  {
+    "player_id": "1689",
+    "name": "Adam Thielen",
+    "position": "WR",
+    "team": null,
+    "search_rank": 163
+  },
+  {
+    "player_id": "9504",
+    "name": "Kazshon Boutte",
+    "position": "WR",
+    "team": "NE",
+    "search_rank": 164
+  },
+  {
+    "player_id": "223",
+    "name": "Larry Fitzgerald",
+    "position": "WR",
+    "team": null,
+    "search_rank": 165
+  },
+  {
+    "player_id": "8180",
+    "name": "Jalen Nailor",
+    "position": "WR",
+    "team": "LV",
+    "search_rank": 167
+  },
+  {
+    "player_id": "11575",
+    "name": "Ray Davis",
+    "position": "RB",
+    "team": "BUF",
+    "search_rank": 167
+  },
+  {
+    "player_id": "13288",
+    "name": "Nicholas Singleton",
+    "position": "RB",
+    "team": "TEN",
+    "search_rank": 167
+  },
+  {
+    "player_id": "12476",
+    "name": "Devin Neal",
+    "position": "RB",
+    "team": "NO",
+    "search_rank": 169
+  },
+  {
+    "player_id": "11627",
+    "name": "Troy Franklin",
+    "position": "WR",
+    "team": "DEN",
+    "search_rank": 171
+  },
+  {
+    "player_id": "12492",
+    "name": "Pat Bryant",
+    "position": "WR",
+    "team": "DEN",
+    "search_rank": 172
+  },
+  {
+    "player_id": "12504",
+    "name": "Kaleb Johnson",
+    "position": "RB",
+    "team": "PIT",
+    "search_rank": 173
+  },
+  {
+    "player_id": "12540",
+    "name": "Chimere Dike",
+    "position": "WR",
+    "team": "TEN",
+    "search_rank": 175
+  },
+  {
+    "player_id": "138",
+    "name": "Ben Roethlisberger",
+    "position": "QB",
+    "team": "PIT",
+    "search_rank": 176
+  },
+  {
+    "player_id": "6803",
+    "name": "Brandon Aiyuk",
+    "position": "WR",
+    "team": "SF",
+    "search_rank": 177
+  },
+  {
+    "player_id": "8698",
+    "name": "Jake Tonges",
+    "position": "TE",
+    "team": "SF",
+    "search_rank": 178
+  },
+  {
+    "player_id": "12509",
+    "name": "Tre' Harris",
+    "position": "WR",
+    "team": "LAC",
+    "search_rank": 179
+  },
+  {
+    "player_id": "4981",
+    "name": "Calvin Ridley",
+    "position": "WR",
+    "team": "TEN",
+    "search_rank": 180
+  },
+  {
+    "player_id": "13320",
+    "name": "Zachariah Branch",
+    "position": "WR",
+    "team": "ATL",
+    "search_rank": 180
+  },
+  {
+    "player_id": "2309",
+    "name": "Amari Cooper",
+    "position": "WR",
+    "team": null,
+    "search_rank": 183
+  },
+  {
+    "player_id": "6768",
+    "name": "Tua Tagovailoa",
+    "position": "QB",
+    "team": "ATL",
+    "search_rank": 183
+  },
+  {
+    "player_id": "12535",
+    "name": "Isaac TeSlaa",
+    "position": "WR",
+    "team": "DET",
+    "search_rank": 184
+  },
+  {
+    "player_id": "12499",
+    "name": "Elic Ayomanor",
+    "position": "WR",
+    "team": "TEN",
+    "search_rank": 185
+  },
+  {
+    "player_id": "9502",
+    "name": "Tank Dell",
+    "position": "WR",
+    "team": "HOU",
+    "search_rank": 187
+  },
+  {
+    "player_id": "10213",
+    "name": "Tre Tucker",
+    "position": "WR",
+    "team": "LV",
+    "search_rank": 188
+  },
+  {
+    "player_id": "12536",
+    "name": "Jaylin Noel",
+    "position": "WR",
+    "team": "HOU",
+    "search_rank": 190
+  },
+  {
+    "player_id": "9494",
+    "name": "Marvin Mims",
+    "position": "WR",
+    "team": "DEN",
+    "search_rank": 192
+  },
+  {
+    "player_id": "11559",
+    "name": "Michael Penix",
+    "position": "QB",
+    "team": "ATL",
+    "search_rank": 199
+  },
+  {
+    "player_id": "11565",
+    "name": "J.J. McCarthy",
+    "position": "QB",
+    "team": "MIN",
+    "search_rank": 200
+  },
+  {
+    "player_id": "2028",
+    "name": "Derek Carr",
+    "position": "QB",
+    "team": null,
+    "search_rank": 201
+  },
+  {
+    "player_id": "3257",
+    "name": "Jacoby Brissett",
+    "position": "QB",
+    "team": "ARI",
+    "search_rank": 201
+  },
+  {
+    "player_id": "4144",
+    "name": "Jonnu Smith",
+    "position": "TE",
+    "team": null,
+    "search_rank": 206
+  }
+];
+
+// =====================================================================
+// playerResolver.js — inlined
+// =====================================================================
+const SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+
+function normalizeName(name) {
+  if (!name) return "";
+  return name
+    .toLowerCase()
+    .replace(/[.'-]/g, "")
+    .split(/\s+/)
+    .filter((tok) => tok && !SUFFIXES.has(tok))
+    .join(" ")
+    .trim();
+}
+
+function buildKey(firstName, lastName, position) {
+  const full = normalizeName(`${firstName || ""} ${lastName || ""}`);
+  const pos = (position || "").toUpperCase().trim();
+  return `${full}|${pos}`;
+}
+
+const TRACKED_POSITIONS = new Set(["QB", "RB", "WR", "TE"]);
+
+function buildScoutReportIndex(scoutReports) {
+  const index = new Map();
+  const duplicates = [];
+  for (const report of scoutReports) {
+    const [first, ...rest] = (report.name || "").trim().split(/\s+/);
+    const last = rest.join(" ");
+    const key = buildKey(first, last, report.position);
+    if (index.has(key)) duplicates.push(key);
+    index.set(key, report);
+  }
+  return { index, duplicates };
+}
+
+function resolvePick(pickMetadata, scoutReportIndexResult) {
+  const { index } = scoutReportIndexResult;
+  const position = (pickMetadata.position || "").toUpperCase().trim();
+  const tracked = TRACKED_POSITIONS.has(position);
+  const name = `${pickMetadata.first_name || ""} ${pickMetadata.last_name || ""}`.trim();
+
+  const base = {
+    sleeperPlayerId: pickMetadata.player_id,
+    name, position,
+    team: pickMetadata.team || null,
+    tracked, matched: false,
+  };
+  if (!tracked) return base;
+
+  const key = buildKey(pickMetadata.first_name, pickMetadata.last_name, position);
+  const report = index.get(key);
+  if (!report) return base;
+
+  return {
+    ...base, matched: true,
+    verdict: report.verdict,
+    trueTier: report.trueTier,
+    consensusTier: report.consensusTier ?? null,
+    hypeAlert: report.hypeAlert ?? null,
+    mechanicalDriver: report.mechanicalDriver ?? null,
+    floorStartable: report.floorStartable ?? null,
+    ceilingStartable: report.ceilingStartable ?? null,
+  };
+}
+
+// =====================================================================
+// trueVolumeAdapter.js — inlined
+// =====================================================================
+const TIER_BASE_FROM_FLOOR_CATEGORY = {
+  "Guaranteed starter": 2,
+  "Streaming/matchup-dependent": 4,
+  "Bench-caliber": 5,
+};
+
+function deriveTier(floorCategory, verdict) {
+  const base = TIER_BASE_FROM_FLOOR_CATEGORY[floorCategory];
+  if (base === undefined) return null;
+  if (verdict === "BUY") return Math.max(1, base - 1);
+  if (verdict === "FADE" || verdict === "TRAP") return Math.min(5, base + 1);
+  return base;
+}
+
+function adaptScoutReport(rawReport, format) {
+  const thresholds = rawReport.thresholds && rawReport.thresholds[format];
+  if (!thresholds) {
+    throw new Error(`No "${format}" threshold data on ${rawReport.name || "(unnamed)"}`);
+  }
+  const verdict = (thresholds.verdict && thresholds.verdict.call) || null;
+  const floorCategory = (thresholds.floor_startable && thresholds.floor_startable.category) || null;
+  const ceilingCategory = (thresholds.ceiling_startable && thresholds.ceiling_startable.category) || null;
+  return {
+    name: rawReport.name,
+    position: rawReport.position,
+    verdict,
+    trueTier: floorCategory ? deriveTier(floorCategory, verdict) : null,
+    consensusTier: null,
+    hypeAlert: (rawReport.pillars && rawReport.pillars.hype_alert) || null,
+    mechanicalDriver: (rawReport.pillars && rawReport.pillars.mechanical_driver) || null,
+    floorStartable: floorCategory,
+    ceilingStartable: ceilingCategory,
+    confidence: (thresholds.confidence_level && thresholds.confidence_level.level) || null,
+  };
+}
+
+function adaptScoutReports(rawReports, format) {
+  const adapted = []; const skipped = [];
+  for (const raw of rawReports) {
+    try { adapted.push(adaptScoutReport(raw, format)); }
+    catch (err) { skipped.push({ name: raw.name || "(unnamed)", reason: err.message }); }
+  }
+  return { adapted, skipped };
+}
+
+// =====================================================================
+// draftPulseEngine.js — inlined
+// =====================================================================
+const POSITIONS = ["QB", "RB", "WR", "TE"];
+const SKILL_POSITIONS = ["RB", "WR", "TE"]; // QB excluded — "skill option" in
+// the ratified addendum's wording means the non-QB positions specifically,
+// same vocabulary split Doctrine Gap 2 drew between a manager's own QB and
+// the pass-catchers it throws to.
+const STARTABLE_TIER_MAX = 3; // trueTier <= 3 — same "starter-tier" threshold
+// Value Cliff/Gap and Roster Gap Warning already use; named here since the
+// QB3 check leans on it twice (roster count AND available-QB lookup).
+const QB3_GOLDEN_ROUND_FLOOR = 8; // addendum applies strictly after round 8, no upper bound
+
+function buildEnginePool(rankedPlayerList, scoutReportIndexResult) {
+  const { index } = scoutReportIndexResult;
+  return rankedPlayerList.map((p) => {
+    const [first, ...rest] = p.name.trim().split(/\s+/);
+    const key = buildKey(first, rest.join(" "), p.position);
+    const report = index.get(key);
+    return {
+      key, name: p.name, position: p.position, team: p.team,
+      searchRank: p.search_rank,
+      matched: !!report,
+      verdict: report ? report.verdict : null,
+      trueTier: report ? report.trueTier : null,
+      consensusTier: report ? (report.consensusTier ?? null) : null,
+    };
+  });
+}
+
+function createEngine({ pool, requirement, yourRosterId: initialYourRosterId }) {
+  const available = new Map(pool.map((p) => [p.key, p]));
+  const rosters = new Map();
+  // Separate from `rosters` (counts only): tracks the actual resolved pick
+  // objects per rosterId+position, so PulseCheck's roster insulation read
+  // can ask "how GOOD is what's already rostered here," not just "how many."
+  const rosterPlayers = new Map();
+  const allPicks = [];
+  const firedRef = new Set();
+  const activeRun = new Set();
+  const pivotState = new Map();
+  const rosterGapState = new Map();
+
+  // Sleeper's real API returns roster_id as a NUMBER; "Your Roster ID" is a
+  // text input, always a STRING. Map keys are strictly typed, so without
+  // normalizing here, rosterFor("5") and rosterFor(5) would silently be two
+  // different entries — Draft Pivot, Roster Gap Warning, and the insulation
+  // read would never find "your" roster's real picks. Confirmed as a real
+  // failure via testing, not theoretical: fixed by normalizing to String()
+  // at the one place both lookups go through, so callers can pass either type.
+  function normalizeRosterId(id) {
+    return id === null || id === undefined ? id : String(id);
+  }
+
+  // Mutable, not frozen at creation — the "which roster is mine?" picker
+  // needs to change this AFTER the engine already exists and has started
+  // seeing real picks, since the whole point is choosing from roster IDs
+  // actually observed in the draft rather than guessing one up front.
+  let yourRosterId = normalizeRosterId(initialYourRosterId);
+
+  function rosterFor(rosterId) {
+    const key = normalizeRosterId(rosterId);
+    if (!rosters.has(key)) rosters.set(key, { QB: 0, RB: 0, WR: 0, TE: 0, startableQB: 0 });
+    return rosters.get(key);
+  }
+  function rosterPlayersFor(rosterId) {
+    const key = normalizeRosterId(rosterId);
+    if (!rosterPlayers.has(key)) rosterPlayers.set(key, { QB: [], RB: [], WR: [], TE: [] });
+    return rosterPlayers.get(key);
+  }
+  function availableAt(position) { return [...available.values()].filter((p) => p.position === position); }
+  function matchedAt(position) { return availableAt(position).filter((p) => p.matched); }
+
+  function checkDraftRun(alerts, pickNum) {
+    const window = allPicks.slice(-6);
+    const counts = {};
+    const qualityCounts = {};
+    window.forEach((pk) => {
+      counts[pk.position] = (counts[pk.position] || 0) + 1;
+      if (pk.trueTier !== null && pk.trueTier !== undefined && pk.trueTier <= 3) {
+        qualityCounts[pk.position] = (qualityCounts[pk.position] || 0) + 1;
+      }
+    });
+    POSITIONS.forEach((pos) => {
+      const c = counts[pos] || 0;
+      const isRun = c >= 3;
+      const wasRun = activeRun.has(pos);
+      if (isRun && !wasRun) {
+        activeRun.add(pos);
+        const q = qualityCounts[pos] || 0;
+        let detail = `${c} ${pos}s drafted in the last ${window.length} picks`;
+        detail += q > 0 ? ` — ${q} of them starter-tier` : ` — mostly depth, not starter-tier`;
+        // Need-scoping: without a roster ID this still fires as a general market
+        // signal (unlike Draft Pivot / Roster Gap, which require it entirely) —
+        // but when we DO know your roster, say plainly whether this run is
+        // actually eating into a position you still need.
+        if (yourRosterId !== null && yourRosterId !== undefined && yourRosterId !== "") {
+          const roster = rosterFor(yourRosterId);
+          if (requirement[pos] !== undefined) {
+            detail += roster[pos] < requirement[pos] ? ` — you still need ${pos}` : ` — you're already covered at ${pos}`;
+          }
+        }
+        alerts.push({ type: "DRAFT_RUN", pick: pickNum, detail });
+      } else if (!isRun && wasRun) { activeRun.delete(pos); }
+    });
+  }
+
+  function checkValueCliffAndGap(alerts, pickNum) {
+    POSITIONS.forEach((pos) => {
+      const atPos = matchedAt(pos).filter((p) => p.trueTier !== null && p.trueTier <= 3)
+        .sort((a, b) => a.searchRank - b.searchRank);
+      if (atPos.length === 1) {
+        const sig = `CLIFF-${atPos[0].key}`;
+        if (!firedRef.has(sig)) {
+          firedRef.add(sig);
+          alerts.push({ type: "VALUE_CLIFF", pick: pickNum, detail: `${atPos[0].name} is the last starter-tier ${pos} on the board` });
+        }
+      }
+      const allAtPos = matchedAt(pos).sort((a, b) => a.searchRank - b.searchRank);
+      if (allAtPos.length >= 2) {
+        const gap = allAtPos[1].searchRank - allAtPos[0].searchRank;
+        if (gap >= 15) {
+          const sig = `GAP-${allAtPos[0].key}-${allAtPos[1].key}`;
+          if (!firedRef.has(sig)) {
+            firedRef.add(sig);
+            alerts.push({ type: "VALUE_GAP", pick: pickNum, detail: `${gap}-rank gap at ${pos}: ${allAtPos[0].name} to ${allAtPos[1].name}` });
+          }
+        }
+      }
+    });
+  }
+
+  function checkPivotAndRosterGap(alerts, pickNum, round) {
+    if (yourRosterId === null || yourRosterId === undefined || yourRosterId === "") return;
+    const roster = rosterFor(yourRosterId);
+    const needPositions = POSITIONS.filter((pos) => roster[pos] < requirement[pos]);
+    const stillNeedPivot = new Set();
+
+    needPositions.forEach((targetPos) => {
+      const atTarget = matchedAt(targetPos).filter((p) => p.trueTier !== null && p.trueTier <= 3);
+      if (atTarget.length <= 1) {
+        const otherBuys = POSITIONS.filter((p) => p !== targetPos)
+          .map((pos) => matchedAt(pos).filter((p) => p.verdict === "BUY").sort((a, b) => a.searchRank - b.searchRank)[0])
+          .filter(Boolean);
+        if (otherBuys.length > 0) {
+          stillNeedPivot.add(targetPos);
+          const primary = otherBuys.reduce((best, b) => {
+            if (!best) return b;
+            if (b.trueTier !== best.trueTier) return b.trueTier < best.trueTier ? b : best;
+            return b.searchRank < best.searchRank ? b : best;
+          }, null);
+          const prior = pivotState.get(targetPos);
+          const primaryChanged = !prior || prior.primaryKey !== primary.key;
+          const tierDropped = !prior || atTarget.length < prior.tierCount;
+          if (primaryChanged || tierDropped) {
+            pivotState.set(targetPos, { primaryKey: primary.key, tierCount: atTarget.length });
+            alerts.push({ type: "DRAFT_PIVOT", pick: pickNum,
+              detail: `${targetPos} depleted for your roster. BUY-verdict value available at ${otherBuys.map((b) => `${b.position} (${b.name})`).join(", ")}` });
+          }
+        }
+      }
+    });
+    [...pivotState.keys()].forEach((pos) => { if (!stillNeedPivot.has(pos)) pivotState.delete(pos); });
+
+    if (round >= 6) {
+      needPositions.forEach((pos) => {
+        const starterTierLeft = matchedAt(pos).filter((p) => p.trueTier !== null && p.trueTier <= 3).length;
+        const prior = rosterGapState.get(pos);
+        const severityDropped = !prior || starterTierLeft < prior.tierCount;
+        const crossedThreshold = !prior || round - prior.lastFiredRound >= 3;
+        if (severityDropped || crossedThreshold) {
+          rosterGapState.set(pos, { tierCount: starterTierLeft, lastFiredRound: round });
+          alerts.push({ type: "ROSTER_GAP", pick: pickNum,
+            detail: `Round ${round}: ${pos} starter slot still unfilled (need ${requirement[pos]}, have ${roster[pos]})` });
+        }
+      });
+    }
+    [...rosterGapState.keys()].forEach((pos) => { if (!needPositions.includes(pos)) rosterGapState.delete(pos); });
+  }
+
+  // QB3 Marginal Value — ratified 2026-08-30 (Superflex QB3 Marginal Value
+  // Addendum). Does NOT amend T1_01's 2-startable-QB insulation floor, which
+  // stands unchanged — this is a separate, DraftPulse-scoped marginal-value
+  // signal layered onto the same Roster Insulation / tier-derivation
+  // machinery the other checks already use. Fires when ALL of:
+  //   (a) your roster already carries 2 startable-tier (trueTier<=3) QBs
+  //       — the insulation floor from T1_01 is met, unchanged;
+  //   (b) the draft is past round 8 (round > 8, no upper bound);
+  //   (c) the single best remaining skill-position option (RB/WR/TE,
+  //       ranked by searchRank, matched subset only) is graded below BUY.
+  // An unmatched/unevaluated "best" skill option can't be confirmed
+  // sub-BUY — same "don't guess on missing coverage" discipline
+  // playerResolver already documents — so if nothing at RB/WR/TE has a
+  // Scout Report yet, this stays silent rather than firing on an assumption.
+  // Dedup follows the Value-Cliff pattern (firedRef signature keyed to the
+  // recommended player), re-firing only when the recommended QB itself
+  // changes, not on every qualifying pick.
+  function checkQB3MarginalValue(alerts, pickNum, round) {
+    if (yourRosterId === null || yourRosterId === undefined || yourRosterId === "") return;
+    const roster = rosterFor(yourRosterId);
+    if ((roster.startableQB || 0) < 2) return; // floor not yet met
+    if (round === undefined || round === null || round <= QB3_GOLDEN_ROUND_FLOOR) return;
+
+    const bestSkill = SKILL_POSITIONS.flatMap((pos) => matchedAt(pos))
+      .sort((a, b) => a.searchRank - b.searchRank)[0];
+    if (!bestSkill || bestSkill.verdict === "BUY") return; // BUY still on the board — addendum doesn't apply
+
+    const target = matchedAt("QB")
+      .filter((p) => p.trueTier !== null && p.trueTier <= STARTABLE_TIER_MAX)
+      .sort((a, b) => a.searchRank - b.searchRank)[0];
+    if (!target) return; // no startable QB left to recommend
+
+    const sig = `QB3-${target.key}`;
+    if (!firedRef.has(sig)) {
+      firedRef.add(sig);
+      alerts.push({
+        type: "QB3_MARGINAL_VALUE", pick: pickNum,
+        detail: `Golden-rounds addendum (past round ${QB3_GOLDEN_ROUND_FLOOR}, 2 startable QBs already rostered): best remaining skill option ${bestSkill.name} (${bestSkill.position}) grades below BUY — ${target.name} is the marginal-value QB3 pick`,
+      });
+    }
+  }
+
+  function processPick(pick) {
+    const alerts = [];
+    const roster = rosterFor(pick.rosterId);
+    if (POSITIONS.includes(pick.position)) {
+      roster[pick.position] += 1;
+      rosterPlayersFor(pick.rosterId)[pick.position].push(pick);
+    }
+    // Startable-tier QB tracking for the QB3 Marginal Value check — a
+    // player's tier is fixed at evaluation time, so this is a simple
+    // increment, not something that needs recomputing later.
+    if (pick.position === "QB" && pick.matched && pick.trueTier !== null && pick.trueTier !== undefined && pick.trueTier <= STARTABLE_TIER_MAX) {
+      roster.startableQB = (roster.startableQB || 0) + 1;
+    }
+
+    const [first, ...rest] = pick.name.trim().split(/\s+/);
+    const key = buildKey(first, rest.join(" "), pick.position);
+    available.delete(key);
+    allPicks.push(pick);
+
+    checkDraftRun(alerts, pick.pickNo);
+    checkValueCliffAndGap(alerts, pick.pickNo);
+    checkPivotAndRosterGap(alerts, pick.pickNo, pick.round);
+    checkQB3MarginalValue(alerts, pick.pickNo, pick.round);
+    return alerts;
+  }
+
+  return {
+    processPick,
+    rosterPlayersFor,
+    setYourRosterId: (id) => { yourRosterId = normalizeRosterId(id); },
+    getYourRosterId: () => yourRosterId,
+    // Roster IDs actually observed in the draft so far — `rosters` only
+    // ever gains an entry via rosterFor(), which every real pick goes
+    // through, so its keys are exactly "every rosterId seen," already
+    // normalized to strings.
+    _knownRosterIds: () => [...rosters.keys()],
+    _availableCount: () => available.size,
+    _availableList: () => [...available.values()],
+  };
+}
+
+// =====================================================================
+// sleeperPoller.js — inlined (browser fetch, no injection needed)
+// =====================================================================
+function createPoller({ draftId, scoutReportIndexResult, onNewPicks, onError = () => {}, onPollComplete = () => {}, intervalMs = 3000 }) {
+  const seenPickNos = new Set();
+  let inFlight = false, stopped = false, timer = null;
+
+  async function pollOnce() {
+    if (inFlight || stopped) return;
+    inFlight = true;
+    try {
+      const res = await fetch(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+      if (!res.ok) throw new Error(`Sleeper picks fetch failed: ${res.status} ${res.statusText}`);
+      const picks = await res.json();
+      const fresh = picks.filter((p) => !seenPickNos.has(p.pick_no));
+      if (fresh.length > 0) {
+        fresh.sort((a, b) => a.pick_no - b.pick_no);
+        fresh.forEach((p) => seenPickNos.add(p.pick_no));
+        const resolved = fresh.map((p) => ({
+          pickNo: p.pick_no, round: p.round, rosterId: p.roster_id,
+          draftSlot: p.draft_slot, pickedBy: p.picked_by,
+          ...resolvePick(p.metadata, scoutReportIndexResult),
+        }));
+        onNewPicks(resolved);
+      }
+      onPollComplete(null);
+    } catch (err) {
+      onError(err);
+      onPollComplete(err);
+    } finally { inFlight = false; }
+  }
+
+  function start() { if (timer) return; pollOnce(); timer = setInterval(pollOnce, intervalMs); }
+  function stop() { stopped = true; if (timer) { clearInterval(timer); timer = null; } }
+
+  start();
+  return { stop };
+}
+
+// =====================================================================
+// App wiring
+// =====================================================================
+let rawReports = [];
+let scoutReportIndexResult = buildScoutReportIndex([]);
+let engine = null;
+let poller = null;
+let pickCount = 0;
+let alertCount = 0;
+let latestRound = null; // mirrors pickCount/alertCount — lets PulseCheck compute a live QB3 read
+// Single source of truth for "which roster is mine." Both the manual text
+// input and the picker (populated from roster IDs actually seen in the
+// draft) write through this one function, so there's exactly one place
+// that can drift — not two independent DOM reads that could disagree.
+let currentRosterId = null;
+
+const els = {
+  draftId: document.getElementById('draftIdInput'),
+  rosterId: document.getElementById('rosterIdInput'),
+  format: document.getElementById('formatSelect'),
+  reqQB: document.getElementById('reqQB'),
+  reqRB: document.getElementById('reqRB'),
+  reqWR: document.getElementById('reqWR'),
+  reqTE: document.getElementById('reqTE'),
+  fileInput: document.getElementById('fileInput'),
+  fileLabel: document.getElementById('fileLabel'),
+  startBtn: document.getElementById('startBtn'),
+  pickFeed: document.getElementById('pickFeed'),
+  alertFeed: document.getElementById('alertFeed'),
+  pickCount: document.getElementById('pickCount'),
+  alertCount: document.getElementById('alertCount'),
+  statusLine: document.getElementById('statusLine'),
+  coverageLine: document.getElementById('coverageLine'),
+  pulseRing: document.getElementById('pulseRing'),
+  poolInfoLink: document.getElementById('poolInfoLink'),
+};
+
+const rosterPickerChipsEl = document.getElementById('rosterPickerChips');
+
+/**
+ * The one place "which roster is mine" gets written. Called both by the
+ * manual text input and by clicking a picker chip, so the two ways of
+ * setting this can never disagree with each other.
+ */
+function setRosterId(id) {
+  const normalized = (id === null || id === undefined) ? null : String(id).trim() || null;
+  currentRosterId = normalized;
+  els.rosterId.value = normalized || '';
+  if (engine) engine.setYourRosterId(normalized);
+  renderRosterPicker();
+  // If PulseCheck is open on a player, its insulation read is now stale —
+  // refresh it rather than leaving last-selected-roster's numbers on screen.
+  if (pcActiveKey && !pcEls.modal.hidden) {
+    const entry = engine && engine._availableList().find((p) => p.key === pcActiveKey);
+    if (entry) renderPulseCheckDetail(entry);
+  }
+}
+
+/**
+ * The earliest pick this rosterId has made among tracked positions (QB/RB/
+ * WR/TE) — used as a stable, self-verifying hint on each picker chip, so
+ * selecting "Roster 4" isn't a blind guess against a number that may have
+ * nothing to do with actual pick order. Deliberately uses the FIRST pick,
+ * not the most recent — a fixed reference point that won't shift and
+ * become confusing to re-check as the draft continues.
+ *
+ * Real limitation, stated plainly rather than hidden: if a roster's first
+ * actual pick was a K or DEF (untracked positions), this returns null and
+ * the chip falls back to the bare number — those positions aren't part of
+ * TrueVolume's evaluated pool at all.
+ */
+function firstPlayerForRoster(id) {
+  if (!engine) return null;
+  const players = engine.rosterPlayersFor(id);
+  const all = [...players.QB, ...players.RB, ...players.WR, ...players.TE];
+  if (all.length === 0) return null;
+  all.sort((a, b) => a.pickNo - b.pickNo);
+  return all[0];
+}
+
+function renderRosterPicker() {
+  if (!engine) {
+    rosterPickerChipsEl.innerHTML = '<span class="empty-state" style="padding:0;">Start watching a draft to see rosters appear here.</span>';
+    return;
+  }
+  const known = engine._knownRosterIds();
+  if (known.length === 0) {
+    rosterPickerChipsEl.innerHTML = '<span class="empty-state" style="padding:0;">No picks yet — rosters will populate here as they draft.</span>';
+    return;
+  }
+  rosterPickerChipsEl.innerHTML = known.map((id) => {
+    const first = firstPlayerForRoster(id);
+    const hint = first ? ` — drafted ${first.name}` : ' — first pick untracked (K/DEF)';
+    return `
+      <button type="button" class="roster-chip ${id === currentRosterId ? 'selected' : ''}" data-roster-id="${id}" title="Verify this is really your roster before selecting it">
+        Roster ${id}${hint}
+      </button>
+    `;
+  }).join('');
+  rosterPickerChipsEl.querySelectorAll('.roster-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const id = chip.getAttribute('data-roster-id');
+      // Click your own selection again to deselect ("none of these are mine" / start over).
+      setRosterId(id === currentRosterId ? null : id);
+    });
+  });
+}
+
+els.rosterId.addEventListener('change', () => setRosterId(els.rosterId.value));
+
+function currentRequirement() {
+  return {
+    QB: parseInt(els.reqQB.value, 10) || 0,
+    RB: parseInt(els.reqRB.value, 10) || 0,
+    WR: parseInt(els.reqWR.value, 10) || 0,
+    TE: parseInt(els.reqTE.value, 10) || 0,
+  };
+}
+
+function rebuildIndexForFormat() {
+  const { adapted, skipped } = adaptScoutReports(rawReports, els.format.value);
+  scoutReportIndexResult = buildScoutReportIndex(adapted);
+  els.coverageLine.textContent = `${adapted.length} loaded` + (skipped.length ? `, ${skipped.length} skipped (see console)` : '');
+  if (skipped.length) console.warn('Skipped reports (missing this format):', skipped);
+}
+
+let rawReportIndex = new Map();
+
+function rebuildRawReportIndex() {
+  rawReportIndex = new Map();
+  for (const raw of rawReports) {
+    const [first, ...rest] = (raw.name || "").trim().split(/\s+/);
+    const key = buildKey(first, rest.join(" "), raw.position);
+    rawReportIndex.set(key, raw);
+  }
+}
+
+els.fileInput.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  const parsed = [];
+  for (const file of files) {
+    try {
+      const text = await file.text();
+      parsed.push(JSON.parse(text));
+    } catch (err) {
+      console.error(`Could not parse ${file.name}:`, err);
+    }
+  }
+  rawReports = parsed;
+  els.fileLabel.textContent = `${parsed.length} report${parsed.length === 1 ? '' : 's'} loaded`;
+  rebuildIndexForFormat();
+  rebuildRawReportIndex();
+});
+
+els.format.addEventListener('change', rebuildIndexForFormat);
+
+function verdictChip(pick) {
+  if (!pick.matched) {
+    return pick.tracked ? '<span class="verdict-chip verdict-unmatched">unmatched</span>' : '';
+  }
+  return `<span class="verdict-chip verdict-${pick.verdict}">${pick.verdict}</span>`;
+}
+
+function tierChip(pick) {
+  if (!pick.matched || pick.trueTier === null || pick.trueTier === undefined) return '';
+  const label = pick.floorStartable || `Tier ${pick.trueTier}`;
+  return `<span class="tier-chip" title="Derived tier: ${pick.trueTier} (floor-based)">${label}</span>`;
+}
+
+function renderPick(pick) {
+  if (els.pickFeed.querySelector('.empty-state')) els.pickFeed.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'pick-row';
+  row.innerHTML = `
+    <span class="pick-no">#${pick.pickNo}</span>
+    <span class="pick-name">${pick.name || '(unknown)'}</span>
+    <span class="pick-pos">${pick.position || '—'}</span>
+    ${tierChip(pick)}
+    ${verdictChip(pick)}
+  `;
+  els.pickFeed.prepend(row);
+  pickCount++;
+  els.pickCount.textContent = pickCount;
+}
+
+const ALERT_LABELS = {
+  DRAFT_RUN: 'Draft Run', VALUE_CLIFF: 'Value Cliff', VALUE_GAP: 'Value Gap',
+  DRAFT_PIVOT: 'Draft Pivot', ROSTER_GAP: 'Roster Gap Warning',
+  QB3_MARGINAL_VALUE: 'QB3 Marginal Value',
+};
+
+function renderAlert(alert) {
+  if (els.alertFeed.querySelector('.empty-state')) els.alertFeed.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = `alert-card ${alert.type}`;
+  card.innerHTML = `
+    <div class="alert-type">${ALERT_LABELS[alert.type] || alert.type}</div>
+    <div class="alert-detail">${alert.detail}</div>
+    <div class="alert-pick">pick #${alert.pick}</div>
+  `;
+  els.alertFeed.prepend(card);
+  alertCount++;
+  els.alertCount.textContent = alertCount;
+}
+
+function firePulse() {
+  els.pulseRing.classList.remove('firing');
+  void els.pulseRing.offsetWidth; // restart animation
+  els.pulseRing.classList.add('firing');
+}
+
+els.startBtn.addEventListener('click', () => {
+  const draftId = els.draftId.value.trim();
+  if (!draftId) {
+    els.statusLine.innerHTML = "<span class=\"error\">Enter a Sleeper draft ID first — it's the number in your draft room's URL.</span>";
+    return;
+  }
+
+  if (poller) poller.stop();
+  rebuildIndexForFormat();
+
+  const pool = buildEnginePool(RANKED_POOL, scoutReportIndexResult);
+  engine = createEngine({ pool, requirement: currentRequirement(), yourRosterId: currentRosterId });
+
+  els.pulseRing.classList.add('alive');
+  els.statusLine.textContent = `Watching draft ${draftId}. Polling every 3s.`;
+  els.startBtn.disabled = true;
+  els.startBtn.textContent = 'Watching…';
+
+  poller = createPoller({
+    draftId,
+    scoutReportIndexResult,
+    onNewPicks: (picks) => {
+      picks.forEach((pick) => {
+        renderPick(pick);
+        if (pick.round !== undefined && pick.round !== null) latestRound = pick.round;
+        const alerts = engine.processPick(pick);
+        alerts.forEach(renderAlert);
+      });
+      renderRosterPicker();
+    },
+    onError: (err) => {
+      els.statusLine.innerHTML = `<span class="error">Poll failed: ${err.message} — retrying next cycle.</span>`;
+    },
+    onPollComplete: (err) => {
+      firePulse();
+      if (!err) els.statusLine.textContent = `Watching draft ${draftId}. Last poll: ${new Date().toLocaleTimeString()}.`;
+    },
+  });
+});
+
+els.poolInfoLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  alert("Value Cliff and Value Gap rank comparisons use a Sleeper search_rank snapshot embedded in this file at build time — not a live fetch. Rookie promotions, depth-chart shuffles, or new signings since that snapshot won't be reflected. Draft Run, Draft Pivot, and Roster Gap Warning are unaffected by this — they don't depend on rank freshness.");
+});
+
+// =====================================================================
+// PulseCheck — browse the available pool, preview TrueVolume's full
+// reasoning on any player before you draft them, and see how insulated
+// your own roster already is against that player's downside risk.
+// =====================================================================
+const pcEls = {
+  modal: document.getElementById('pulseCheckModal'),
+  browseBtn: document.getElementById('browseBtn'),
+  closeBtn: document.getElementById('pcCloseBtn'),
+  search: document.getElementById('pcSearch'),
+  posFilter: document.getElementById('pcPosFilter'),
+  list: document.getElementById('pcList'),
+  detail: document.getElementById('pulseCheckDetail'),
+};
+
+let pcActiveKey = null;
+
+function openPulseCheck() {
+  if (!engine) {
+    els.statusLine.innerHTML = '<span class="error">Start watching a draft first — PulseCheck browses the live available pool, so it needs a draft loaded.</span>';
+    return;
+  }
+  pcEls.modal.hidden = false;
+  renderPcList();
+}
+
+function closePulseCheck() {
+  pcEls.modal.hidden = true;
+}
+
+function renderPcList() {
+  const query = pcEls.search.value.trim().toLowerCase();
+  const posFilter = pcEls.posFilter.value;
+  const list = engine._availableList()
+    .filter((p) => (!posFilter || p.position === posFilter))
+    .filter((p) => !query || p.name.toLowerCase().includes(query))
+    .sort((a, b) => (a.searchRank ?? 9999) - (b.searchRank ?? 9999))
+    .slice(0, 60); // cap render for perf — search narrows it down fast
+
+  if (list.length === 0) {
+    pcEls.list.innerHTML = '<div class="empty-state">No players match.</div>';
+    return;
+  }
+
+  pcEls.list.innerHTML = list.map((p) => `
+    <div class="pc-list-row ${p.key === pcActiveKey ? 'active' : ''}" data-key="${p.key}">
+      <span class="pick-name">${p.name}</span>
+      <span class="pick-pos">${p.position}</span>
+      ${tierChip(p)}
+      ${verdictChip({ ...p, tracked: true })}
+    </div>
+  `).join('');
+
+  pcEls.list.querySelectorAll('.pc-list-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const key = row.getAttribute('data-key');
+      const entry = list.find((p) => p.key === key) || engine._availableList().find((p) => p.key === key);
+      if (entry) {
+        pcActiveKey = key;
+        renderPcList();
+        renderPulseCheckDetail(entry);
+      }
+    });
+  });
+}
+
+function computeInsulation(position) {
+  const rosterId = currentRosterId;
+  if (!rosterId) {
+    return '<div class="empty-state">Set <strong>Your Roster</strong> in the header to see how insulated you are against this player’s downside risk.</div>';
+  }
+  const myPlayers = engine.rosterPlayersFor(rosterId)[position] || [];
+  const startable = myPlayers.filter((p) => p.trueTier !== null && p.trueTier !== undefined && p.trueTier <= 3);
+  const cls = startable.length > 0 ? 'insulated' : 'exposed';
+  const verb = myPlayers.length === 1 ? 'is' : 'are';
+  const noun = position + (myPlayers.length === 1 ? '' : 's');
+  const message = startable.length > 0
+    ? 'Real downside risk on this pick is cushioned by existing depth you already have.'
+    : 'No startable-tier depth yet at this position on your roster — this pick’s downside risk is fully exposed right now.';
+  return `<div class="insulation-read ${cls}">
+    <strong>${startable.length}</strong> of <strong>${myPlayers.length}</strong> ${noun} on your roster ${verb} startable-tier.
+    ${message}
+  </div>`;
+}
+
+function computeQB3Read(raw, format) {
+  if (format !== 'superflex') {
+    return ''; // addendum is Superflex/2QB-scoped per the ratified text — no 1QB read to show
+  }
+  const rosterId = currentRosterId;
+  if (!rosterId) {
+    return `<div class="empty-state">Set <strong>Your Roster</strong> in the header to see the golden-rounds read.</div>`;
+  }
+  const myQBs = (engine.rosterPlayersFor(rosterId).QB || []);
+  const startableQBCount = myQBs.filter((p) => p.trueTier !== null && p.trueTier !== undefined && p.trueTier <= STARTABLE_TIER_MAX).length;
+  if (startableQBCount < 2) {
+    return `<div class="empty-state">2-startable-QB insulation floor not yet met (<strong>${startableQBCount}</strong> of 2 rostered) — addendum doesn't apply yet.</div>`;
+  }
+  if (latestRound === null || latestRound <= QB3_GOLDEN_ROUND_FLOOR) {
+    return `<div class="empty-state">Floor met, but still round ${latestRound ?? '—'} — addendum applies strictly after round ${QB3_GOLDEN_ROUND_FLOOR}.</div>`;
+  }
+  const availableList = engine._availableList();
+  const bestSkill = SKILL_POSITIONS.flatMap((pos) => availableList.filter((p) => p.position === pos && p.matched))
+    .sort((a, b) => a.searchRank - b.searchRank)[0];
+  if (!bestSkill || bestSkill.verdict === 'BUY') {
+    return `<div class="empty-state">Floor and round conditions met, but the best remaining skill option${bestSkill ? ` (${bestSkill.name})` : ''} still grades BUY or better — addendum doesn't apply right now.</div>`;
+  }
+  const target = availableList.filter((p) => p.position === 'QB' && p.matched && p.trueTier !== null && p.trueTier <= STARTABLE_TIER_MAX)
+    .sort((a, b) => a.searchRank - b.searchRank)[0];
+  if (!target) {
+    return `<div class="empty-state">All conditions met, but no startable-tier QB remains available to recommend.</div>`;
+  }
+  const isThisPlayer = raw.position === 'QB' && target.key === (() => {
+    const [first, ...rest] = raw.name.trim().split(/\s+/);
+    return buildKey(first, rest.join(' '), raw.position);
+  })();
+  return `<div class="insulation-read ${isThisPlayer ? 'insulated' : ''}">
+    <strong>${target.name}</strong> is the current golden-rounds marginal-value QB3 recommendation — best remaining skill option ${bestSkill.name} (${bestSkill.position}) grades below BUY.
+    ${isThisPlayer ? 'This is the player you’re viewing.' : (raw.position === 'QB' ? 'You’re viewing a different QB.' : '')}
+  </div>`;
+}
+
+function renderPulseCheckDetail(poolEntry) {
+  const raw = rawReportIndex.get(poolEntry.key);
+  if (!raw) {
+    pcEls.detail.innerHTML = `<div class="empty-state">No TrueVolume evaluation loaded for <strong>${poolEntry.name}</strong>. Load their Scout Report JSON to see full reasoning here.</div>`;
+    return;
+  }
+
+  const format = els.format.value;
+  const thresholds = (raw.thresholds && raw.thresholds[format]) || {};
+  const pillars = raw.pillars || {};
+  const verdict = thresholds.verdict ? thresholds.verdict.call : null;
+  const verdictJustification = thresholds.verdict ? thresholds.verdict.justification : '';
+  const floorCat = thresholds.floor_startable ? thresholds.floor_startable.category : null;
+  const ceilCat = thresholds.ceiling_startable ? thresholds.ceiling_startable.category : null;
+  const confidence = thresholds.confidence_level ? thresholds.confidence_level.level : null;
+  const floorCeiling = pillars.floor_ceiling || {};
+  const teamSetup = pillars.team_setup_grade || {};
+
+  pcEls.detail.innerHTML = `
+    <h3>${raw.name} <span class="pc-pos">${raw.position} · ${format === 'superflex' ? 'Superflex' : '1QB'}</span></h3>
+    ${verdict ? `<span class="verdict-chip verdict-${verdict}">${verdict}</span>` : ''}
+    <p class="pc-justification">${verdictJustification || 'No verdict justification available.'}</p>
+
+    <div class="pc-grid">
+      <div><span class="pc-label">Floor PPG</span>${floorCeiling.floor_ppg || '—'}</div>
+      <div><span class="pc-label">Ceiling PPG</span>${floorCeiling.ceiling_ppg || '—'}</div>
+      <div><span class="pc-label">Floor Startable</span>${floorCat || '—'}</div>
+      <div><span class="pc-label">Ceiling Startable</span>${ceilCat || '—'}</div>
+      <div><span class="pc-label">Team Setup</span>${teamSetup.grade || '—'}${teamSetup.explanation ? ' — ' + teamSetup.explanation : ''}</div>
+      <div><span class="pc-label">Confidence</span>${confidence || '—'}</div>
+    </div>
+
+    <div class="pc-section"><span class="pc-label">Real Role</span><p>${pillars.real_role || 'Not available.'}</p></div>
+    <div class="pc-section"><span class="pc-label">Mechanical Driver</span><p>${pillars.mechanical_driver || 'Not available.'}</p></div>
+    <div class="pc-section"><span class="pc-label">Risk / Invalidator</span><p>${pillars.risk_invalidator || 'Not available.'}</p></div>
+    <div class="pc-section"><span class="pc-label">Hype Alert</span><p>${pillars.hype_alert || 'None detected'}</p></div>
+
+    <div class="pc-section">
+      <span class="pc-label">Roster Insulation</span>
+      ${computeInsulation(raw.position)}
+    </div>
+    ${raw.position === 'QB' ? `
+    <div class="pc-section">
+      <span class="pc-label">QB3 Golden Rounds</span>
+      ${computeQB3Read(raw, format)}
+    </div>` : ''}
+  `;
+}
+
+pcEls.browseBtn.addEventListener('click', openPulseCheck);
+pcEls.closeBtn.addEventListener('click', closePulseCheck);
+pcEls.modal.addEventListener('click', (e) => { if (e.target === pcEls.modal) closePulseCheck(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pcEls.modal.hidden) closePulseCheck(); });
+pcEls.search.addEventListener('input', renderPcList);
+pcEls.posFilter.addEventListener('change', renderPcList);
+</script>
+</body>
+</html>
+
