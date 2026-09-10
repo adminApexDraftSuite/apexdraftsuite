@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Account | Apex Draft Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --bg:#050403;
+  --gold:#d6a84f;
+  --gold2:#f2d38a;
+  --text:#f5efe2;
+  --muted:#b9ad95;
+  --line:rgba(214,168,79,.34);
+  --soft:rgba(214,168,79,.09);
+  --danger:#e27a62;
+  --green:#87d79b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(214,168,79,.14), transparent 32%),
+    linear-gradient(180deg, #090705 0%, #030302 100%);
+  color:var(--text);
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.shell { width:min(760px, 92%); margin:0 auto; padding:56px 0; }
+.kicker {
+  color:var(--gold);
+  letter-spacing:.16em;
+  font-size:.76rem;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+h1 {
+  font-size:clamp(1.9rem, 5vw, 2.6rem);
+  line-height:1.05;
+  letter-spacing:-.045em;
+  margin:0 0 8px;
+}
+p.sub { color:var(--muted); line-height:1.55; margin:0 0 28px; }
+.panel {
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(23,19,13,.95), rgba(5,4,3,.82));
+  padding:28px;
+  box-shadow:0 0 38px rgba(214,168,79,.08);
+  margin-bottom:18px;
+}
+.field { margin:8px 0; color:var(--muted); }
+.field b { color:var(--gold2); }
+.tier-badge {
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:.85rem;
+  letter-spacing:.02em;
+  margin-bottom:4px;
+}
+.tier-combine { background:rgba(255,255,255,.08); color:var(--muted); }
+.tier-draft_weekend_pass { background:rgba(213,180,95,.16); color:var(--gold2); }
+.tier-war_room { background:rgba(135,215,123,.16); color:var(--green); }
+.tier-front_office { background:rgba(214,168,79,.22); color:var(--gold); }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.mini-card {
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+  padding:18px;
+}
+.mini-card h3 {
+  color:var(--gold2);
+  font-size:.88rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin:0 0 8px;
+}
+.mini-card p { margin:0; color:var(--muted); font-size:.92rem; }
+.mini-card.locked { opacity:.45; }
+.mini-card a.btn {
+  display:inline-block;
+  margin-top:10px;
+  padding:9px 16px;
+  border-radius:999px;
+  background:var(--gold);
+  color:#090705;
+  font-weight:900;
+  text-decoration:none;
+  font-size:.85rem;
+}
+.notice {
+  border-left:4px solid var(--gold);
+  background:var(--soft);
+  padding:14px;
+  margin-top:6px;
+  color:var(--muted);
+  border-radius:0 10px 10px 0;
+}
+.notice.error { border-left-color:var(--danger); color:#f2c9c0; }
+.signout {
+  background:none;
+  border:1px solid rgba(255,255,255,.16);
+  color:var(--text);
+  padding:9px 16px;
+  border-radius:999px;
+  font-family:inherit;
+  cursor:pointer;
+  font-size:.85rem;
+}
+.upsell-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.upsell-row a.btn {
+  padding:11px 18px;
+  border-radius:999px;
+  background:var(--gold);
+  color:#090705;
+  font-weight:900;
+  text-decoration:none;
+  font-size:.88rem;
+}
+#loading { color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <p class="kicker">Apex Draft Suite</p>
+  <h1>My Account</h1>
+  <p class="sub" id="loading">Checking your session...</p>
+  <div id="content" style="display:none;"></div>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://eeinccayoscirvyifwul.supabase.co",
+  "sb_publishable_EJWPZYQaku9kNdTBqkpL2Q_Kk1hpUkk"
+);
+
+const TIER_LABELS = {
+  combine: "The Combine (Free)",
+  draft_weekend_pass: "Draft Weekend Pass",
+  war_room: "War Room",
+  front_office: "Front Office",
+};
+
+// Ordering used only to decide what to show/lock below — not written back anywhere.
+const TIER_RANK = { combine: 0, draft_weekend_pass: 1, war_room: 2, front_office: 3 };
+
+function el(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html.trim();
+  return div.firstElementChild;
+}
+
+function renderSignedOut() {
+  document.getElementById("loading").style.display = "none";
+  const content = document.getElementById("content");
+  content.style.display = "block";
+  content.innerHTML = `
+    <div class="panel">
+      <p class="field">You're not signed in.</p>
+      <a class="btn" style="display:inline-block;margin-top:10px;padding:11px 18px;border-radius:999px;background:var(--gold);color:#090705;font-weight:900;text-decoration:none;" href="/login.html">Sign in</a>
+    </div>
+  `;
+}
+
+function renderError(message) {
+  document.getElementById("loading").style.display = "none";
+  const content = document.getElementById("content");
+  content.style.display = "block";
+  content.innerHTML = `<div class="panel"><div class="notice error">${message}</div></div>`;
+}
+
+async function renderAccount(session, row) {
+  document.getElementById("loading").style.display = "none";
+  const content = document.getElementById("content");
+  content.style.display = "block";
+
+  // A purchase makes a subscribers row; no row yet just means free/Combine —
+  // not an error state.
+  const tier = row ? row.tier : "combine";
+  const status = row ? row.status : "active";
+
+  // expires_at (Draft Weekend Pass only) isn't flipped server-side today — see
+  // Build Log. Checked client-side here so an expired pass reads as expired
+  // even though the DB row's status field hasn't caught up yet.
+  const expired = row && row.expires_at && new Date(row.expires_at) < new Date();
+  const effectiveTier = (status !== "active" || expired) ? "combine" : tier;
+  const rank = TIER_RANK[effectiveTier];
+
+  const lock = (minTier) => (TIER_RANK[minTier] > rank ? " locked" : "");
+  const lockNote = (minTier) => (TIER_RANK[minTier] > rank
+    ? `<p style="margin-top:8px;"><a href="#upsell" style="color:var(--gold2);">Requires ${TIER_LABELS[minTier]} &rarr;</a></p>` : "");
+
+  let statusNote = "";
+  if (row && expired) {
+    statusNote = `<div class="notice">Your Draft Weekend Pass expired ${new Date(row.expires_at).toLocaleString()}. You're back on The Combine (free) tier.</div>`;
+  } else if (row && status === "refunded") {
+    statusNote = `<div class="notice error">This purchase was refunded — access reflects The Combine (free) tier.</div>`;
+  }
+
+  content.innerHTML = `
+    <div class="panel">
+      <span class="tier-badge tier-${effectiveTier}">${TIER_LABELS[effectiveTier]}</span>
+      <p class="field"><b>Signed in as:</b> ${session.user.email}</p>
+      ${row && row.expires_at && !expired ? `<p class="field"><b>Pass expires:</b> ${new Date(row.expires_at).toLocaleString()}</p>` : ""}
+      ${statusNote}
+      <button class="signout" id="signOutBtn" style="margin-top:14px;">Sign out</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="mini-card${lock('combine')}">
+        <h3>Scout Reports (lite)</h3>
+        <p>The Edge intro + three validated demo reports.</p>
+        <a class="btn" href="/index.html#lookup">Open</a>
+      </div>
+      <div class="mini-card${lock('war_room')}">
+        <h3>Full Scout Reports + The Edge</h3>
+        <p>The complete 234-player TrueVolume pool.</p>
+        ${lockNote('war_room')}
+      </div>
+      <div class="mini-card${lock('draft_weekend_pass')}">
+        <h3>DraftPulse (live draft assistant)</h3>
+        <p>Real-time Scout Report alerts during your Sleeper draft.</p>
+        ${rank >= TIER_RANK.draft_weekend_pass
+          ? '<a class="btn" href="/draftpulse.html">Launch DraftPulse</a>'
+          : lockNote('draft_weekend_pass')}
+      </div>
+      <div class="mini-card${lock('front_office')}">
+        <h3>Custom League Algorithms + Guides</h3>
+        <p>Front Office differentiator — in build, not live yet.</p>
+        ${rank >= TIER_RANK.front_office
+          ? '<p style="margin-top:8px;color:var(--muted);">Coming soon for your tier.</p>'
+          : lockNote('front_office')}
+      </div>
+    </div>
+
+    ${rank < TIER_RANK.front_office ? `
+    <div class="panel" id="upsell" style="margin-top:18px;">
+      <p class="field"><b>Upgrade</b></p>
+      <div class="upsell-row">
+        ${rank < TIER_RANK.war_room ? '<a class="btn" href="https://apex-draft-suite.kit.com/products/war-roomseason-pass" target="_blank" rel="noopener">War Room ($29.99)</a>' : ''}
+        ${rank < TIER_RANK.draft_weekend_pass ? '<a class="btn" href="https://apex-draft-suite.kit.com/products/draftweekend-pass-48-hours" target="_blank" rel="noopener">Draft Weekend Pass ($9.99 / 48h)</a>' : ''}
+        <a class="btn" href="https://apex-draft-suite.kit.com/products/front-officeseason-pass" target="_blank" rel="noopener">Front Office ($49.99)</a>
+      </div>
+      <p style="margin-top:10px;color:var(--muted);font-size:.85rem;">Purchases usually unlock within a minute or two. If it's been longer, <a href="mailto:admin@apexdraftsuite.com" style="color:var(--gold2);">let us know</a>.</p>
+    </div>` : ""}
+  `;
+
+  document.getElementById("signOutBtn").addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = "/login.html";
+  });
+}
+
+async function init() {
+  const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    renderError("Couldn't check your session: " + sessionError.message);
+    return;
+  }
+
+  if (!session) {
+    renderSignedOut();
+    return;
+  }
+
+  const email = session.user.email.toLowerCase();
+  const { data: row, error: queryError } = await supabaseClient
+    .from("subscribers")
+    .select("*")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (queryError) {
+    renderError("Signed in, but couldn't load your subscription: " + queryError.message);
+    return;
+  }
+
+  renderAccount(session, row);
+}
+
+init();
+</script>
+</body>
+</html>
+
