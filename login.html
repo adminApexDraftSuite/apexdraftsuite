@@ -5,126 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Sign In | Apex Draft Suite</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
 <style>
-:root {
-  --bg:#050403;
-  --panel:#11100d;
-  --gold:#d6a84f;
-  --gold2:#f2d38a;
-  --text:#f5efe2;
-  --muted:#b9ad95;
-  --line:rgba(214,168,79,.34);
-  --soft:rgba(214,168,79,.09);
-  --danger:#e27a62;
-  --green:#87d79b;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:
-    radial-gradient(circle at top left, rgba(214,168,79,.14), transparent 32%),
-    linear-gradient(180deg, #090705 0%, #030302 100%);
-  color:var(--text);
-  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-.wrap { width:min(440px, 92%); padding:24px 0; }
-.kicker {
-  color:var(--gold);
-  letter-spacing:.16em;
-  font-size:.76rem;
-  text-transform:uppercase;
-  margin-bottom:14px;
-  text-align:center;
-}
-h1 {
-  font-size:clamp(1.7rem, 5vw, 2.3rem);
-  line-height:1.05;
-  letter-spacing:-.04em;
-  margin:0 0 10px;
-  text-align:center;
-}
-p.sub {
-  color:var(--muted);
-  line-height:1.55;
-  text-align:center;
-  margin:0 0 28px;
-}
-.panel {
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:linear-gradient(180deg, rgba(23,19,13,.95), rgba(5,4,3,.82));
-  padding:28px;
-  box-shadow:0 0 38px rgba(214,168,79,.08);
-}
-label {
-  display:block;
-  font-size:.75rem;
-  color:var(--gold);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  margin-bottom:6px;
-}
-input {
-  width:100%;
-  padding:13px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.15);
-  background:#070604;
-  color:var(--text);
-  font-family:inherit;
-  font-size:1rem;
-}
-.submit {
-  display:block;
-  width:100%;
-  margin-top:16px;
-  padding:14px 18px;
-  border:0;
-  border-radius:999px;
-  background:var(--gold);
-  color:#090705;
-  font-weight:900;
-  cursor:pointer;
-  font-family:inherit;
-  font-size:1rem;
-}
-.submit:disabled { opacity:.55; cursor:default; }
-.notice {
-  border-left:4px solid var(--gold);
-  background:var(--soft);
-  padding:14px;
-  margin-top:18px;
-  color:var(--muted);
-  border-radius:0 10px 10px 0;
-  display:none;
-}
-.notice.show { display:block; }
-.notice.error { border-left-color:var(--danger); color:#f2c9c0; }
-.back {
-  display:block;
-  text-align:center;
-  margin-top:22px;
-  color:var(--gold2);
-  text-decoration:none;
-  font-size:.85rem;
-}
-.back:hover { color:var(--text); }
+  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .wrap { width: min(440px, 92%); padding: 24px 0; }
+  .wrap .eyebrow { justify-content: center; }
+  .wrap .eyebrow::before { display: none; }
+  .wrap h1 { text-align: center; font-size: clamp(1.7rem, 5vw, 2.3rem); margin: 0 0 10px; }
+  .wrap p.sub { text-align: center; color: var(--muted); margin: 0 0 28px; line-height: 1.6; }
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    padding: 28px;
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,.6);
+  }
+  label { display: block; font-size: .75rem; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; font-weight: 600; }
+  input {
+    width: 100%; padding: 13px; border-radius: 8px; border: 1px solid var(--border-2);
+    background: var(--ground); color: var(--ink); font-family: inherit; font-size: 1rem;
+  }
+  .submit { display: block; width: 100%; margin-top: 16px; }
+  .submit:disabled { opacity: .55; cursor: default; }
+  .notice { display: none; }
+  .notice.show { display: block; }
+  .back { display: block; text-align: center; margin-top: 22px; color: var(--accent); text-decoration: none; font-size: .85rem; }
+  .back:hover { color: var(--ink); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">Apex Draft Suite</p>
+  <p class="eyebrow">Apex Draft Suite</p>
   <h1>Sign in</h1>
   <p class="sub">Enter the email you purchased with. We'll send a one-time link — no password needed.</p>
   <div class="panel">
     <form id="loginForm">
       <label for="email">Email</label>
       <input id="email" type="email" required autocomplete="email" placeholder="you@example.com" />
-      <button class="submit" id="submitBtn" type="submit">Send sign-in link</button>
+      <button class="btn btn-primary submit" id="submitBtn" type="submit">Send sign-in link</button>
     </form>
     <div id="notice" class="notice"></div>
   </div>
@@ -147,6 +68,13 @@ const submitBtn = document.getElementById("submitBtn");
 function showNotice(message, isError) {
   notice.textContent = message;
   notice.className = "notice show" + (isError ? " error" : "");
+  notice.style.borderLeft = "3px solid " + (isError ? "var(--fade)" : "var(--accent)");
+  notice.style.background = isError ? "rgba(251,100,116,.08)" : "rgba(255,138,61,.07)";
+  notice.style.padding = "14px 16px";
+  notice.style.marginTop = "18px";
+  notice.style.color = isError ? "#f2c9c0" : "var(--muted)";
+  notice.style.borderRadius = "0 8px 8px 0";
+  notice.style.fontSize = "13.5px";
 }
 
 form.addEventListener("submit", async (e) => {
@@ -178,4 +106,3 @@ form.addEventListener("submit", async (e) => {
 </script>
 </body>
 </html>
-
