@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign In | Apex Draft Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --bg:#050403;
+  --panel:#11100d;
+  --gold:#d6a84f;
+  --gold2:#f2d38a;
+  --text:#f5efe2;
+  --muted:#b9ad95;
+  --line:rgba(214,168,79,.34);
+  --soft:rgba(214,168,79,.09);
+  --danger:#e27a62;
+  --green:#87d79b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at top left, rgba(214,168,79,.14), transparent 32%),
+    linear-gradient(180deg, #090705 0%, #030302 100%);
+  color:var(--text);
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.wrap { width:min(440px, 92%); padding:24px 0; }
+.kicker {
+  color:var(--gold);
+  letter-spacing:.16em;
+  font-size:.76rem;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  text-align:center;
+}
+h1 {
+  font-size:clamp(1.7rem, 5vw, 2.3rem);
+  line-height:1.05;
+  letter-spacing:-.04em;
+  margin:0 0 10px;
+  text-align:center;
+}
+p.sub {
+  color:var(--muted);
+  line-height:1.55;
+  text-align:center;
+  margin:0 0 28px;
+}
+.panel {
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(23,19,13,.95), rgba(5,4,3,.82));
+  padding:28px;
+  box-shadow:0 0 38px rgba(214,168,79,.08);
+}
+label {
+  display:block;
+  font-size:.75rem;
+  color:var(--gold);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+input {
+  width:100%;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.15);
+  background:#070604;
+  color:var(--text);
+  font-family:inherit;
+  font-size:1rem;
+}
+.submit {
+  display:block;
+  width:100%;
+  margin-top:16px;
+  padding:14px 18px;
+  border:0;
+  border-radius:999px;
+  background:var(--gold);
+  color:#090705;
+  font-weight:900;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:1rem;
+}
+.submit:disabled { opacity:.55; cursor:default; }
+.notice {
+  border-left:4px solid var(--gold);
+  background:var(--soft);
+  padding:14px;
+  margin-top:18px;
+  color:var(--muted);
+  border-radius:0 10px 10px 0;
+  display:none;
+}
+.notice.show { display:block; }
+.notice.error { border-left-color:var(--danger); color:#f2c9c0; }
+.back {
+  display:block;
+  text-align:center;
+  margin-top:22px;
+  color:var(--gold2);
+  text-decoration:none;
+  font-size:.85rem;
+}
+.back:hover { color:var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Apex Draft Suite</p>
+  <h1>Sign in</h1>
+  <p class="sub">Enter the email you purchased with. We'll send a one-time link — no password needed.</p>
+  <div class="panel">
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+      <button class="submit" id="submitBtn" type="submit">Send sign-in link</button>
+    </form>
+    <div id="notice" class="notice"></div>
+  </div>
+  <a class="back" href="/index.html">&larr; Back to Apex Draft Suite</a>
+</div>
+
+<script>
+// Supabase project for Apex Draft Suite's subscriber/tier system. The publishable
+// key is safe to expose client-side by design (RLS on the subscribers table
+// restricts a signed-in user to their own row — see Build Log 2026-09-04).
+const supabaseClient = supabase.createClient(
+  "https://eeinccayoscirvyifwul.supabase.co",
+  "sb_publishable_EJWPZYQaku9kNdTBqkpL2Q_Kk1hpUkk"
+);
+
+const form = document.getElementById("loginForm");
+const notice = document.getElementById("notice");
+const submitBtn = document.getElementById("submitBtn");
+
+function showNotice(message, isError) {
+  notice.textContent = message;
+  notice.className = "notice show" + (isError ? " error" : "");
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  if (!email) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Sending...";
+
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: "https://apexdraftsuite.com/account.html",
+    },
+  });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Send sign-in link";
+
+  if (error) {
+    showNotice("Couldn't send the link: " + error.message, true);
+    return;
+  }
+
+  showNotice("Check " + email + " for a sign-in link. It expires shortly, so use it soon.", false);
+  form.reset();
+});
+</script>
+</body>
+</html>
+
