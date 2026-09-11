@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root {
     --void: #0B0E13;
@@ -486,15 +487,100 @@
     color: var(--gold);
     font-weight: 600;
   }
+
+  /* ---------- Auth gate (Draft Weekend Pass required) ---------- */
+
+  .auth-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--void);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .auth-gate .gate-panel {
+    width: min(440px, 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    padding: 28px;
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,.6);
+    text-align: center;
+  }
+
+  .auth-gate .gate-panel h2 {
+    margin: 0 0 10px;
+    font-size: 1.4rem;
+  }
+
+  .auth-gate .gate-panel p {
+    color: var(--dim);
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+
+  .auth-gate .gate-panel .button,
+  .auth-gate .gate-panel button {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--void);
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+
+  .auth-gate .gate-panel .button.secondary {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink);
+  }
+
+  .session-info {
+    color: var(--dim);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+
+  .session-info button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
+
+<div id="authGate" class="auth-gate">
+  <div class="gate-panel">
+    <h2>Checking your session&hellip;</h2>
+    <p>DraftPulse is a Draft Weekend Pass+ feature.</p>
+  </div>
+</div>
 
 <header>
   <div class="wordmark-row">
     <div class="pulse-ring" id="pulseRing"></div>
     <div class="wordmark">DRAFT<span>PULSE</span></div>
   </div>
+
+  <div class="session-info" id="sessionInfo"></div>
 
   <div class="controls">
     <div class="field-group">
@@ -518,8 +604,8 @@
       <div class="field-group"><label for="reqWR">WR</label><input type="number" id="reqWR" value="2" min="0" max="6"></div>
       <div class="field-group"><label for="reqTE">TE</label><input type="number" id="reqTE" value="1" min="0" max="3"></div>
     </div>
-    <label class="file-btn button secondary" style="display:inline-flex;">
-      <span id="fileLabel">Load Scout Reports</span>
+    <label class="file-btn button secondary" style="display:inline-flex;" title="Scout Reports load automatically from your Apex account — use this only to override with a local file.">
+      <span id="fileLabel">Reload from local file (optional)</span>
       <input type="file" id="fileInput" multiple accept=".json">
     </label>
     <button id="browseBtn" class="secondary" type="button">Browse Pool — PulseCheck</button>
@@ -548,7 +634,7 @@
     <h2>Alerts <span class="count" id="alertCount">0</span></h2>
     <div id="alertFeed">
       <div class="empty-state">
-        Alerts fire here once picks start coming in. <strong>Draft Run</strong> works immediately with no Scout Report data loaded — it only needs positions. <strong>Value Cliff</strong>, <strong>Value Gap</strong>, <strong>Draft Pivot</strong>, and <strong>Roster Gap Warning</strong> need Scout Reports loaded first (use <strong>Load Scout Reports</strong> above and select one or more <code>scout_reports/*.json</code> files).
+        Alerts fire here once picks start coming in. <strong>Draft Run</strong> works immediately with no Scout Report data loaded — it only needs positions. <strong>Value Cliff</strong>, <strong>Value Gap</strong>, <strong>Draft Pivot</strong>, and <strong>Roster Gap Warning</strong> need Scout Reports, which load automatically from your Apex account once you're signed in.
       </div>
     </div>
   </section>
@@ -3128,7 +3214,137 @@ pcEls.modal.addEventListener('click', (e) => { if (e.target === pcEls.modal) clo
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pcEls.modal.hidden) closePulseCheck(); });
 pcEls.search.addEventListener('input', renderPcList);
 pcEls.posFilter.addEventListener('change', renderPcList);
+
+// =====================================================================
+// Supabase auth gate + automatic Scout Report loading
+// =====================================================================
+// DraftPulse is a Draft Weekend Pass+ feature (see account.html). Before this,
+// the page had zero session check of its own — anyone with the URL could open
+// it and manually upload scout_reports/*.json files they'd gotten some other
+// way. This wires it to the same magic-link auth as login.html/account.html,
+// and auto-loads the full Scout Report pool from Supabase instead of requiring
+// a manual upload. The real access boundary is the scout_reports RLS policy
+// (tier != combine, status active, not expired) — this client-side gate is
+// just the matching UX; a Combine/free session simply gets zero rows back
+// from the fetch even if this check were somehow bypassed.
+
+const supabaseClient = supabase.createClient(
+  "https://eeinccayoscirvyifwul.supabase.co",
+  "sb_publishable_EJWPZYQaku9kNdTBqkpL2Q_Kk1hpUkk"
+);
+
+const TIER_RANK = { combine: 0, draft_weekend_pass: 1, war_room: 2, front_office: 3 };
+const gateEl = document.getElementById('authGate');
+const gatePanelEl = gateEl.querySelector('.gate-panel');
+const sessionInfoEl = document.getElementById('sessionInfo');
+
+function showGate(html) {
+  gatePanelEl.innerHTML = html;
+  gateEl.style.display = 'flex';
+}
+
+function hideGate() {
+  gateEl.style.display = 'none';
+}
+
+function renderSignedOutGate() {
+  showGate(`
+    <h2>Sign in required</h2>
+    <p>DraftPulse is a Draft Weekend Pass+ feature. Sign in with the email you purchased with.</p>
+    <a class="button" href="/login.html">Sign in</a>
+    <a class="button secondary" href="/index.html">Back to Apex Draft Suite</a>
+  `);
+}
+
+function renderLockedGate() {
+  showGate(`
+    <h2>Requires Draft Weekend Pass</h2>
+    <p>Your account is on The Combine (free) tier. DraftPulse needs Draft Weekend Pass, War Room, or Front Office.</p>
+    <a class="button" href="/account.html">View account &amp; upgrade</a>
+  `);
+}
+
+function renderFetchErrorGate(message) {
+  showGate(`
+    <h2>Couldn't load Scout Reports</h2>
+    <p>${message}</p>
+    <a class="button" href="/account.html">Check your account</a>
+  `);
+}
+
+async function loadScoutReportsFromSupabase() {
+  els.fileLabel.textContent = 'Loading Scout Reports…';
+  const { data, error } = await supabaseClient
+    .from('scout_reports')
+    .select('name, position, raw_json')
+    .eq('format', 'superflex');
+
+  if (error) {
+    renderFetchErrorGate('Couldn’t load Scout Reports: ' + error.message);
+    return;
+  }
+  if (!data || !data.length) {
+    // RLS returning zero rows for a session the client-side check just approved
+    // means the two disagreed (e.g. a pass that expired between checks) — treat
+    // it the same as a lock rather than silently running with an empty pool.
+    renderLockedGate();
+    return;
+  }
+
+  rawReports = data.map((row) => row.raw_json);
+  els.fileLabel.textContent = `${rawReports.length} report${rawReports.length === 1 ? '' : 's'} loaded`;
+  rebuildIndexForFormat();
+  rebuildRawReportIndex();
+}
+
+function renderSessionInfo(email) {
+  sessionInfoEl.innerHTML = `${email} <button id="signOutBtn" type="button">Sign out</button>`;
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = '/login.html';
+  });
+}
+
+async function initAuthGate() {
+  const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    renderFetchErrorGate('Couldn’t check your session: ' + sessionError.message);
+    return;
+  }
+  if (!session) {
+    renderSignedOutGate();
+    return;
+  }
+
+  const email = session.user.email.toLowerCase();
+  const { data: row, error: queryError } = await supabaseClient
+    .from('subscribers')
+    .select('*')
+    .eq('email', email)
+    .maybeSingle();
+
+  if (queryError) {
+    renderFetchErrorGate('Signed in, but couldn’t load your subscription: ' + queryError.message);
+    return;
+  }
+
+  const tier = row ? row.tier : 'combine';
+  const status = row ? row.status : 'active';
+  const expired = row && row.expires_at && new Date(row.expires_at) < new Date();
+  const effectiveTier = (status !== 'active' || expired) ? 'combine' : tier;
+
+  if (TIER_RANK[effectiveTier] < TIER_RANK.draft_weekend_pass) {
+    renderLockedGate();
+    return;
+  }
+
+  renderSessionInfo(session.user.email);
+  hideGate();
+  await loadScoutReportsFromSupabase();
+}
+
+initAuthGate();
 </script>
 </body>
 </html>
-
